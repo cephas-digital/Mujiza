@@ -3,7 +3,7 @@ import { GlobalState } from "../Data/Context";
 import { useNavigate, Link } from "react-router-dom";
 import { Container } from "reactstrap";
 import { Buttons, EyeToggle } from "../Utils";
-// import logo from "../Assets/praise1 (2).png";
+// import logo from "../Assets/Mu'ujiza1 (2).png";
 
 const Register = () => {
   const { loginUser, auth } = useContext(GlobalState);
@@ -168,7 +168,7 @@ export const DefaultAuthComponent = ({ children }) => {
               className="logo me-1 logo-img-size"
             /> */}
             <div className="d-none d-md-block">
-              <p className="text-capitalize site-primary-color m-0">praise</p>
+              <p className="text-capitalize site-primary-color m-0">Mu'ujiza</p>
               <p className="text-capitalize site-secondary-color m-0">
                 Enterprises
               </p>

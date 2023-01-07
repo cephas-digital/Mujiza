@@ -67,9 +67,7 @@ const HeroBanner = () => {
               >
                 In a few clicks, buy data to keep surfing the internet. You can
                 buy whatever size of data plan for whichever network you desire.
-                In a few clicks, buy data to keep surfing the internet. You can
-                buy whatever size of data plan for whichever network you desire.
-                Get Started
+               
               </p>
               <div className="d-flex p-2 w-75">
                 <Link
@@ -118,15 +116,15 @@ export const ProductServices = () => {
   let type = [
     {
       name: "data Services",
-      description: `praise smartbillss is reliable and affordable platform to buy cheap data bundles and Airtime topup of any Nigerian network. We offer the best price rates for Airtel, MTN, 9mobile and Glo data plans.`,
+      description: `MU'UJIZA is reliable and affordable platform to buy cheap data bundles and Airtime topup of any Nigerian network. We offer the best price rates for Airtel, MTN, 9mobile and Glo data plans.`,
     },
     {
       name: "Airtime Services",
-      description: `praise smartbillss provide with an Easy topup of airtime, Low charges rates and quick to recharge serives`,
+      description: `MU'UJIZA provide with an Easy topup of airtime, Low charges rates and quick to recharge serives`,
     },
     {
       name: "Cable Subscription",
-      description: `Save money by renewing your DSTV, GOTV and Startimes subscriptions at discounted rates with praise smartbillss. We provide easy access to cable subscrition saving you the time to go all around.`,
+      description: `Save money by renewing your DSTV, GOTV and Startimes subscriptions at discounted rates with MU'UJIZA. We provide easy access to cable subscrition saving you the time to go all around.`,
     },
     // {
     //   name: "WAEC/NECO scratch cards",
@@ -134,7 +132,7 @@ export const ProductServices = () => {
     // },
     // {
     //   name: " Swiftest Delivery   ",
-    //   description: `Enjoy prompt delivery of services purchased through praise smartbillss. Our promise to you is to deliver value for every transaction made on-time, every time.`,
+    //   description: `Enjoy prompt delivery of services purchased through MU'UJIZA. Our promise to you is to deliver value for every transaction made on-time, every time.`,
     // },
     // {
     //   name: "good customer care service",
@@ -271,7 +269,7 @@ export const GainHeader = () => {
         <MiddleHeader text={"What you stand to gain with us"} />
         <div className="d-flex justify-content-center">
           <p className="text-center w-50 w50 fontReduce">
-            With praise smartbillss, You will enjoy a fast data delivery with
+            With Mu'ujiza s, You will enjoy a fast data delivery with
             Optimal security and also enjoy the best offers and discount sales
             on all our products periodically
           </p>
@@ -331,9 +329,9 @@ const CustomerHeader = () => {
         <MiddleHeader text={"Hear our customers speak"} />
         <div className="d-flex justify-content-center">
           <p className="text-center w-50 w50 fontReduce">
-            Ever since i started business with praise smartbillss it has been
+            Ever since i started business with Mu'ujiza s it has been
             all smiles...they have the best customer service team ever...prompt
-            and fast response to issues. praise smartbills thanks for always
+            and fast response to issues. Mu'ujiza  thanks for always
             being true.
           </p>
         </div>

@@ -17,7 +17,7 @@ const Header = () => {
 
   useEffect(() => {
     document.title = CapitalizeFirst(
-      `praise smartbills ${location.pathname.split("/").join(" ").substring(1)}`
+      `Mu'ujiza  ${location.pathname.split("/").join(" ").substring(1)}`
     );
   }, [location.pathname]);
 
@@ -57,9 +57,9 @@ const Header = () => {
       >
         {/* <img src={logo} alt="Honourworld" className="logo me-1 logo-img-size" /> */}
         <div className="d-block">
-          <p className="text-capitalize site-primary-color m-0">praise</p>
+          <p className="text-capitalize site-primary-color m-0">Mu'ujiza</p>
           <p className="text-capitalize site-secondary-color ml-4">
-            smartbills
+            
           </p>
         </div>
       </Link>

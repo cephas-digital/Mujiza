@@ -1,5 +1,5 @@
 import React from "react";
-// import logoLight from "../Assets/praise1.png";
+// import logoLight from "../Assets/Mu'ujiza1.png";
 import { Link } from "react-router-dom";
 import {
   FaPhone,
@@ -14,32 +14,32 @@ import {
 export let socials = [
   {
     icon: <FaWhatsapp size={24} />,
-    url: "https://wa.me/message/QNHCJYN6TSZGG1",
+    // url: "https://wa.me/message/QNHCJYN6TSZGG1",
   },
   {
     icon: <FaInstagramSquare size={24} />,
-    url: "https://instagram.com/honourworld?igshid=YmMyMTA2M2Y=",
+    // url: "https://instagram.com/honourworld?igshid=YmMyMTA2M2Y=",
   },
   {
     icon: <FaFacebook size={24} />,
-    url: "https://www.facebook.com/profile.php?id=100077522783530",
+    // url: "https://www.facebook.com/profile.php?id=100077522783530",
   },
   {
     icon: <FaTwitter size={24} />,
-    url: "https://twitter.com/Honourworld?t=WwN0_bwU-xC_1Qr0PlIc9A&s=09",
+    // url: "https://twitter.com/Honourworld?t=WwN0_bwU-xC_1Qr0PlIc9A&s=09",
   },
 ];
 
 export let details = [
-  { icon: <FaPhone />, text: "+2348065498200", type: "tel" },
+  { icon: <FaPhone />, text: "+2348066433357", type: "tel" },
   {
     icon: <FaEnvelopeSquare />,
-    text: "ailerufiyinfoluwa@gmail.com",
+    text: "muhammadisahjaps@gmail.com",
     type: "mail",
   },
   {
     icon: <FaMapMarker />,
-    text: "praise smartbills",
+    text: "Mu'ujiza ",
     type: "address",
   },
 ];
@@ -74,9 +74,9 @@ const Footer = () => {
                 className="logo me-1 logo-img-size"
               /> */}
               <div className="">
-                <p className="text-capitalize m-0 text-light">praise</p>
+                <p className="text-capitalize m-0 text-light">Mu'ujiza</p>
                 <p className="text-capitalize m-0 site-secondary-color">
-                  smartbills
+                  
                 </p>
               </div>
             </Link>
@@ -195,7 +195,7 @@ const Footer = () => {
               {new Date().getFullYear()}
             </span>
             &nbsp;{" "}
-            <span className="d-block d-lg-inline">praise smartbills</span>
+            <span className="d-block d-lg-inline">Mu'ujiza </span>
           </p>
         </div>
       </div>

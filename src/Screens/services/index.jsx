@@ -24,7 +24,7 @@ const Services = () => {
               data-aos-delay="1000"
               className="fontReduce  "
             >
-              Yes, we got you covered, With praise smartbillss Enjoy a easy and
+              Yes, we got you covered, With Mu'ujiza enjoy a easy and
               fast data delivery with Optimal security and also enjoy the best
               offers and discount sales on all our products periodically.
             </p>

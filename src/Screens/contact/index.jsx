@@ -20,7 +20,7 @@ const ServicesManagement = () => {
               We're here to help and answer any question you might have.
               <br /> we look forward to hearing from you.
             </p>
-            <ul className="list-group border-0 d-none list-group-horizontal">
+            <ul className="list-group border-0  list-group-horizontal">
               {socials.map((item, index) => (
                 <li
                   key={index}
