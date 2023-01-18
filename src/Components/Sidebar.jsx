@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GlobalState } from "../Data/Context";
 import { BiCog, BiLogIn } from "react-icons/bi";
-import logo from "../Assets/teetop1.png";
+import logo from "../Assets/logo.png";
 import "../Styles/Sidebar.css";
 // import "../Styles/OrgAuth.css";
 import { Navbar } from "reactstrap";
