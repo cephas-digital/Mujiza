@@ -29,14 +29,24 @@ const ForgetPassword = () => {
 		if (!stateData.email) return;
 		setLoading(true);
 		try {
-			var res = await axios.patch(`/api/v1/auth/reset-password`, {
+			var res = await axios.put(`/api/v1/user/reset-password`, {
 				email: stateData?.email,
 			});
 			// console.log({ res: res?.data });
 			setMessage(res?.data.msg);
 			toast.success(res?.data.msg, { autoClose: false });
-		} catch (error) {
-			toast.warn(error);
+		} catch (err) {
+			let error = err.response?.data?.error;
+			if (error) {
+				error.forEach(
+					error =>
+						error?.param &&
+						error?.param !== "suggestion" &&
+						toast.error(error.msg)
+				);
+			}
+			if (err?.response?.status === 429 || err?.response?.status === 405)
+				toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		}
 		setLoading(false);
 	};
@@ -59,13 +69,22 @@ const ForgetPassword = () => {
 				otp: code,
 				password: stateData.password,
 			};
-			let res = await axios.put(`/api/v1/auth/reset-password`, body);
+			let res = await axios.post(`/api/v1/user/reset-password`, body);
 			// console.log({ data: res?.data });
 			setMessage2(res?.data.msg);
 			toast.success(res?.data.msg);
-		} catch (error) {
-			if (error?.response?.data) toast.warn(error?.response?.data?.msg);
-			console.log({ error });
+		} catch (err) {
+			let error = err.response?.data?.error;
+			if (error) {
+				error.forEach(
+					error =>
+						error?.param &&
+						error?.param !== "suggestion" &&
+						toast.error(error.msg)
+				);
+			}
+			if (err?.response?.status === 429 || err?.response?.status === 405)
+				toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		}
 		setLoading(false);
 	};

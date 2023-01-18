@@ -4,10 +4,12 @@ import TransactionsFolder, { TopFolder } from "../../Components/Transactions";
 
 const MainTransactions = () => {
 	return (
-		<Container>
-			<TopFolder />
-			<TransactionsFolder />
-		</Container>
+		<div className="bg-white">
+			<Container>
+				<TopFolder />
+				<TransactionsFolder />
+			</Container>
+		</div>
 	);
 };
 

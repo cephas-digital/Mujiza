@@ -4,17 +4,20 @@ import { Container } from "reactstrap";
 import moment from "moment";
 import { BiCopy, BiDotsHorizontalRounded } from "react-icons/bi";
 import { RiShieldStarFill } from "react-icons/ri";
-import { Buttons } from "../../Utils";
+import { Buttons, EmptyComponent } from "../../Utils";
 import { Link } from "react-router-dom";
 import { RoundCharts } from "../Charts";
 import { toast } from "react-toastify";
 import { ModalComponents } from "../DefaultHeader";
-import { FaCcMastercard } from "react-icons/fa";
+import { FaCcMastercard, FaCcVisa } from "react-icons/fa";
+import { usePaymentInputs } from "react-payment-inputs";
+import { WalletForm } from "../../Views/controls";
+import LoadMore, { BottomTab } from "../LoadMore";
 
 let colorArr = ["#E9F9F9", "#C0938E", "#000000", "#B3CEDE"];
 
 const Wallets = () => {
-	let { setStateName } = useContext(GlobalState);
+	let { setStateName, wallet, numberWithCommas } = useContext(GlobalState);
 	let [isTransfer, setIsTransfer] = useState(false);
 	let [isWithdraw, setIsWithdraw] = useState(false);
 	let toggleTransfer = () => {
@@ -31,6 +34,7 @@ const Wallets = () => {
 	let toggleCard = () => {
 		setIsCard(!isCard);
 	};
+	let [moveType, setMoveType] = useState(false);
 
 	useEffect(() => {
 		setStateName("my account");
@@ -42,19 +46,40 @@ const Wallets = () => {
 				<div className="rounded20 walletDiv p-3 px-md-5">
 					<div className="d-md-flex align-items-center h-100">
 						<div className="px-3 text-dark h-100 py-3 py-md-5 mx-auto">
-							<h3>Wallet balance</h3>
-							<h1 className="fw-bold text5 mb-5">NGN 100,000</h1>
+							<h3 className="fontReduceBig">Wallet balance</h3>
+							<h1 className="fw-bold text5 textMini mb-5">
+								NGN{" "}
+								{numberWithCommas(
+									Number(wallet?.balance?.available).toFixed(2)
+								)}
+							</h1>
 							<div className="row mx-0 w-100 mb-5">
-								<div className="col text-center">
-									<h5 className="fw-bold">28K</h5>
+								<div
+									className="col text-center myCursor"
+									onClick={() => setMoveType("commission")}>
+									<h5 className="fw-bold">
+										{numberWithCommas(
+											Number(wallet?.balance?.commission).toFixed(2)
+										)}
+									</h5>
 									<small>Commission</small>
 								</div>
-								<div className="col text-center">
-									<h5 className="fw-bold">28K</h5>
+								<div
+									className="col text-center myCursor"
+									onClick={() => setMoveType("bonus")}>
+									<h5 className="fw-bold">
+										{numberWithCommas(
+											Number(wallet?.balance?.bonus).toFixed(2)
+										)}
+									</h5>
 									<small>Bonus</small>
 								</div>
 								<div className="col text-center">
-									<h5 className="fw-bold">28K</h5>
+									<h5 className="fw-bold">
+										{numberWithCommas(
+											Number(wallet?.balance?.purchase).toFixed(2)
+										)}
+									</h5>
 									<small>Purchase</small>
 								</div>
 							</div>
@@ -64,33 +89,35 @@ const Wallets = () => {
 									className="btn textGradient text-capitalize fw-bold">
 									transfer
 								</button>
-								<button
+								{/* <button
 									onClick={toggleWithdraw}
 									className="btn textGradient text-capitalize fw-bold">
 									withdraw
-								</button>
+								</button> */}
 							</div>
 						</div>
-						<div className="ms-auto d-md-flex align-items-center h-100">
-							<div className="darkBg h-100 rounded10 p-3 py-5 genWalletWidth d-flex flex-column">
+						<div className="ms-md-auto row mx-0 h-100">
+							<div className="col darkBg h-100 rounded10 p-3 py-md-5 genWalletWidth d-flex flex-column">
 								<p className="text2 text-center fw-bold">Wallet ID</p>
-								<p className="text-center">1234567890</p>
+								<p className="text-center">{wallet?.balance?.wallet_id}</p>
 								<p
 									className="mt-auto myCursor"
 									onClick={() => {
-										navigator.clipboard.writeText("123456789").then(
-											() => {
-												toast.info("Copied");
-											},
-											err => {
-												toast.warn(`Could not copy: ${err}`);
-											}
-										);
+										navigator.clipboard
+											.writeText(wallet?.balance?.wallet_id)
+											.then(
+												() => {
+													toast.info("Copied");
+												},
+												err => {
+													toast.warn(`Could not copy: ${err}`);
+												}
+											);
 									}}>
 									Copy <BiCopy />{" "}
 								</p>
 							</div>
-							<div className="lilacBg h-100 rounded10 p-3 py-5 genWalletWidth mx-md-4 mx-3 my-3 my-md-0">
+							<div className="col lilacBg h-100 rounded10 p-3 py-md-5 genWalletWidth mx-md-4 mx-md-3 my-3 my-md-0">
 								<p className="text2 mb-5 text-dark fw-bold">Fund Wallet</p>
 								<Buttons
 									onClick={toggleVirtual}
@@ -103,7 +130,7 @@ const Wallets = () => {
 									title="debit card"
 								/>
 							</div>
-							<div className="greyBg h-100 rounded10 p-3 py-5 genWalletWidth">
+							<div className="col greyBg h-100 rounded10 p-3 py-md-5 genWalletWidth">
 								<p className="text2 text-dark fw-bold">Cards</p>
 								<CardList bg />
 							</div>
@@ -116,7 +143,12 @@ const Wallets = () => {
 						className="rounded20 shadow2 p-md-5 p-4 mx-2 mx-md-3 eachProduct myCursor text-dark text-decoration-none text-center">
 						<div>
 							<h6>Commission</h6>
-							<h5>NGN 2000</h5>
+							<h5 className="textMini2">
+								NGN{" "}
+								{numberWithCommas(
+									Number(wallet?.balance?.commission).toFixed(2)
+								)}
+							</h5>
 						</div>
 					</Link>
 					<Link
@@ -124,13 +156,16 @@ const Wallets = () => {
 						className="rounded20 shadow2 p-md-5 p-4 mx-2 mx-md-3 eachProduct myCursor text-dark text-decoration-none text-center">
 						<div>
 							<h6>Bonus</h6>
-							<h5>NGN 2000</h5>
+							<h5 className="textMini2">
+								NGN{" "}
+								{numberWithCommas(Number(wallet?.balance?.bonus).toFixed(2))}
+							</h5>
 						</div>
 					</Link>
 				</div>
 				<div className="row mx-0 g-4">
 					<div className="col-md-9">
-						<div className="btn-group">
+						<div className="btn-group d-none d-md-block">
 							<button className="btn text-dark text-capitalize border-bottom fw-bold">
 								transfer
 							</button>
@@ -138,28 +173,37 @@ const Wallets = () => {
 								cards
 							</button>
 						</div>
+						<div className="d-md-none Lexend fw-bold">History</div>
 						<div>
 							<TransferList />
 						</div>
 					</div>
 					<div
-						className="col-md-3 rounded10 p-3"
+						className="col-md-3 rounded10 p-3 d-none d-block"
 						style={{ background: "#FCFCF9" }}>
 						<h5 className="fw-bold">Your activity</h5>
 						<RoundCharts
 							state={[
 								{
 									name: "expenses",
-									value: 500,
+									value: wallet?.balance?.purchase,
 									color: "#FEC430",
 								},
 								{
 									name: "commission",
-									value: 3000,
+									value: wallet?.balance?.commissionTotal,
 									color: "#AD9BB1",
 								},
-								{ name: "income", value: 4000, color: "#63B0C4" },
-								{ name: "sales", value: 1500, color: "#B9BBBC" },
+								{
+									name: "fund",
+									value: wallet?.balance?.walletTotal,
+									color: "#63B0C4",
+								},
+								{
+									name: "bonus",
+									value: wallet?.balance?.bonusTotal,
+									color: "#B9BBBC",
+								},
 							]}
 							type="pie"
 							css="h-100 w-100"
@@ -172,11 +216,74 @@ const Wallets = () => {
 			<MakeWithdraw isOpen={isWithdraw} back={toggleWithdraw} />
 			<MakeCards isOpen={isCard} back={toggleCard} />
 			<MakeVirtual isOpen={isVirtual} back={toggleVirtual} />
+			<MoveFund isOpen={moveType} back={() => setMoveType(false)} />
 		</div>
 	);
 };
 
 export default Wallets;
+
+const MoveFund = ({ isOpen, back }) => {
+	const { bonus, commission, manageWallet } = useContext(GlobalState);
+
+	let [loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false);
+	let handleMove = async e => {
+		e?.preventDefault();
+		setLoading(true);
+		await manageWallet(isOpen);
+		setLoading(false);
+		setSubmit(true);
+	};
+
+	useEffect(() => {
+		if (isOpen === "bonus" && submit && bonus?.isMoved) {
+			setSubmit(false);
+			back();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isOpen, submit, bonus?.isMoved]);
+
+	useEffect(() => {
+		if (isOpen === "commission" && submit && commission?.isMoved) {
+			setSubmit(false);
+			back();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isOpen, submit, commission?.isMoved]);
+
+	return (
+		<>
+			<ModalComponents
+				isOpen={isOpen}
+				back={back}
+				title={`Move ${isOpen} wallet`}>
+				<form>
+					<div className="downH2 d-flex align-items-center justify-content-center">
+						<form className="">
+							<p>Do you want to move {isOpen} to main wallet?</p>
+							<div className="btn-group mx-auto w-100">
+								<Buttons
+									loading={loading}
+									onClick={handleMove}
+									width="w-50"
+									css="btn-primary1 text-capitalize py-3 w-50"
+									title={"yes"}
+								/>
+								<Buttons
+									onClick={back}
+									width="w-50"
+									css="btn-secondary text-capitalize py-3 w-50"
+									title={"no"}
+								/>
+							</div>
+						</form>
+					</div>
+				</form>
+			</ModalComponents>
+		</>
+	);
+};
 
 const MakeWithdraw = ({ isOpen, back }) => {
 	return (
@@ -197,16 +304,126 @@ const MakeWithdraw = ({ isOpen, back }) => {
 };
 
 const MakeCards = ({ isOpen, back }) => {
+	const { manageFundWallet, wallet } = useContext(GlobalState);
+	let init = {
+			card_number: "",
+			card_cvv: "",
+			card_expiry: "",
+		},
+		[payment_data, setPaymentData] = useState(init),
+		[isAdd, setIsAdd] = useState(false),
+		[amount, setAmount] = useState(""),
+		[loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false),
+		toggle = () => {
+			setIsAdd(!isAdd);
+		},
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setPaymentData({ ...payment_data, [name]: value });
+			},
+		handleSubmit = async e => {
+			e?.preventDefault();
+			setLoading(true);
+			console.log({ payment_data });
+			await manageFundWallet({ payment_data, amount });
+			setLoading(false);
+			setSubmit(true);
+		},
+		setDetails = data => {
+			setPaymentData({ ...payment_data, ...data });
+		};
+
+	useEffect(() => {
+		if (submit && wallet?.isFunded) {
+			back();
+			setSubmit(false);
+			setPaymentData(init);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, wallet?.isFunded]);
+
+	const { getCardNumberProps, getExpiryDateProps, getCVCProps, meta } =
+			usePaymentInputs(),
+		{ erroredInputs, touchedInputs } = meta;
+
 	return (
 		<>
 			<ModalComponents isOpen={isOpen} back={back} title="Choose card">
 				<form>
-					<CardList />
+					{!isAdd && (
+						<CardList
+							details={setDetails}
+							selectBg={payment_data?.card_number}
+						/>
+					)}
+					<Buttons
+						title={"new card"}
+						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+						width={"w-50"}
+						style={{ borderRadius: "30px" }}
+						onClick={toggle}
+					/>
+					{isAdd && (
+						<>
+							<div className="mb-3">
+								<label htmlFor="value">Card Number</label>
+								<input
+									{...getCardNumberProps({
+										onChange: textChange("card_number"),
+									})}
+									value={payment_data?.card_number}
+									placeholder="5394 2345 3456 5677"
+									className="form-control py-3 rounded10"
+									isInvalid={
+										touchedInputs.cardNumber && erroredInputs.cardNumber
+									}
+								/>
+							</div>
+							<div className="mb-3">
+								<label htmlFor="value">Card Expiry</label>
+								<input
+									{...getExpiryDateProps({
+										onChange: textChange("card_expiry"),
+									})}
+									value={payment_data?.card_expiry}
+									placeholder="12 / 24"
+									className="form-control py-3 rounded10"
+									isInvalid={
+										touchedInputs.expiryDate && erroredInputs.expiryDate
+									}
+								/>
+							</div>
+							<div className="mb-3">
+								<label htmlFor="value">Card CVV</label>
+								<input
+									value={payment_data?.card_cvv}
+									{...getCVCProps({ onChange: textChange("card_cvv") })}
+									placeholder="345"
+									className="form-control py-3 rounded10"
+									isInvalid={touchedInputs.cvc && erroredInputs.cvc}
+								/>
+							</div>
+						</>
+					)}
+					<div className="mb-3">
+						<label htmlFor="value">Amount</label>
+						<input
+							type={"number"}
+							placeholder="50000"
+							className="form-control py-3 rounded10"
+							value={amount}
+							onChange={e => setAmount(e.target.value)}
+						/>
+					</div>
 					<Buttons
 						title={"fund"}
 						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
 						width={"w-50"}
 						style={{ borderRadius: "30px" }}
+						loading={loading}
+						onClick={handleSubmit}
 					/>
 				</form>
 			</ModalComponents>
@@ -215,64 +432,71 @@ const MakeCards = ({ isOpen, back }) => {
 };
 
 const MakeVirtual = ({ isOpen, back }) => {
-	let accountType = [
-		{ name: "Rolex account", number: 1234567890 },
-		{ name: "Rolex account", number: 1234567890 },
-		{ name: "Rolex account", number: 1234567890 },
-		{ name: "Rolex account", number: 1234567890 },
-	];
+	const { wallet, generateVirtual } = useContext(GlobalState);
+	let [loading, setLoading] = useState(false);
 	return (
 		<>
-			<ModalComponents isOpen={isOpen} back={back} title="Choose accounts">
+			<ModalComponents isOpen={isOpen} back={back} title="virtual accounts">
 				<form>
-					<div>
-						{accountType?.map((it, i) => (
-							<div
-								key={i}
-								className="my-3 d-flex align-items-center rounded10 bg-light p-3">
-								<div className="d-flex me-2">
-									<div
-										className="p-3 d-flex rounded10 align-items-center justify-content-center"
-										style={{ background: `${colorArr[i % colorArr?.length]}` }}>
-										<RiShieldStarFill
-											size={24}
-											color={`${
-												colorArr[i % colorArr?.length] === "#000000"
-													? "#fff"
-													: "#000"
-											}`}
-										/>
+					{wallet?.balance?.virtual ? (
+						<div>
+							{wallet?.balance?.virtual?.accounts?.map((it, i) => (
+								<div
+									key={i}
+									className="my-3 d-flex align-items-center rounded10 bg-light p-3">
+									<div className="d-flex me-2">
+										<div
+											className="p-3 d-flex rounded10 align-items-center justify-content-center"
+											style={{
+												background: `${colorArr[i % colorArr.length]}`,
+											}}>
+											<RiShieldStarFill
+												size={24}
+												color={`${
+													colorArr[i % colorArr.length] === "#000000"
+														? "#fff"
+														: "#000"
+												}`}
+											/>
+										</div>
+									</div>
+									<div>
+										<h6 className="fw-bold text-muted">{it?.bankName}</h6>
+										<h6 className="fw-bold">
+											{it?.accountNumber}{" "}
+											<BiCopy
+												size={20}
+												className="ms-3 myCursor"
+												onClick={() => {
+													navigator.clipboard.writeText(it?.accountNumber).then(
+														() => {
+															toast.info("Copied");
+														},
+														err => {
+															toast.warn(`Could not copy: ${err}`);
+														}
+													);
+												}}
+											/>{" "}
+										</h6>
 									</div>
 								</div>
-								<div>
-									<h6 className="fw-bold text-muted">{it?.name}</h6>
-									<h6 className="fw-bold">
-										{it?.number}{" "}
-										<BiCopy
-											size={20}
-											className="ms-3 myCursor"
-											onClick={() => {
-												navigator.clipboard.writeText(it?.number).then(
-													() => {
-														toast.info("Copied");
-													},
-													err => {
-														toast.warn(`Could not copy: ${err}`);
-													}
-												);
-											}}
-										/>{" "}
-									</h6>
-								</div>
-							</div>
-						))}
-					</div>
-					<Buttons
-						title={"fund"}
-						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
-						width={"w-50"}
-						style={{ borderRadius: "30px" }}
-					/>
+							))}
+						</div>
+					) : (
+						<Buttons
+							title={"generate account"}
+							css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+							width={"w-50"}
+							onClick={async () => {
+								setLoading(true);
+								await generateVirtual();
+								setLoading(false);
+							}}
+							style={{ borderRadius: "30px" }}
+							loading={loading}
+						/>
+					)}
 				</form>
 			</ModalComponents>
 		</>
@@ -280,173 +504,260 @@ const MakeVirtual = ({ isOpen, back }) => {
 };
 
 const MakeTransfer = ({ isOpen, back }) => {
+	let { manageWallet, wallet } = useContext(GlobalState);
+
+	let init = {
+			type: "wallet",
+			user: "",
+			amount: "",
+		},
+		[state, setState] = useState(init),
+		[loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false),
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setState({ ...state, [name]: value });
+			},
+		handleSubmit = async e => {
+			e?.preventDefault();
+			setLoading(true);
+			await manageWallet("wallet", state);
+			setLoading(false);
+			setSubmit(true);
+		};
+
+	useEffect(() => {
+		if (wallet?.isTransfer && submit) {
+			back();
+			setSubmit(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [wallet?.isTransfer, submit]);
+
 	return (
 		<>
 			<ModalComponents isOpen={isOpen} back={back} title="Transfer">
-				<form>
-					<div className="mb-4">
-						<label htmlFor="Newtwork">Select type</label>
-						<select
-							name="network"
-							id="network"
-							className="form-control form-select py-3 rounded10">
-							<option value="mtn">bouus to wallet</option>
-						</select>
-					</div>
-					<div className="mb-4">
-						<label htmlFor="value">Amount</label>
-						<input
-							type={"number"}
-							placeholder="500"
-							className="form-control py-3 rounded10"
-						/>
-					</div>
-					<Buttons
-						title={"continue"}
-						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
-						width={"w-50"}
-						style={{ borderRadius: "30px" }}
-					/>
-				</form>
+				<WalletForm state={state} textChange={textChange} />
+				<Buttons
+					title={"transfer"}
+					css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+					width={"w-50"}
+					style={{ borderRadius: "30px" }}
+					loading={loading}
+					onClick={handleSubmit}
+				/>
 			</ModalComponents>
 		</>
 	);
 };
 
-export const BonusCommission = () => {
-	let userList = [
-		{
-			title: "Honourworld",
-			createdAt: Date.now(),
-			balance: "50000",
-			initial: "80000",
-			description: `Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquid dolorum delectus libero! Illum suscipit obcaecati numquam consequuntur placeat dolor repellat blanditiis molestiae, aut vitae voluptatem est dolorem ex. At, ea.`,
-			type: "credit",
-		},
-	];
+export const BonusCommission = ({ type }) => {
+	const { bonus, commission, numberWithCommas, getWalletHistory } =
+		useContext(GlobalState);
+
+	let [state, setState] = useState(null);
+
+	let [loading, setLoading] = useState(false);
+	let handleLoadMore = async () => {
+		setLoading(true);
+
+		await getWalletHistory(type === "bonus" ? "bonus" : "commission", {
+			limit: Number(
+				type === "bonus"
+					? bonus?.paginate?.nextPage * bonus?.paginate?.limit
+					: commission?.paginate?.nextPage * commission?.paginate?.limit
+			),
+		});
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		if (type === "bonus") {
+			setState(bonus?.bonus);
+		} else {
+			setState(commission?.commission);
+		}
+	}, [type, bonus, commission]);
+
+	if (!state) return;
 
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 py-3 px-0 text-capitalize">
-				<div className="col textTrunc">Title</div>
 				<div className="col textTrunc d-none d-md-flex">date</div>
 				<div className="col textTrunc d-none d-md-flex">Description</div>
 				<div className="col textTrunc">Amount</div>
+				<div className="col textTrunc">Balance</div>
 				<div className="col textTrunc">Previous balance</div>
 				<div className="col textTrunc">Type</div>
 			</div>
 			<div className="bland2 row mx-0">
-				{userList?.map((item, index) => (
+				{state?.map((item, index) => (
 					<div key={index} className="row mx-0 py-3 px-0">
-						<div className="col textTrunc my-auto">{item?.title}</div>
 						<div className="col textTrunc my-auto d-none d-md-flex">
 							{moment(item?.createdAt).format("L")}
 						</div>
 						<div className="col textTrunc my-auto textTrunc textTrunc3 d-none d-md-flex">
 							{item?.description}
 						</div>
-						<div className="col textTrunc my-auto">{item?.balance}</div>
-						<div className="col textTrunc my-auto">{item?.initial}</div>
-						<div className="col textTrunc my-auto text-success">
+						<div className="col textTrunc my-auto">
+							{numberWithCommas(item?.amount)}
+						</div>
+						<div className="col textTrunc my-auto">
+							{numberWithCommas(item?.balance)}
+						</div>
+						<div className="col textTrunc my-auto">
+							{numberWithCommas(item?.prevBalance)}
+						</div>
+						<div
+							className={`col textTrunc my-auto text-capitalize ${
+								item?.type === "credit" ? "text-success" : "tex-danger"
+							}`}>
 							{item?.type}
 						</div>
 					</div>
 				))}
 			</div>
+			<BottomTab
+				state={state}
+				paginate={type === "bonus" ? bonus?.paginate : commission?.paginate}
+			/>
+			<LoadMore
+				next={
+					type === "bonus" ? bonus?.paginate?.next : commission?.paginate?.next
+				}
+				handleLoadMore={handleLoadMore}
+				loading={loading}
+			/>
 		</div>
 	);
 };
 
 const TransferList = () => {
-	let list = [
-		{
-			name: "Wema Bank",
-			amount: "4000",
-			createdAt: Date.now(),
-		},
-		{
-			name: "UBA Bank",
-			amount: "4000",
-			createdAt: Date.now(),
-		},
-		{
-			name: "Gt Bank",
-			amount: "4000",
-			createdAt: Date.now(),
-		},
-		{
-			name: "Sterling Bank",
-			amount: "4000",
-			createdAt: Date.now(),
-		},
-		{
-			name: "Zenith Bank",
-			amount: "4000",
-			createdAt: Date.now(),
-		},
-	];
+	const { wallet, getWalletHistory, numberWithCommas } =
+		useContext(GlobalState);
+	let [loading, setLoading] = useState(false);
+	let handleLoadMore = async () => {
+		setLoading(true);
+
+		await getWalletHistory("wallet", {
+			limit: Number(wallet?.paginate?.nextPage * wallet?.paginate?.limit),
+		});
+		setLoading(false);
+	};
 	return (
 		<>
-			{list?.map((it, i) => (
-				<div key={i} className="row mx-0 my-2">
-					<div className="col">
-						<div className="d-flex">
-							<div
-								className="p-3 d-flex rounded10 align-items-center justify-content-center"
-								style={{ background: `${colorArr[i % colorArr?.length]}` }}>
-								<RiShieldStarFill
-									size={24}
-									color={`${
-										colorArr[i % colorArr?.length] === "#000000"
-											? "#fff"
-											: "#000"
-									}`}
-								/>
+			{wallet?.wallet?.length === 0 ? (
+				<EmptyComponent subtitle={"Wallet is empty"} />
+			) : (
+				wallet?.wallet?.map((it, i) => (
+					<div key={i} className="row mx-0 my-2">
+						<div className="col d-none d-md-flex fontReduce3">
+							<div className="d-flex">
+								<div
+									className="p-3 d-flex rounded10 align-items-center justify-content-center"
+									style={{ background: `${colorArr[i % colorArr?.length]}` }}>
+									<RiShieldStarFill
+										size={24}
+										color={`${
+											colorArr[i % colorArr?.length] === "#000000"
+												? "#fff"
+												: "#000"
+										}`}
+									/>
+								</div>
+							</div>
+						</div>
+						<div className="col my-auto text-capitalize d-none d-md-flex fw-md-bold fontReduce3">
+							{it?.title}
+						</div>
+						<div className="col my-auto text-capitalize textTrunc textTrunc2 fw-md-bold fontReduce3">
+							{it?.description}
+						</div>
+						<div className="col my-auto fontReduce2">
+							NGN {it?.amount ? numberWithCommas(it?.amount) : 0}
+						</div>
+						<div className="col my-auto fontReduce2">
+							{moment(it?.createdAt).format("DD/MM")}
+						</div>
+						<div className="col my-auto d-none d-md-flex fontReduce2">
+							<div className="d-flex">
+								<div
+									className={`p-3 d-flex rounded10 align-items-center justify-content-center shadow2 myCursor horizHover ${
+										it?.type === "credit"
+											? "list-group-item-success"
+											: "list-group-item-danger"
+									}`}>
+									<BiDotsHorizontalRounded size={24} />
+								</div>
 							</div>
 						</div>
 					</div>
-					<div className="col">
-						<strong>{it?.name}</strong>
-					</div>
-					<div className="col">{it?.amount}</div>
-					<div className="col">{moment(it?.createdAt).format("DD/MM")}</div>
-					<div className="col">
-						<div className="d-flex">
-							<div className="p-3 d-flex rounded10 align-items-center justify-content-center shadow2 myCursor horizHover">
-								<BiDotsHorizontalRounded size={24} />
-							</div>
-						</div>
-					</div>
-				</div>
-			))}
+				))
+			)}
+			<BottomTab state={wallet?.wallet} paginate={wallet?.paginate} />
+			<LoadMore
+				next={wallet?.paginate?.next}
+				handleLoadMore={handleLoadMore}
+				loading={loading}
+			/>
 		</>
 	);
 };
 
-let CardList = ({ bg }) => {
-	let list = ["5399", "5366"];
+let CardList = ({ bg, details, selectBg }) => {
+	const { wallet } = useContext(GlobalState);
+
+	let [state, setState] = useState(null);
+
+	useEffect(() => {
+		setState(bg ? wallet?.cards?.slice(0, 2) : wallet?.cards);
+	}, [bg, wallet?.cards]);
+
+	if (!state) return;
+
 	return (
 		<>
 			<div>
-				{list?.map((it, i) => (
+				{state?.map((it, i) => (
 					<div
 						key={i}
-						className={`my-3 d-flex align-items-center rounded10 ${
-							bg ? "" : "bg-light "
-						}p-3`}>
+						onClick={details ? () => details(it) : () => {}}
+						className={`my-3 d-flex align-items-center rounded10 myCursor ${
+							bg ? "" : "bg-light"
+						}p-3 ${
+							selectBg === it?.card_number ? "list-group-item-info" : ""
+						}`}>
 						<div className="d-flex me-2">
 							<div
 								className="p-3 d-flex rounded10 align-items-center justify-content-center"
 								style={{ background: i % 2 === 0 ? "#EFEFEF" : "#34302F" }}>
-								<FaCcMastercard
-									size={30}
-									color={i % 2 !== 0 ? "#EFEFEF" : "#34302F"}
-								/>
+								{it?.brand?.toLowerCase() === "visa" ? (
+									<FaCcVisa
+										size={30}
+										color={i % 2 !== 0 ? "#EFEFEF" : "#34302F"}
+									/>
+								) : (
+									<FaCcMastercard
+										size={30}
+										color={i % 2 !== 0 ? "#EFEFEF" : "#34302F"}
+									/>
+								)}
 							</div>
 						</div>
 						<div>
-							<h6 className="fw-bold text-dark">*{it}</h6>
-							<small className="fw-bold text-dark">Mastercard</small>
+							<h6 className="fw-bold text-dark">
+								*
+								{
+									it?.card_number?.split(" ")[
+										it?.card_number?.split(" ")?.length - 1
+									]
+								}
+							</h6>
+							<small className="fw-bold text-dark text-capitalize">
+								{it?.brand}
+							</small>
 							{/* <h6 className="fw-bold">
 								{it?.number}{" "}
 								<BiCopy

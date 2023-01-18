@@ -2,17 +2,18 @@ import {
 	ADD_CABLE,
 	ADD_CABLE_FAIL,
 	GET_CABLE,
+	GET_CABLE_DIRECT_PACKAGE,
+	GET_CABLE_DIRECT_TYPE,
 	GET_CABLE_FAIL,
 	GET_CABLE_LOADING,
-	UPDATE_CABLE,
 } from "../Actions/ActionTypes";
-import { EditData } from "./DataReducer";
 
 const initialState = {
 	isLoading: false,
 	cable: [],
+	cable_direct: [],
+	cable_package: null,
 	isAdded: false,
-	isUpdated: false,
 	isDeleted: false,
 };
 const CableReducer = (state = initialState, action) => {
@@ -22,26 +23,35 @@ const CableReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isAdded: true,
-				cable: [{ ...payload }, ...state.cable],
+				cable: [payload?.data ? payload?.data : payload, ...state.cable],
+				paginate: {
+					...state?.paginate,
+					result: state?.paginate?.result + 1,
+					total: state?.paginate?.total + 1,
+				},
 			};
 		case ADD_CABLE_FAIL:
 			return {
 				...state,
 				isAdded: false,
-				isUpdated: false,
 				isDeleted: false,
-			};
-		case UPDATE_CABLE:
-			return {
-				...state,
-				isUpdated: true,
-				cable: EditData(state.cable, payload),
 			};
 		case GET_CABLE:
 			return {
 				...state,
 				isLoading: false,
-				cable: payload,
+				cable: payload?.data,
+				paginate: payload?.paginate,
+			};
+		case GET_CABLE_DIRECT_PACKAGE:
+			return {
+				...state,
+				cable_package: payload?.data,
+			};
+		case GET_CABLE_DIRECT_TYPE:
+			return {
+				...state,
+				cable_direct: payload?.data,
 			};
 		case GET_CABLE_FAIL:
 			return {

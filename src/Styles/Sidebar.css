@@ -92,7 +92,7 @@ header.close .image-text .header-text {
 
 .sidebar header .toggle {
 	position: absolute;
-	top: 100%;
+	top: 25%;
 	right: -10px;
 	transform: translateY(-50%) rotate(180deg);
 	height: 25px;
@@ -105,6 +105,9 @@ header.close .image-text .header-text {
 	color: var(--bland);
 	font-size: 24px;
 	transition: var(--trans-03);
+}
+.sidebar.close header .toggle {
+	top: 100%;
 }
 .sidebar li .menuBtn,
 .sidebar li a {
@@ -189,6 +192,15 @@ header.close .image-text .header-text {
 	left: 90px;
 	width: calc(100% - 90px);
 }
+.sidebar.close .image .logo {
+	width: 50px;
+	height: 50px;
+}
+
+.sidebar .image .logo {
+	width: auto;
+	height: 100px;
+}
 
 @media screen and (max-width: 768px) {
 	.sidebar {
@@ -196,5 +208,43 @@ header.close .image-text .header-text {
 	}
 	.fontReduce {
 		font-size: 12px;
+	}
+	.sidebar.close .menu-bar,
+	.sidebar .menu-bar {
+		padding: 50px 7px 100px;
+		height: calc(100% - 50px);
+		overflow-y: auto;
+	}
+	.sidebar.close {
+		width: 70px;
+		left: -70px;
+	}
+	.sidebar.close ~ .home {
+		left: 0px;
+		width: calc(100%);
+	}
+	.sidebar ~ .home {
+		left: 0px;
+		width: calc(100%);
+	}
+	.sidebar header .toggle {
+		transform: rotate(90deg);
+	}
+	.sidebar header .toggle {
+		height: 20px;
+		width: 20px;
+	}
+	.sidebar header .toggle {
+		top: 8%;
+		right: -28px;
+	}
+	.sidebar.close header .toggle {
+		top: 42%;
+		right: -28px;
+	}
+	.sidebar header .toggle.toggleBar {
+		background: transparent;
+		border-radius: 0%;
+		color: var(--blue);
 	}
 }

@@ -11,7 +11,7 @@ export const SetAuthToken = token => {
 // export const useURL = process.env.REACT_APP_BASE_URL;
 export const useURL =
 	process.env.NODE_ENV === "development"
-		? "http://localhost:5675"
+		? "http://localhost:8800"
 		: process.env.REACT_APP_BASE_URL;
 
 export const SetDefaultHeaders = () => {

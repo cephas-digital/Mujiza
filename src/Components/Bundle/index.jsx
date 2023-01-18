@@ -13,7 +13,7 @@ const Bundles = () => {
 	let params = useParams();
 
 	useEffect(() => {
-		if (auth?.temp_auth === "user") {
+		if (auth?.user?.privilege === "user") {
 			setMainData([
 				{
 					name: "CG wallet",
@@ -35,7 +35,7 @@ const Bundles = () => {
 				},
 				{ name: "request", type: "button", link: "request" },
 			]);
-		} else if (auth?.temp_auth === "agent") {
+		} else if (auth?.user?.privilege === "agent") {
 			setMainData([
 				{
 					name: "CG wallet",
@@ -60,7 +60,7 @@ const Bundles = () => {
 				{ name: "add new package", type: "button", link: "new" },
 			]);
 		}
-	}, [auth?.temp_auth, params?.page]);
+	}, [auth?.user?.privilege, params?.page]);
 
 	let [active, setActive] = useState(0);
 	useEffect(() => {

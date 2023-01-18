@@ -13,7 +13,7 @@ const Bonus = () => {
 		<div className="bg-white aboutScreen">
 			<Container className="py-3 py-md-5">
 				<h5 className="Lexend">Bonus History</h5>
-				<BonusCommission />{" "}
+				<BonusCommission type={"bonus"} />{" "}
 			</Container>{" "}
 		</div>
 	);

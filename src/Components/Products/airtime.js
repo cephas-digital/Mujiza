@@ -4,6 +4,7 @@ import { Buttons } from "../../Utils";
 import moment from "moment";
 import { ModalComponents } from "..";
 import { GlobalState } from "../../Data/Context";
+import LoadMore, { BottomTab } from "../LoadMore";
 
 const Airtime = () => {
 	let [isOpen, setIsOpen] = useState(false),
@@ -11,11 +12,40 @@ const Airtime = () => {
 			setIsOpen(!isOpen);
 		};
 
-	let { setStateName } = useContext(GlobalState);
+	let { setStateName, general, airtimes, buyServices } =
+		useContext(GlobalState);
 	useEffect(() => {
 		setStateName("airtime history");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	let init = {
+			phone: "",
+			amount: "",
+			network: "",
+		},
+		[state, setState] = useState(init),
+		[loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false),
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setState({ ...state, [name]: value });
+			},
+		handleSubmit = async e => {
+			e?.preventDefault();
+			setLoading(true);
+			await buyServices("airtime", state);
+			setLoading(false);
+			setSubmit(true);
+		};
+
+	useEffect(() => {
+		if (airtimes?.isAdded && submit) {
+			setIsOpen(false);
+			setSubmit(false);
+		}
+	}, [airtimes?.isAdded, submit]);
 
 	return (
 		<div className="bg-white aboutScreen">
@@ -35,18 +65,28 @@ const Airtime = () => {
 						<div className="mb-4">
 							<label htmlFor="Newtwork">Network</label>
 							<select
+								className="form-control py-3 py-md-4 text-capitalize form-select"
 								name="network"
-								id="network"
-								className="form-control form-select py-3 rounded20">
-								<option value="mtn">MTN</option>
+								placeholder="Network"
+								value={state?.network}
+								onChange={textChange("network")}
+								id="network">
+								<option value="">select network</option>
+								{general?.networks?.map((item, i) => (
+									<option value={item} key={i}>
+										{item}
+									</option>
+								))}
 							</select>
 						</div>
 						<div className="mb-4">
-							<label htmlFor="value">Value</label>
+							<label htmlFor="value">Amount</label>
 							<input
 								type={"number"}
 								placeholder="500"
 								className="form-control py-3"
+								value={state?.amount}
+								onChange={textChange("amount")}
 							/>
 						</div>
 						<div className="mb-4">
@@ -55,14 +95,17 @@ const Airtime = () => {
 								type={"tel"}
 								placeholder="08012345678"
 								className="form-control py-3"
+								value={state?.phone}
+								onChange={textChange("phone")}
 							/>
 						</div>
 						<Buttons
 							title={"buy"}
-							css="btn-primary1 text-capitalize py-3 px-4 px-lg-5"
-							width={"w-25 w25"}
-							onClick={toggle}
+							css="btn-primary1 text-capitalize py-3 w-50 my-4"
+							width={"w-50"}
 							style={{ borderRadius: "30px" }}
+							loading={loading}
+							onClick={handleSubmit}
 						/>
 					</form>
 				</div>
@@ -74,18 +117,27 @@ const Airtime = () => {
 export default Airtime;
 
 const AirtimeHistory = () => {
-	let historyList = [
-		{
-			id: "CONV-12",
-			reference: "1234567876543",
-			date: Date.now(),
-			telephone: "081234567890",
-			amount: 5000,
-			status: "delivered",
-			network: "MTN",
-			discount: 3,
-		},
-	];
+	let { airtimes, numberWithCommas, getServicesHistory } =
+		useContext(GlobalState);
+
+	let [data, setData] = useState(null);
+
+	useEffect(() => {
+		setData(airtimes?.airtime);
+	}, [airtimes?.airtime]);
+
+	let [loading, setLoading] = useState(false);
+	let handleLoadMore = async () => {
+		setLoading(true);
+
+		await getServicesHistory("airtime", {
+			limit: Number(airtimes?.paginate?.nextPage * airtimes?.paginate?.limit),
+		});
+		setLoading(false);
+	};
+
+	if (!data) return;
+	// console.log({ data });
 
 	return (
 		<div className="pb-5 my-5">
@@ -96,23 +148,38 @@ const AirtimeHistory = () => {
 				<div className="col">discount</div>
 				<div className="col">price</div>
 				<div className="col">status</div>
-				<div className="col">action </div>
 			</div>
 			<div className="bg-white row mx-0">
-				{historyList?.map((item, index) => (
-					<div key={index} className="row mx-0 py-3">
-						<div className="col my-auto">{item?.id}</div>
-						<div className="col my-auto">{item?.network}</div>
-						<div className="col my-auto">
-							{moment(item?.createdAt).format("L")}
+				{data?.length === 0 ? (
+					<></>
+				) : (
+					data?.map((item, index) => (
+						<div key={index} className="row mx-0 py-3">
+							<div className="col my-auto">{item?.item_id}</div>
+							<div className="col my-auto">{item?.properties?.network}</div>
+							<div className="col my-auto">
+								{moment(item?.createdAt).format("L")}
+							</div>
+							<div className="col my-auto">{item?.properties?.phone}</div>
+							<div className="col my-auto">
+								{numberWithCommas(item?.properties?.amount)}
+							</div>
+							<div
+								className={`col my-auto ${
+									item?.status ? "text-success" : "text-danger"
+								}`}>
+								{item?.statusText}
+							</div>
 						</div>
-						<div className="col my-auto">{item?.discount}%</div>
-						<div className="col my-auto">{item?.amount}</div>
-						<div className="col my-auto">{item?.status}</div>
-						<div className="col my-auto">view</div>
-					</div>
-				))}
+					))
+				)}
 			</div>
+			<BottomTab state={data} paginate={airtimes?.paginate} />
+			<LoadMore
+				next={airtimes?.paginate?.next}
+				handleLoadMore={handleLoadMore}
+				loading={loading}
+			/>
 		</div>
 	);
 };

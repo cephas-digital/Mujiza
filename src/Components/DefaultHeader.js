@@ -12,7 +12,7 @@ const DefaultHeader = () => {
 	return (
 		<section className="border-bottom bg-white">
 			<div className="pe-md-5 px-2 ps-md-3 d-flex align-items-center barFont justify-content-between defaultHead">
-				<div className="w-100 d-flex align-items-center">
+				<div className="w-100 d-flex align-items-center ps-md-auto ps-4">
 					{param.pathname === "/dashboard" ? (
 						<></>
 					) : (

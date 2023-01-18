@@ -16,7 +16,7 @@ const Activate = () => {
 			if (!code) return;
 			setLoading(true);
 			try {
-				var res = await axios.post("/api/v1/auth/otp", { otp: code });
+				var res = await axios.post("/api/v1/user/otp", { otp: code });
 
 				toast.success(res.data.msg);
 				setActivate(true);
@@ -35,10 +35,14 @@ const Activate = () => {
 		};
 
 	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
+	useEffect(() => {
 		if (activate) {
 			setActivate(false);
 			setCode("");
-			return navigate("/");
+			return navigate("/login");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activate]);

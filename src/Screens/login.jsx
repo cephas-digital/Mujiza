@@ -5,11 +5,7 @@ import { Buttons, EyeToggle } from "../Utils";
 import { DefaultAuthComponent } from "./register";
 
 const Login = () => {
-	const {
-		// loginUser,
-		auth,
-		getSetTempUser,
-	} = useContext(GlobalState);
+	const { loginUser, auth } = useContext(GlobalState);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -19,7 +15,6 @@ const Login = () => {
 		init = {
 			email: "",
 			password: "",
-			user: "user",
 		},
 		[stateData, setStateData] = useState(init),
 		[loading, setLoading] = useState(false),
@@ -35,8 +30,7 @@ const Login = () => {
 		e.preventDefault();
 		// if (!stateData?.password || !stateData?.email) return;
 		setLoading(true);
-		getSetTempUser(stateData?.user);
-		// await loginUser(stateData);
+		await loginUser(stateData);
 		setLoading(false);
 		setSubmit(true);
 	};
@@ -48,6 +42,7 @@ const Login = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [submit, auth?.isLoggedIn]);
+
 	return (
 		<DefaultAuthComponent>
 			<>
@@ -79,18 +74,6 @@ const Login = () => {
 						/>
 						<EyeToggle typePass={typePass} setTypePass={setTypePass} />
 					</div>
-					<div className="mb-3">
-						<label htmlFor="user">User</label>
-						<select
-							required
-							name="user"
-							className="form-control py-3 form-select"
-							value={stateData.user}
-							onChange={textChange("user")}>
-							<option value="user">User</option>
-							<option value="agent">Agent</option>
-						</select>
-					</div>
 					<p className="my-4 justify-content-end d-flex">
 						<Link
 							to={`/forget-password`}
@@ -99,7 +82,7 @@ const Login = () => {
 						</Link>{" "}
 					</p>
 					<Buttons
-						// onClick={handleSubmit}
+						onClick={handleSubmit}
 						loading={loading}
 						title={"sign in"}
 						css="btn-primary1 text-capitalize py-3 w-100 my-4"
@@ -115,6 +98,13 @@ const Login = () => {
 					<p className="text-center">
 						By continuing you accept our standard terms and conditions and our
 						privacy policy.
+					</p>
+					<p className="my-4 justify-content-end d-flex">
+						<Link
+							to={`/activate`}
+							className="text-decoration-none fw-600 text-dark">
+							Activate account here
+						</Link>{" "}
 					</p>
 				</form>
 			</>

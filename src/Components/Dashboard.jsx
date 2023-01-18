@@ -4,11 +4,12 @@ import Calendar from "react-calendar";
 import { Container } from "reactstrap";
 import "react-calendar/dist/Calendar.css";
 import { UserListOne } from "./Users";
-import Charts, { LineMixedCharts } from "./Charts";
+// import Charts, { LineMixedCharts } from "./Charts";
 import { useNavigate } from "react-router-dom";
+import TransactionsFolder from "./Transactions";
 
 const Dashboard = ({ usersArr }) => {
-	let { setStateName } = useContext(GlobalState);
+	let { setStateName, auth } = useContext(GlobalState);
 	useEffect(() => {
 		setStateName("dashboard analysis");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -20,7 +21,7 @@ const Dashboard = ({ usersArr }) => {
 				<div className="row mx-0 w-100">
 					<div className="col-md-8">
 						<FourBoxBar list={usersArr} />
-						<div className="row mx-0 w-100">
+						{/* <div className="row mx-0 w-100">
 							<div className="h25 col-md-6">
 								<Charts
 									state={[
@@ -67,13 +68,17 @@ const Dashboard = ({ usersArr }) => {
 									xaxis={"month"}
 								/>
 							</div>
-						</div>
+						</div> */}
 					</div>
 					<div className="col-md-4 d-none d-md-flex flex-column">
 						<CalenderComponent css="darkPurple rounded20 border-0 p-3 text-white w-100" />
 					</div>
 				</div>
-				<UserListOne />
+				{auth?.user?.privilege === "agent" ? (
+					<UserListOne />
+				) : (
+					<TransactionsFolder />
+				)}
 			</Container>
 		</div>
 	);
@@ -97,19 +102,23 @@ export const FourBoxBar = ({ list }) => {
 		<>
 			<div className="row mx-0 g-2 g-md-4 mb-4 mb-md-5">
 				{list?.map((item, index) => (
-					<div className="col-6 col-md-3" key={index}>
+					<div className="col-6 dashHeight dashHeight2" key={index}>
 						<div
-							className="row mx-0 p-2 p-md-3 eachProduct rounded20 text-white"
+							className="row mx-0 p-2 p-md-3 eachProduct rounded20 text-white h-100"
 							onClick={() => (item?.link ? navigate(item?.link) : {})}
 							style={{
 								background: item?.color,
 							}}>
-							<div className="col my-auto d-none d-md-flex">
-								{/* <img src={item?.icon} className="img-fluid" alt="Icon" /> */}
+							<div className="col-md my-auto d-flex">
+								<img
+									src={item?.icon}
+									className="img-fluid mx-auto"
+									alt="Icon"
+								/>
 							</div>
-							<div className="col my-auto">
-								<p className="text2 m-0 fontReduceMini">{item?.number}</p>
-								<h6 className="text-capitalize">{item?.name}</h6>
+							<div className="col-md my-auto text-center">
+								<p className="text2 text2Big m-0">{item?.number}</p>
+								<h6 className="text-capitalize fontReduceBig">{item?.name}</h6>
 							</div>
 						</div>
 					</div>

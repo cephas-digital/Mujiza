@@ -4,6 +4,7 @@ import { ModalComponents } from "../../Components";
 import { Buttons } from "../../Utils";
 import moment from "moment";
 import { GlobalState } from "../../Data/Context";
+import LoadMore, { BottomTab } from "../LoadMore";
 
 const Data = () => {
 	let dataSortTab = [
@@ -15,30 +16,40 @@ const Data = () => {
 		{ name: "mtn" },
 		{ name: "glo" },
 		{ name: "airtel" },
-		{ name: "etisalat" },
-		{ name: "vodafone" },
-		{ name: "multilinks" },
+		{ name: "9mobile" },
+		// { name: "vodafone" },
+		// { name: "multilinks" },
 	];
 	let dataTab = [
 		{ name: "data transfer", type: "button", link: "transfer" },
-		{ name: "data pin", type: "button", link: "pin" },
+		// { name: "data pin", type: "button", link: "pin" },
 		dataSortTab[0],
 	];
 
-	let { setStateName } = useContext(GlobalState);
+	let { setStateName, auth } = useContext(GlobalState);
 	useEffect(() => {
 		setStateName("data history");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	let [active, setActive] = useState(0),
+	let [active, setActive] = useState(-1),
+		[isNew, setIsNew] = useState(false),
 		[isPin, setIsPin] = useState(false),
+		[isEdit, setIsEdit] = useState(false),
 		[isTransfer, setIsTransfer] = useState(false),
+		toggleNew = () => {
+			setIsNew(!isNew);
+		},
 		togglePin = () => {
 			setIsPin(!isPin);
 		},
 		toggleTransfer = () => {
 			setIsTransfer(!isTransfer);
 		};
+	useEffect(() => {
+		if (isEdit) {
+			setIsNew(true);
+		}
+	}, [isEdit]);
 	return (
 		<div className="bg-white aboutScreen">
 			<Container className="py-5">
@@ -52,7 +63,7 @@ const Data = () => {
 									if (it?.type === "button") {
 										if (it?.link === "pin") togglePin();
 										if (it?.link === "transfer") toggleTransfer();
-										if (it?.link === "detail") setActive(0);
+										if (it?.link === "detail") setActive(1);
 									}
 								}}
 								className="btn btn-outline-primary1 py-2 py-md-3 text-capitalize w-100 textTrunc">
@@ -63,19 +74,45 @@ const Data = () => {
 				</div>
 				<h4 className="text-capitalize my-3 Lexend">
 					{active === 0
-						? `${dataTab?.[active]?.name} options`
-						: `${dataSortTab?.[active]?.name} data transactions`}
+						? `data history options`
+						: active > 0
+						? `${dataSortTab?.[active]?.name} data transactions`
+						: "Data list"}
 				</h4>
-				{active > 0 ? (
+				<div className="row mx-0 g-2 g-md-3">
+					{auth?.user?.privilege === "agent" && (
+						<div className="col d-flex align-items-center">
+							<button
+								className="btn btn-outline-primary1 py-2 py-md-3 text-capitalize textTrunc"
+								onClick={toggleNew}>
+								<span className="textTrunc">add new data</span>
+							</button>
+						</div>
+					)}
+					<div className="col d-flex justify-content-end align-items-center">
+						{active !== -1 && (
+							<button
+								onClick={() => setActive(-1)}
+								className="btn btn-primary1 py-2 py-md-3 text-capitalize textTrunc fontReduce2">
+								<span className="textTrunc fontReduce2">view data list</span>
+							</button>
+						)}
+					</div>
+				</div>
+				{active < 0 ? (
+					<>
+						<DataList setIsEdit={setIsEdit} />
+					</>
+				) : active > 0 ? (
 					<>
 						<TransferHistory active={active} />
-						<Buttons
+						{/* <Buttons
 							title={"back"}
 							css="btn-primary1 text-capitalize py-md-3 py-2 px-4 px-md-5"
 							width={"w-auto"}
 							onClick={() => setActive(0)}
 							style={{ borderRadius: "30px" }}
-						/>
+						/> */}
 					</>
 				) : (
 					<div className="row mx-0 g-2 g-md-4">
@@ -98,6 +135,12 @@ const Data = () => {
 				)}
 			</Container>
 			<MakePin isOpen={isPin} back={togglePin} />
+			<MakeNew
+				isOpen={isNew}
+				back={toggleNew}
+				datum={isEdit}
+				setIsEdit={setIsEdit}
+			/>
 			<MakeTransfer isOpen={isTransfer} back={toggleTransfer} />
 		</div>
 	);
@@ -106,41 +149,120 @@ const Data = () => {
 export default Data;
 
 const MakeTransfer = ({ isOpen, back }) => {
+	const { data, general, buyServices } = useContext(GlobalState);
+	let [state, setState] = useState(null),
+		init = { network: "", planId: "", phone: "" },
+		[buy, setBuy] = useState(init),
+		[loading, setLoading] = useState(false),
+		[type, setType] = useState([]),
+		[submit, setSubmit] = useState(false),
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setBuy({ ...buy, [name]: value });
+			};
+	useEffect(() => {
+		if (buy?.network) {
+			let newOne = data?.main_data?.filter(
+				item => item?.network?.toLowerCase() === buy?.network?.toLowerCase()
+			);
+			setType(newOne);
+		}
+	}, [buy?.network, data?.main_data]);
+
+	useEffect(() => {
+		setState(data?.main_data);
+	}, [data?.main_data]);
+
+	let handleSubmit = async e => {
+		e?.preventDefault();
+		if (!buy?.phone) return;
+		setLoading(true);
+		await buyServices("data", buy);
+		setLoading(false);
+		setSubmit(true);
+	};
+
+	useEffect(() => {
+		if (submit && data?.isAdded) {
+			back();
+			setState(init);
+			setSubmit(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, data?.isAdded]);
+
+	if (!state) return <></>;
 	return (
 		<>
 			<ModalComponents title="buy data" isOpen={isOpen} back={back}>
 				<div className="downH2 d-flex">
 					<form className="w-100">
 						<div className="mb-4">
-							<label htmlFor="Newtwork">Network</label>
+							<label htmlFor="Network">Network</label>
 							<select
 								name="network"
 								id="network"
+								value={buy?.network}
+								onChange={textChange("network")}
 								className="form-control form-select py-3 rounded20">
-								<option value="mtn">MTN</option>
+								<option value="">Select type</option>
+								{general?.networks?.map((item, i) => (
+									<option value={item} key={i}>
+										{item}
+									</option>
+								))}
 							</select>
 						</div>
-						<div className="mb-4">
-							<label htmlFor="value">Value</label>
-							<input
-								type={"number"}
-								placeholder="500"
-								className="form-control py-3"
-							/>
-						</div>
+						{buy?.network && (
+							<div className="mb-4">
+								<label htmlFor="value">Value</label>
+								<select
+									name="value"
+									id="value"
+									value={buy?.planId}
+									onChange={textChange("planId")}
+									className="form-control form-select py-3 rounded20">
+									<option value="">Select value</option>
+									{type?.map((item, i) => (
+										<option value={item?.planId} key={i}>
+											{
+												data?.data_direct?.find(
+													list =>
+														list?.network?.toLowerCase() ===
+															item?.network?.toLowerCase() &&
+														Number(list?.planId) === Number(item?.planId)
+												)?.allowance
+											}{" "}
+											{
+												data?.data_direct?.find(
+													list =>
+														list?.network?.toLowerCase() ===
+															item?.network?.toLowerCase() &&
+														Number(list?.planId) === Number(item?.planId)
+												)?.validity
+											}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
 						<div className="mb-4">
 							<label htmlFor="telephone">Phone number</label>
 							<input
 								type={"tel"}
 								placeholder="08012345678"
 								className="form-control py-3"
+								value={buy?.phone}
+								onChange={textChange("phone")}
 							/>
 						</div>
 						<Buttons
 							title={"buy"}
-							css="btn-primary1 text-capitalize py-3 px-4 px-lg-5"
-							width={"w-25 w25"}
-							onClick={back}
+							css="btn-primary1 text-capitalize py-3 px-4 px-lg-5 mx-auto"
+							width={"w-50 w50"}
+							onClick={handleSubmit}
+							loading={loading}
 							style={{ borderRadius: "30px" }}
 						/>
 					</form>
@@ -187,59 +309,328 @@ const MakePin = ({ isOpen, back }) => {
 	);
 };
 
+const MakeNew = ({ isOpen, back, datum, setIsEdit }) => {
+	const { general, data, dataServices } = useContext(GlobalState);
+	let [type, setType] = useState([]),
+		init = { network: "", planId: "", price: "", provider_price: "" },
+		[loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false),
+		[state, setState] = useState(init),
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setState({ ...state, [name]: value });
+			};
+	useEffect(() => {
+		if (datum) setState(datum);
+	}, [datum]);
+
+	useEffect(() => {
+		if (state?.network) {
+			let newOne = data?.data_direct?.filter(
+				item => item?.network?.toLowerCase() === state?.network?.toLowerCase()
+			);
+			setType(newOne);
+		}
+	}, [state?.network, data?.data_direct]);
+	useEffect(() => {
+		if (state?.planId) {
+			let newOne = type?.find(
+				item => Number(item?.planId) === Number(state?.planId)
+			);
+			// console.log({newOne, type});
+			setState({ ...state, provider_price: newOne?.price });
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state?.planId, type]);
+	// console.log({ state });
+
+	let handleSubmit = async e => {
+		e?.preventDefault();
+		if (!state?.price) return;
+		setLoading(true);
+		await dataServices(datum ? "put" : "post", state);
+		setLoading(false);
+		setSubmit(true);
+	};
+
+	useEffect(() => {
+		if (submit && data?.isAddedMain) {
+			setIsEdit(false);
+			back();
+			setState(init);
+			setSubmit(false);
+		}
+		if (submit && data?.isUpdatedMain) {
+			setIsEdit(false);
+			back();
+			setState(init);
+			setSubmit(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, data?.isAddedMain, data?.isUpdatedMain]);
+
+	return (
+		<>
+			<ModalComponents
+				title={`${datum ? "edit" : "new"} data type`}
+				isOpen={isOpen}
+				back={back}>
+				<div className="downH2 d-flex">
+					<form className="w-100">
+						<div className="mb-4">
+							<label htmlFor="Network">Network</label>
+							<select
+								name="network"
+								id="network"
+								value={state?.network}
+								readOnly={datum}
+								onChange={textChange("network")}
+								className="form-control form-select py-3 rounded20">
+								<option value="">Select type</option>
+								{general?.networks?.map((item, i) => (
+									<option value={item} key={i}>
+										{item}
+									</option>
+								))}
+							</select>
+						</div>
+						{state?.network && (
+							<div className="mb-4">
+								<label htmlFor="Type">Type</label>
+								<select
+									name="network"
+									id="network"
+									readOnly={datum}
+									value={state?.planId}
+									onChange={textChange("planId")}
+									className="form-control form-select py-3 rounded20">
+									<option value="">Select type</option>
+									{type?.map((item, i) => (
+										<option value={item?.planId} key={i}>
+											{
+												data?.data_direct?.find(
+													list =>
+														list?.network?.toLowerCase() ===
+															item?.network?.toLowerCase() &&
+														Number(list?.planId) === Number(item?.planId)
+												)?.allowance
+											}{" "}
+											{item?.validity}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+						{state?.planId && (
+							<div className="mb-4">
+								<label htmlFor="value">Provider price</label>
+								<input
+									type={"number"}
+									readOnly
+									value={state?.provider_price}
+									onChange={textChange("provider_price")}
+									placeholder="500"
+									className="form-control py-3"
+								/>
+							</div>
+						)}
+						<div className="mb-4">
+							<label htmlFor="value">Price</label>
+							<input
+								type={"number"}
+								placeholder="500"
+								value={state?.price}
+								onChange={textChange("price")}
+								className="form-control py-3"
+							/>
+						</div>
+						<Buttons
+							title={datum ? "update" : "add"}
+							css="btn-primary1 text-capitalize py-3 px-4 px-lg-5 mx-auto"
+							width={"w-50 w50"}
+							onClick={handleSubmit}
+							loading={loading}
+							style={{ borderRadius: "30px" }}
+						/>
+					</form>
+				</div>
+			</ModalComponents>
+		</>
+	);
+};
+
 const TransferHistory = () => {
-	let userList = [
-		{
-			plan_id: "10",
-			createdAt: Date.now(),
-			price: "50000",
-			amount: "50000",
-			reference: "1234567890",
-			name: "MTN",
-			network: 0,
-			validity: 4,
-			allowance: 5,
-			hw_code: 40,
-		},
-	];
+	const { data, numberWithCommas, getServicesHistory } =
+		useContext(GlobalState);
+	let [state, setState] = useState(null);
+
+	useEffect(() => {
+		setState(data?.data);
+	}, [data?.data]);
+
+	let [loading, setLoading] = useState(false);
+	let handleLoadMore = async () => {
+		setLoading(true);
+
+		await getServicesHistory("data", {
+			limit: Number(data?.paginate?.nextPage * data?.paginate?.limit),
+		});
+		setLoading(false);
+	};
+
+	if (!state) return;
 
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 py-3 px-0 text-capitalize">
-				<div className="col textTrunc">plan</div>
+				<div className="col textTrunc">ID</div>
 				<div className="col textTrunc d-none d-md-flex">Date</div>
-				<div className="col textTrunc d-none d-md-flex">Txt_rf</div>
-				<div className="col textTrunc">Name</div>
+				<div className="col textTrunc d-none d-md-flex">reference</div>
+				<div className="col textTrunc">Phone</div>
 				<div className="col textTrunc">Network</div>
 				<div className="col textTrunc">Amount</div>
-				<div className="col textTrunc">Price</div>
-				<div className="col textTrunc">Validity</div>
-				<div className="col textTrunc d-none d-md-flex">Allowance</div>
-				<div className="col textTrunc d-none d-md-flex">HW Code</div>
-				<div className="col textTrunc">Actions</div>
+				<div className="col textTrunc d-none d-md-flex">Validity</div>
+				<div className="col textTrunc">Allowance</div>
 			</div>
 			<div className="bland2 row mx-0">
-				{userList?.map((item, index) => (
+				{state?.map((item, index) => (
 					<div key={index} className="row mx-0 py-3 px-0">
-						<div className="col textTrunc my-auto">{item?.plan_id}</div>
+						<div className="col textTrunc my-auto">{item?.item_id}</div>
 						<div className="col textTrunc my-auto  d-none d-md-flex">
 							{moment(item?.createdAt).format("L")}
 						</div>
 						<div className="col textTrunc my-auto  d-none d-md-flex">
 							{item?.reference}
 						</div>
-						<div className="col textTrunc my-auto">{item?.name}</div>
-						<div className="col textTrunc my-auto">{item?.network}</div>
-						<div className="col textTrunc my-auto">{item?.amount}</div>
-						<div className="col textTrunc my-auto">{item?.price}</div>
-						<div className="col textTrunc my-auto">{item?.validity}</div>
-						<div className="col textTrunc my-auto  d-none d-md-flex">
-							{item?.allowance}
+						<div className="col textTrunc my-auto">
+							{item?.properties?.phone}
 						</div>
-						<div className="col textTrunc my-auto  d-none d-md-flex">
-							{item?.hw_code}
+						<div className="col textTrunc my-auto">
+							{item?.properties?.network}
 						</div>
-						<div className="col textTrunc my-auto">view</div>
+						<div className="col textTrunc my-auto">
+							{numberWithCommas(item?.properties?.amount)}
+						</div>
+						<div className="col textTrunc my-auto fontReduce3 d-none d-md-flex">
+							{
+								data?.data_direct?.find(
+									list =>
+										list?.network?.toLowerCase() ===
+											item?.properties?.network?.toLowerCase() &&
+										Number(list?.planId) === Number(item?.properties?.planId)
+								)?.validity
+							}
+						</div>
+						<div className="col textTrunc my-auto fontReduce3 textTrunc2">
+							{
+								data?.data_direct?.find(
+									list =>
+										list?.network?.toLowerCase() ===
+											item?.properties?.network?.toLowerCase() &&
+										Number(list?.planId) === Number(item?.properties?.planId)
+								)?.allowance
+							}
+						</div>
+					</div>
+				))}
+			</div>
+			<BottomTab state={state} paginate={data?.paginate} />
+			<LoadMore
+				next={data?.paginate?.next}
+				handleLoadMore={handleLoadMore}
+				loading={loading}
+			/>
+		</div>
+	);
+};
+
+const DataList = ({ setIsEdit }) => {
+	const { data, numberWithCommas, auth } = useContext(GlobalState);
+	let [state, setState] = useState(null);
+
+	useEffect(() => {
+		setState(data?.main_data);
+	}, [data?.main_data]);
+
+	if (!state) return;
+
+	return (
+		<div className="pb-3 pb-md-5 my-3 py-md-5">
+			<div className="bland row mx-0 py-3 px-0 text-capitalize">
+				<div className="col textTrunc  d-none d-md-flex fontReduce2">s/n</div>
+				{auth?.user?.privilege === "agent" && (
+					<div className="col textTrunc d-none d-md-flex fontReduce2">Date</div>
+				)}
+				<div className="col textTrunc fontReduce2">Network</div>
+				{auth?.user?.privilege === "agent" && (
+					<div className="col textTrunc fontReduce2">Amount</div>
+				)}
+				<div className="col textTrunc fontReduce2">Price</div>
+				<div className="col textTrunc fontReduce2">Validity</div>
+				<div className="col textTrunc fontReduce2">Allowance</div>
+				{auth?.user?.privilege === "agent" && (
+					<div className="col textTrunc">Actions</div>
+				)}
+			</div>
+			<div className="bland2 row mx-0">
+				{state?.map((item, index) => (
+					<div key={index} className="row mx-0 py-3 px-0">
+						<div className="col textTrunc my-auto   d-none d-md-flex fontReduce3">
+							{index + 1}
+						</div>
+						{auth?.user?.privilege === "agent" && (
+							<div className="col textTrunc my-auto  d-none d-md-flex fontReduce3">
+								{moment(item?.createdAt).format("L")}
+							</div>
+						)}
+						<div className="col textTrunc my-auto fontReduce3">
+							{item?.network}
+						</div>
+						{auth?.user?.privilege === "agent" && (
+							<div className="col textTrunc my-auto fontReduce3">
+								{data?.data_direct?.length > 0
+									? numberWithCommas(
+											data?.data_direct?.find(
+												list =>
+													list?.network?.toLowerCase() ===
+														item?.network?.toLowerCase() &&
+													Number(list?.planId) === Number(item?.planId)
+											)?.price
+									  )
+									: null}
+							</div>
+						)}
+						<div className="col textTrunc my-auto fontReduce3">
+							{numberWithCommas(Number(item?.price).toFixed(2))}
+						</div>
+						<div className="col textTrunc my-auto fontReduce3">
+							{
+								data?.data_direct?.find(
+									list =>
+										list?.network?.toLowerCase() ===
+											item?.network?.toLowerCase() &&
+										Number(list?.planId) === Number(item?.planId)
+								)?.validity
+							}
+						</div>
+						<div className="col textTrunc my-auto fontReduce3 textTrunc2">
+							{
+								data?.data_direct?.find(
+									list =>
+										list?.network?.toLowerCase() ===
+											item?.network?.toLowerCase() &&
+										Number(list?.planId) === Number(item?.planId)
+								)?.allowance
+							}
+						</div>
+						{auth?.user?.privilege === "agent" && (
+							<div
+								onClick={() => setIsEdit(item)}
+								className="col textTrunc my-auto myCursor fontReduce3">
+								edit
+							</div>
+						)}
 					</div>
 				))}
 			</div>

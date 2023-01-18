@@ -2,7 +2,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { DotLoader, ClipLoader } from "react-spinners";
 import { FaTimes } from "react-icons/fa";
-import OtpInput from "react-otp-input";
+import OtpInput from "react18-otp-input";
 import empty from "../Assets/empty.png";
 import $ from "jquery";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
