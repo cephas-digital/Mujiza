@@ -3,7 +3,7 @@ import { GlobalState } from "../Data/Context";
 import { useNavigate, Link } from "react-router-dom";
 import { Container } from "reactstrap";
 import { Buttons, EyeToggle } from "../Utils";
-import logo from "../Assets/teetop1 (2).png";
+import logo from "../Assets/logo.png";
 import { toast } from "react-toastify";
 
 const Register = () => {
