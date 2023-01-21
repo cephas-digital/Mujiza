@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-	useNavigate,
-	// useParams
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "reactstrap";
 import { ModalComponents } from "../../Components";
 import { GlobalState } from "../../Data/Context";
@@ -15,9 +12,9 @@ const Controls = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	let navigate = useNavigate(),
-		// params = useParams(),
+		params = useParams(),
 		controlsTab = [
-			{ name: "manual top up", type: "button", link: "wallet" },
+			{ name: "manual top up", type: "link", link: `/${params?.page}/manual` },
 			// {
 			// 	name: "TV subscription",
 			// 	type: "link",
@@ -33,16 +30,9 @@ const Controls = () => {
 			// 	type: "link",
 			// 	link: `/${params?.page}/broadcasts`,
 			// },
-			{ name: "give bonus", type: "button", link: "bonus" },
+			{ name: "give bonus", type: "link", link: `/${params?.page}/bonus` },
 		];
-	let [isWallet, setIsWallet] = useState(false),
-		[isBonus, setIsBonus] = useState(false),
-		toggleWallet = () => {
-			setIsWallet(!isWallet);
-		},
-		toggleBonus = () => {
-			setIsBonus(!isBonus);
-		};
+
 	return (
 		<div className="bg-white aboutScreen">
 			<Container className="py-5 d-flex justify-content-center align-items-center aboutScreen">
@@ -58,8 +48,6 @@ const Controls = () => {
 										if (it?.type === "link") {
 											navigate(it?.link);
 										} else if (it?.type === "button") {
-											if (it?.link === "wallet") toggleWallet();
-											if (it?.link === "bonus") toggleBonus();
 										}
 									}}
 									className="btn btn-outline-primary1 py-2 py-md-3 text-capitalize w-100 textTrunc">
@@ -70,15 +58,13 @@ const Controls = () => {
 					</div>
 				</div>
 			</Container>
-			<MakeBonus isOpen={isBonus} back={toggleBonus} />
-			<MakeWallet isOpen={isWallet} back={toggleWallet} />
 		</div>
 	);
 };
 
 export default Controls;
 
-const MakeBonus = ({ isOpen, back, user }) => {
+export const MakeBonus = ({ isOpen, back, user }) => {
 	let { manageWallet, bonus } = useContext(GlobalState);
 
 	let init = {
@@ -176,7 +162,7 @@ const MakeBonus = ({ isOpen, back, user }) => {
 	);
 };
 
-const MakeWallet = ({ isOpen, back, user }) => {
+export const MakeWallet = ({ isOpen, back, user }) => {
 	let { manageWallet, wallet } = useContext(GlobalState);
 
 	let init = {

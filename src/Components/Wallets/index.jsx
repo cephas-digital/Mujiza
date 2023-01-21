@@ -17,7 +17,8 @@ import LoadMore, { BottomTab } from "../LoadMore";
 let colorArr = ["#E9F9F9", "#C0938E", "#000000", "#B3CEDE"];
 
 const Wallets = () => {
-	let { setStateName, wallet, numberWithCommas } = useContext(GlobalState);
+	let { setStateName, wallet, numberWithCommas, auth } =
+		useContext(GlobalState);
 	let [isTransfer, setIsTransfer] = useState(false);
 	let [isWithdraw, setIsWithdraw] = useState(false);
 	let toggleTransfer = () => {
@@ -47,12 +48,27 @@ const Wallets = () => {
 					<div className="d-md-flex align-items-center h-100">
 						<div className="px-3 text-dark h-100 py-3 py-md-5 mx-auto">
 							<h3 className="fontReduceBig">Wallet balance</h3>
-							<h1 className="fw-bold text5 textMini mb-5">
+							<h1
+								className={`fw-bold text5 textMini ${
+									auth?.user?.privilege === "user" ? "mb-5" : ""
+								}`}>
 								NGN{" "}
 								{numberWithCommas(
 									Number(wallet?.balance?.available).toFixed(2)
 								)}
 							</h1>
+							{auth?.user?.privilege === "agent" && (
+								<div>
+									<h6 className="fw-bold mb-5">
+										Honourworld balance: NGN{" "}
+										{wallet?.honour_balance?.balance
+											? numberWithCommas(
+													Number(wallet?.honour_balance?.balance).toFixed(2)
+											  )
+											: 0}
+									</h6>
+								</div>
+							)}
 							<div className="row mx-0 w-100 mb-5">
 								<div
 									className="col text-center myCursor"
@@ -585,33 +601,39 @@ export const BonusCommission = ({ type }) => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 py-3 px-0 text-capitalize">
-				<div className="col textTrunc d-none d-md-flex">date</div>
-				<div className="col textTrunc d-none d-md-flex">Description</div>
-				<div className="col textTrunc">Amount</div>
-				<div className="col textTrunc">Balance</div>
-				<div className="col textTrunc">Previous balance</div>
-				<div className="col textTrunc">Type</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					date
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					Description
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Amount</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Balance</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">
+					Previous balance
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Type</div>
 			</div>
 			<div className="bland2 row mx-0">
 				{state?.map((item, index) => (
 					<div key={index} className="row mx-0 py-3 px-0">
-						<div className="col textTrunc my-auto d-none d-md-flex">
+						<div className="col textTrunc fontReduce2 my-auto d-none d-md-flex">
 							{moment(item?.createdAt).format("L")}
 						</div>
-						<div className="col textTrunc my-auto textTrunc textTrunc3 d-none d-md-flex">
+						<div className="col textTrunc fontReduce2 my-auto textTrunc textTrunc3 d-none d-md-flex">
 							{item?.description}
 						</div>
-						<div className="col textTrunc my-auto">
+						<div className="col textTrunc fontReduce2 my-auto">
 							{numberWithCommas(item?.amount)}
 						</div>
-						<div className="col textTrunc my-auto">
+						<div className="col textTrunc fontReduce2 my-auto">
 							{numberWithCommas(item?.balance)}
 						</div>
-						<div className="col textTrunc my-auto">
+						<div className="col textTrunc fontReduce2 my-auto">
 							{numberWithCommas(item?.prevBalance)}
 						</div>
 						<div
-							className={`col textTrunc my-auto text-capitalize ${
+							className={`col textTrunc fontReduce2 my-auto text-capitalize ${
 								item?.type === "credit" ? "text-success" : "tex-danger"
 							}`}>
 							{item?.type}
@@ -653,7 +675,7 @@ const TransferList = () => {
 			) : (
 				wallet?.wallet?.map((it, i) => (
 					<div key={i} className="row mx-0 my-2">
-						<div className="col d-none d-md-flex fontReduce3">
+						<div className="col d-none d-md-flex fontReduce2">
 							<div className="d-flex">
 								<div
 									className="p-3 d-flex rounded10 align-items-center justify-content-center"
@@ -669,10 +691,10 @@ const TransferList = () => {
 								</div>
 							</div>
 						</div>
-						<div className="col my-auto text-capitalize d-none d-md-flex fw-md-bold fontReduce3">
+						<div className="col my-auto text-capitalize d-none d-md-flex fw-md-bold fontReduce2">
 							{it?.title}
 						</div>
-						<div className="col my-auto text-capitalize textTrunc textTrunc2 fw-md-bold fontReduce3">
+						<div className="col my-auto text-capitalize textTrunc textTrunc2 fw-md-bold fontReduce2">
 							{it?.description}
 						</div>
 						<div className="col my-auto fontReduce2">

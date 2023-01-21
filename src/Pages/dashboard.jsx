@@ -5,10 +5,10 @@ import icon1 from "../Assets/Hands Give.png";
 import icon2 from "../Assets/Stuck at Home Mailing List.png";
 import icon3 from "../Assets/Olá Playing Video Games.png";
 import icon4 from "../Assets/Group (5).png";
+import { productArr } from "../Components/Products";
 
 const MainDashboard = () => {
-	const { wallet, numberWithCommas, data, notifications } =
-		useContext(GlobalState);
+	const { wallet, numberWithCommas, notifications } = useContext(GlobalState);
 	let usersArr = [
 		{
 			name: "wallet balance",
@@ -31,7 +31,7 @@ const MainDashboard = () => {
 		},
 		{
 			name: "total products",
-			number: data?.main_data?.length,
+			number: productArr?.length,
 			color: "linear-gradient(90.18deg, #3199B7 -52.19%, #144468 81.92%)",
 			link: "/products",
 			icon: icon3,

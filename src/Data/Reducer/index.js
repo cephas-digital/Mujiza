@@ -15,6 +15,7 @@ import WalletReducer, {
 } from "./WalletReducer";
 import UsersReducer, { NotificationReducer } from "./UserReducer";
 import SettingsReducer from "./SettingsReducer";
+import EducationReducer from "./EducationReducer";
 
 export default combineReducers({
 	auth: AuthReducer,
@@ -31,4 +32,5 @@ export default combineReducers({
 	users: UsersReducer,
 	settings: SettingsReducer,
 	notifications: NotificationReducer,
+	educations: EducationReducer,
 });

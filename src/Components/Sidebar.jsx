@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GlobalState } from "../Data/Context";
 import { BiCog, BiLogIn } from "react-icons/bi";
-import logo from "../Assets/logo.png";
+import logo from "../Assets/logo2.png";
 import "../Styles/Sidebar.css";
 // import "../Styles/OrgAuth.css";
 import { Navbar } from "reactstrap";
@@ -103,7 +103,7 @@ const Sidebar = () => {
 
 	useEffect(() => {
 		document.title = CapitalizeFirst(
-			`Mujiza Dashboard ${location.pathname
+			`Mu'jiza Data Dashboard ${location.pathname
 				.split("/")
 				.join(" ")
 				.substring(1)}`
@@ -174,7 +174,7 @@ const Sidebar = () => {
 
 export default Sidebar;
 
-export const Header = () => {
+export const SideHeader = ({ noLogo }) => {
 	let location = useLocation(),
 		[isShadow, setIsShadow] = useState(null);
 
@@ -187,7 +187,7 @@ export const Header = () => {
 
 	useEffect(() => {
 		document.title = CapitalizeFirst(
-			`Mujiza Dashboard ${location.pathname
+			`Mu'jiza Data Dashboard ${location.pathname
 				.split("/")
 				.join(" ")
 				.substring(1)}`
@@ -197,19 +197,16 @@ export const Header = () => {
 
 	return (
 		<Navbar
-			expand="lg"
+			expand="md"
 			sticky="top"
-			className={`container-fluid px-3 header bg-white headerScroll ${
-				isShadow ? "shadow" : ""
-			}`}
+			className={`container-fluid px-3 sidehead header bg-white
+			 headerScroll ${isShadow ? "shadow2 shadow" : ""} ${noLogo ? "d-md-none" : ""}`}
 			light>
-			<Link to="/">
-				{/* <img src={logo} alt="Honourworld" className="logo me-1 logo-img-size" /> */}
-				<div className="d-block">
-					<p className="text-capitalize site-primary-color m-0">Mu'ujiza</p>
-					<p className="text-capitalize site-secondary-color ml-4"></p>
-				</div>
-			</Link>
+			{!noLogo && (
+				<Link to="/">
+					<img src={logo} alt="Mu'jiza Data" className="logo" />
+				</Link>
+			)}
 		</Navbar>
 	);
 };

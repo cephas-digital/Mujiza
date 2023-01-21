@@ -5,10 +5,14 @@ import {
 	FUND_WALLET_FAIL,
 	GENERATE_VIRTUAL,
 	GENERATE_VIRTUAL_FAIL,
+	GET_ALL_BONUS,
+	GET_ALL_MANUAL,
 	GET_BONUS,
 	GET_CARDS,
 	GET_CARDS_FAIL,
 	GET_COMMISSION,
+	GET_HONOUR_BALANCE,
+	GET_HONOUR_BALANCE_FAIL,
 	GET_WALLET,
 	GET_WALLET_BALANCE,
 	GET_WALLET_BALANCE_FAIL,
@@ -33,16 +37,25 @@ let init = {
 	isTransfer: false,
 	cards: [],
 	isGenerated: null,
+	honour_balance: null,
+	manual: [],
+	paginate_manual: null,
 };
 
 const WalletReducer = (state = init, action) => {
 	let { type, payload } = action;
 
 	switch (type) {
+		case GET_ALL_MANUAL:
+			return {
+				...state,
+				manual: payload?.data,
+				paginate_manual: payload?.paginate,
+			};
 		case GET_WALLET:
 			return { ...state, wallet: payload?.data, paginate: payload?.paginate };
 		case GET_WALLET_FAIL:
-			return { ...state, wallet: state?.wallet };
+			return { ...state, wallet: state?.wallet, manual: state.manual };
 		case FUND_WALLET:
 			return {
 				...state,
@@ -57,9 +70,25 @@ const WalletReducer = (state = init, action) => {
 		case FUND_WALLET_FAIL:
 			return { ...state, isFunded: false };
 		case ADD_FUND:
-			return { ...state, isAdded: true };
+			return {
+				...state,
+				isAdded: true,
+				manual: [payload?.data ? payload?.data : payload, ...state?.manual],
+				paginate_manual: {
+					...state?.paginate_manual,
+					result: state?.paginate_manual?.result + 1,
+					total: state?.paginate_manual?.total + 1,
+				},
+			};
 		case ADD_FUND_FAIL:
 			return { ...state, isAdded: false };
+		case GET_HONOUR_BALANCE:
+			return {
+				...state,
+				honour_balance: payload?.data ? payload?.data : payload,
+			};
+		case GET_HONOUR_BALANCE_FAIL:
+			return { ...state, honour_balance: state?.honour_balance };
 		case GENERATE_VIRTUAL:
 			return { ...state, isGenerated: true };
 		case GENERATE_VIRTUAL_FAIL:
@@ -99,6 +128,8 @@ let init1 = {
 	isAdded: false,
 	isMoved: false,
 	paginate: null,
+	give_bonus: [],
+	paginate_bonus: null,
 };
 
 export const BonusReducer = (state = init1, action) => {
@@ -107,8 +138,14 @@ export const BonusReducer = (state = init1, action) => {
 	switch (type) {
 		case GET_BONUS:
 			return { ...state, bonus: payload?.data, paginate: payload?.paginate };
+		case GET_ALL_BONUS:
+			return {
+				...state,
+				give_bonus: payload?.data,
+				paginate_bonus: payload?.paginate,
+			};
 		case GET_WALLET_FAIL:
-			return { ...state, bonus: state?.bonus };
+			return { ...state, bonus: state?.bonus, give_bonus: state?.give_bonus };
 		case MOVE_BONUS:
 			return {
 				...state,
@@ -131,6 +168,15 @@ export const BonusReducer = (state = init1, action) => {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
 					total: state?.paginate?.total + 1,
+				},
+				give_bonus: [
+					payload?.data ? payload?.data : payload,
+					...state?.give_bonus,
+				],
+				paginate_bonus: {
+					...state?.paginate_bonus,
+					result: state?.paginate_bonus?.result + 1,
+					total: state?.paginate_bonus?.total + 1,
 				},
 			};
 		case GIVE_BONUS_FAIL:

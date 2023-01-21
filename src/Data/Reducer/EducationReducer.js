@@ -1,65 +1,56 @@
 import {
-	ADD_CABLE,
-	ADD_CABLE_FAIL,
-	GET_CABLE,
-	GET_CABLE_DIRECT_PACKAGE,
-	GET_CABLE_DIRECT_TYPE,
-	GET_CABLE_FAIL,
-	GET_CABLE_LOADING,
+	ADD_EDUCATION,
+	ADD_EDUCATION_FAIL,
+	GET_EDUCATION,
+	GET_EDUCATION_FAIL,
+	GET_EDUCATION_LOADING,
 	LOGOUT,
 } from "../Actions/ActionTypes";
 
 const initialState = {
 	isLoading: false,
-	cable: [],
-	cable_direct: [],
-	cable_package: null,
+	education: [],
 	isAdded: false,
 	isDeleted: false,
+	paginate: null,
 };
-const CableReducer = (state = initialState, action) => {
+
+const EducationReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
-		case ADD_CABLE:
+		case ADD_EDUCATION:
 			return {
 				...state,
 				isAdded: true,
-				cable: [payload?.data ? payload?.data : payload, ...state.cable],
+				education: [
+					payload?.data ? payload?.data : payload,
+					...state.education,
+				],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
 					total: state?.paginate?.total + 1,
 				},
 			};
-		case ADD_CABLE_FAIL:
+		case ADD_EDUCATION_FAIL:
 			return {
 				...state,
 				isAdded: false,
 				isDeleted: false,
 			};
-		case GET_CABLE:
+		case GET_EDUCATION:
 			return {
 				...state,
 				isLoading: false,
-				cable: payload?.data,
+				education: payload?.data,
 				paginate: payload?.paginate,
 			};
-		case GET_CABLE_DIRECT_PACKAGE:
-			return {
-				...state,
-				cable_package: payload?.data,
-			};
-		case GET_CABLE_DIRECT_TYPE:
-			return {
-				...state,
-				cable_direct: payload?.data,
-			};
-		case GET_CABLE_FAIL:
+		case GET_EDUCATION_FAIL:
 			return {
 				...state,
 				isLoading: false,
 			};
-		case GET_CABLE_LOADING:
+		case GET_EDUCATION_LOADING:
 			return {
 				...state,
 				isLoading: true,
@@ -71,4 +62,4 @@ const CableReducer = (state = initialState, action) => {
 	}
 };
 
-export default CableReducer;
+export default EducationReducer;

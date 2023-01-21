@@ -57,22 +57,22 @@ export const TransactionsData = ({ state }) => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="row mx-0 my-2 py-3 bland">
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend d-none d-md-flex">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend d-none d-md-flex">
 					ID
 				</div>
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend">
 					type
 				</div>
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend">
 					amount
 				</div>
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend">
 					usage
 				</div>
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend">
 					User
 				</div>
-				<div className="col my-auto text-uppercase fontReduce3 fw-bold Lexend d-none d-md-flex">
+				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend d-none d-md-flex">
 					date
 				</div>
 			</div>
@@ -81,19 +81,19 @@ export const TransactionsData = ({ state }) => {
 			) : (
 				state?.map((it, i) => (
 					<div key={i} className="row mx-0 my-2 py-2 bland2">
-						<div className="col my-auto text-capitalize d-none d-md-flex fontReduce3">
+						<div className="col my-auto text-capitalize d-none d-md-flex fontReduce2 textTrunc">
 							{it?.item_id}
 						</div>
-						<div className="col my-auto text-capitalize fontReduce3">
+						<div className="col my-auto text-capitalize fontReduce2 textTrunc">
 							{it?.type}
 						</div>
-						<div className="col my-auto fontReduce3">
+						<div className="col my-auto fontReduce2 textTrunc">
 							NGN{" "}
 							{it?.properties?.amount
 								? numberWithCommas(it?.properties?.amount)
 								: 0}
 						</div>
-						<div className="col my-auto fontReduce3">
+						<div className="col my-auto fontReduce2 textTrunc">
 							{it?.type === "cables"
 								? it?.properties?.packagename
 								: it?.type === "airtime"
@@ -118,7 +118,7 @@ export const TransactionsData = ({ state }) => {
 								  }`
 								: ""}
 						</div>
-						<div className="col my-auto fontReduce3">
+						<div className="col my-auto fontReduce2 textTrunc">
 							{it?.type === "cables"
 								? it?.properties?.smartCardNo
 								: it?.type === "electricity"
@@ -129,7 +129,7 @@ export const TransactionsData = ({ state }) => {
 								? it?.properties?.phone
 								: ""}
 						</div>
-						<div className="col my-auto d-none d-md-flex">
+						<div className="col my-auto d-none d-md-flex textTrunc">
 							{moment(it?.createdAt).format("L")}
 						</div>
 					</div>

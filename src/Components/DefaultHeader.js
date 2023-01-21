@@ -28,7 +28,7 @@ const DefaultHeader = () => {
 				<header className="d-flex align-items-center my-auto justify-content-end container">
 					<Link
 						className="text-dark text-decoration-none d-flex align-items-center"
-						to="/profile">
+						to="/settings">
 						<img
 							src={auth?.user?.avatar?.url ? auth?.user?.avatar?.url : user}
 							alt={`${auth?.user?.fullname} `}

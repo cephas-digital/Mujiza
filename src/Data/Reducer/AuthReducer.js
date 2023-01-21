@@ -8,7 +8,8 @@ import {
 	REGISTER_USER,
 	REGISTER_USER_FAIL,
 	TOKEN,
-	TOKEN_TEMP_AUTH,
+	UPDATE_PASSWORD,
+	UPDATE_PASSWORD_FAIL,
 	UPDATE_USER,
 	UPDATE_USER_FAIL,
 } from "../Actions/ActionTypes";
@@ -21,12 +22,11 @@ const initialState = {
 	isRegistered: false,
 	isLoggedIn: false,
 	isUpdated: false,
+	isPassword: null,
 };
 
 const AuthReducer = (state = initialState, { type, payload }) => {
 	switch (type) {
-		case TOKEN_TEMP_AUTH:
-			return { ...state, temp_auth: payload };
 		case LOGIN_USER:
 			localStorage.setItem(TOKEN, payload.token);
 			return {
@@ -73,6 +73,10 @@ const AuthReducer = (state = initialState, { type, payload }) => {
 			};
 		case UPDATE_USER_FAIL:
 			return { ...state, isUpdated: false };
+		case UPDATE_PASSWORD:
+			return { ...state, isPassword: true };
+		case UPDATE_PASSWORD_FAIL:
+			return { ...state, isPassword: false };
 		case LOGOUT:
 			localStorage.removeItem(TOKEN);
 			return initialState;

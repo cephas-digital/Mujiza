@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { GlobalState } from "../Data/Context";
 import { Navbar, Collapse, Nav, NavItem } from "reactstrap";
-// import logo from "../Assets/teetop1 (2).png";
+import logo from "../Assets/logo2.png";
 import { FaTimes, FaBars } from "react-icons/fa";
 
 const Header = () => {
@@ -17,7 +17,7 @@ const Header = () => {
 
 	useEffect(() => {
 		document.title = CapitalizeFirst(
-			`Mujiza ${location.pathname.split("/").join(" ").substring(1)}`
+			`Mu'ujiza Data ${location.pathname.split("/").join(" ").substring(1)}`
 		);
 	}, [location.pathname]);
 
@@ -44,7 +44,7 @@ const Header = () => {
 
 	return (
 		<Navbar
-			expand="lg"
+			expand="md"
 			sticky="top"
 			className={`container-fluid px-3 px-lg-5 header bg-white headerScroll py-lg-4 py-1 w-100 ${
 				isShadow ? "shadow" : ""
@@ -53,11 +53,11 @@ const Header = () => {
 			<Link
 				to="/"
 				className="text-decoration-none text-dark d-flex align-items-center">
-				{/* <img src={logo} alt="Honourworld" className="logo me-1 logo-img-size" /> */}
-				<div className="d-block">
-					<p className="text-capitalize site-primary-color m-0">Mu'ujiza</p>
-					<p className="text-capitalize site-secondary-color ml-4"></p>
-				</div>
+				<img
+					src={logo}
+					alt="logo"
+					className="logo logo-height kemtech-logo me-1"
+				/>
 			</Link>
 			{isOpen ? (
 				<FaTimes

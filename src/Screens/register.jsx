@@ -3,7 +3,6 @@ import { GlobalState } from "../Data/Context";
 import { useNavigate, Link } from "react-router-dom";
 import { Container } from "reactstrap";
 import { Buttons, EyeToggle } from "../Utils";
-import logo from "../Assets/logo.png";
 import { toast } from "react-toastify";
 
 const Register = () => {
@@ -177,27 +176,16 @@ const Register = () => {
 
 export default Register;
 
-export const DefaultAuthComponent = ({ children }) => {
+export const DefaultAuthComponent = ({ children, nozoom }) => {
 	return (
 		<div className="aboutScreen bg-select-blue d-flex justify-content-center align-items-center py-md-5">
 			<div
-				data-aos="zoom-in"
+				data-aos={nozoom ? "" : "zoom-in"}
 				className="m-auto shadow px-3 py-5 rounded20 shadow2 w-100 bg-white"
 				style={{
 					maxWidth: "500px",
 				}}>
-				<Container className="px-lg-5 px-3">
-					<span
-						to="/"
-						className="text-decoration-none text-dark d-flex align-items-center mb-4">
-						<img src={logo} alt="kemtech" className="logo kemtech-logo me-1" />
-						{/* <div className="d-none d-md-block">
-							<p className="text-capitalize site-primary-color m-0">Kemtech</p>
-							<p className="text-capitalize site-secondary-color m-0">Enterprises</p>
-						</div> */}
-					</span>
-					{children}
-				</Container>
+				<Container className="px-lg-5 px-3">{children}</Container>
 			</div>
 		</div>
 	);

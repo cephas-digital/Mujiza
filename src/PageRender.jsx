@@ -26,18 +26,20 @@ const PageRender = () => {
 			"data",
 			"tv-subscriptions",
 			"data-pin",
+			"education",
 			"electricity-bills",
 		],
 		escapeAdmin = ["admins", "employees", "billers"],
 		escapeWallet = ["bonus", "commissions"],
-		escapeControl = ["bills", "broadcasts", "tv-subscriptions"];
+		escapeControl = ["bills", "broadcasts", "tv-subscriptions", "bonus", "manual"];
 
 	useEffect(() => {
 		if (!auth?.isAuth) {
 			if (errors?.errorText?.includes("jwt")) {
 				navigate("/login");
 				clearErrors();
-			}}
+			}
+		}
 		if (auth?.isAuth) {
 			if (page === "login" || page === "register") {
 				navigate("/");

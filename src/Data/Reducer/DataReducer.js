@@ -9,6 +9,7 @@ import {
 	GET_DATA_DIRECT,
 	GET_DATA_FAIL,
 	GET_DATA_LOADING,
+	LOGOUT,
 	UPDATE_DATA,
 } from "../Actions/ActionTypes";
 
@@ -64,7 +65,10 @@ const DataReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isUpdatedMain: true,
-				main_data: EditData(state.main_data, payload?.data ? payload?.data : payload),
+				main_data: EditData(
+					state.main_data,
+					payload?.data ? payload?.data : payload
+				),
 			};
 		case GET_DATA:
 			return {
@@ -98,6 +102,8 @@ const DataReducer = (state = initialState, action) => {
 				...state,
 				isLoading: true,
 			};
+		case LOGOUT:
+			return initialState;
 		default:
 			return state;
 	}
@@ -113,6 +119,7 @@ export const EditData = (data, payload) => {
 };
 
 export const DeleteData = (data, payload) => {
-	let filterItem = [...data.filter(item => item._id !== payload._id)];
+	let filterItem =
+		data?.length > 0 ? [...data.filter(item => item._id !== payload._id)] : [];
 	return filterItem;
 };

@@ -1,6 +1,4 @@
 import {
-	TOKEN_TEMP,
-	TOKEN_TEMP_AUTH,
 	LOGIN_USER,
 	LOGIN_USER_FAIL,
 	LOGOUT,
@@ -13,6 +11,8 @@ import {
 	UPDATE_USER,
 	REGISTER_USER_FAIL,
 	UPDATE_USER_FAIL,
+	UPDATE_PASSWORD,
+	UPDATE_PASSWORD_FAIL,
 } from "./ActionTypes";
 import { SetAuthToken } from "../Config";
 import axios from "axios";
@@ -23,11 +23,12 @@ import {
 	dataServices,
 	getCards,
 	getDirectDatas,
+	getManualBonusHistory,
 	getServicesHistory,
 	getWalletHistory,
 	manageFundWallet,
 } from "./GeneralAction";
-import { getNotify, loadAllUser } from "./UserActions";
+import { getHonourBalance, getNotify, loadAllUser } from "./UserActions";
 import { getSettings } from "../Reducer/SettingsReducer";
 
 // LOGOUT
@@ -52,11 +53,15 @@ export const loadUser = () => async dispatch => {
 			});
 			if (res?.data?.data?.privilege === "agent") {
 				dispatch(loadAllUser());
-				dispatch(getSettings());
+				dispatch(getHonourBalance());
+				dispatch(getManualBonusHistory("manage-bonus"));
+				dispatch(getManualBonusHistory("manual-funding"));
 			}
+			dispatch(getSettings());
 			dispatch(getServicesHistory("all"));
 			dispatch(getServicesHistory("airtime"));
 			dispatch(getServicesHistory("data"));
+			dispatch(getServicesHistory("education"));
 			dispatch(dataServices("get"));
 			dispatch(getServicesHistory("electricity"));
 			dispatch(getServicesHistory("cables"));
@@ -67,8 +72,9 @@ export const loadUser = () => async dispatch => {
 			dispatch(getNotify("incoming"));
 			dispatch(getNotify("outgoing"));
 			dispatch(getCards());
-			dispatch(converterServices("get", "converter"));
 			dispatch(getDirectDatas("data"));
+			dispatch(converterServices("get", "converter"));
+			dispatch(converterServices("get", "converter-number"));
 			dispatch(getDirectDatas("network"));
 			dispatch(getDirectDatas("electricity"));
 			dispatch(getDirectDatas("cables-packages"));
@@ -153,6 +159,33 @@ export const registerUser = userData => async dispatch => {
 	}
 };
 
+export const updatePassword = userData => async dispatch => {
+	dispatch(clearErrors());
+
+	try {
+		var res = await axios.put(`/api/v1/user/update-password`, { ...userData });
+
+		dispatch({
+			type: UPDATE_PASSWORD,
+			payload: res.data,
+		});
+		toast.success(res.data.msg, { autoClose: 5000 });
+	} catch (err) {
+		console.log({ err });
+		let error = err.response?.data?.error;
+		dispatch({ type: UPDATE_PASSWORD_FAIL });
+		if (error) {
+			dispatch(returnErrors({ error, status: err?.response?.status }));
+			error.forEach(error =>
+				error?.param
+					? error?.param !== "suggestion" &&
+					  toast.error(error.msg, { autoClose: false })
+					: toast.error(error.msg, { autoClose: false })
+			);
+		}
+		if (err?.response?.status === 429) toast.error(err?.response?.data);
+	}
+};
 export const updateUser = (userData, type) => async dispatch => {
 	dispatch(clearErrors());
 
@@ -209,17 +242,4 @@ export const imageUpload = async images => {
 		Array.isArray(data) ? (imgArr = [...imgArr, ...data]) : imgArr.push(data);
 	}
 	return imgArr;
-};
-
-export const getSetTempUser = data => async dispatch => {
-	try {
-		console.log({ data });
-		if (data) {
-			localStorage.setItem(TOKEN_TEMP, data);
-		}
-		dispatch({
-			type: TOKEN_TEMP_AUTH,
-			payload: data ? data : localStorage.getItem(TOKEN_TEMP),
-		});
-	} catch (error) {}
 };

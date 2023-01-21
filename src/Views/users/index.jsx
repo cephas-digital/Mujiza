@@ -23,14 +23,18 @@ const UsersMain = () => {
 		},
 		{
 			icon: icon2,
-			name: "total referrals",
-			number: 0,
+			name: "total transactions",
+			number: users?.transactions
+				? numberWithCommas(Number(users?.transactions).toFixed(2))
+				: 0,
 			color: "linear-gradient(90deg, #D88ADA 16.14%, #CA64FB 101.45%)",
 		},
 		{
 			icon: icon3,
 			name: "wallet balance",
-			number: users?.wallet ? numberWithCommas(users?.wallet) : 0,
+			number: users?.wallet
+				? numberWithCommas(Number(users?.wallet).toFixed(2))
+				: 0,
 			color: "linear-gradient(96.86deg, #F4EA75 18.88%, #F7BA5E 125.77%)",
 			link: "/users/agents",
 		},

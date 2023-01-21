@@ -5,6 +5,7 @@ import {
 	GET_ELECTRICITY_DIRECT,
 	GET_ELECTRICITY_FAIL,
 	GET_ELECTRICITY_LOADING,
+	LOGOUT,
 } from "../Actions/ActionTypes";
 
 const initialState = {
@@ -59,6 +60,8 @@ const ElectricityReducer = (state = initialState, action) => {
 				...state,
 				isLoading: true,
 			};
+		case LOGOUT:
+			return initialState;
 		default:
 			return state;
 	}

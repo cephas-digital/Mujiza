@@ -19,6 +19,7 @@ const initialState = {
 	isDeleted: false,
 	paginate: null,
 	wallet: 0,
+	transactions: 0,
 };
 
 const UsersReducer = (state = initialState, action) => {
@@ -31,6 +32,7 @@ const UsersReducer = (state = initialState, action) => {
 				users: payload?.data,
 				paginate: payload?.paginate,
 				wallet: payload?.wallet,
+				transactions: payload?.transactions,
 			};
 		case GET_ALL_USERS_FAIL:
 			return {

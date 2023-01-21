@@ -48,7 +48,7 @@ const Activate = () => {
 	}, [activate]);
 
 	return (
-		<DefaultAuthComponent>
+		<DefaultAuthComponent nozoom>
 			<>
 				<h3 className="text-capitalize">OTP</h3>
 				<form>

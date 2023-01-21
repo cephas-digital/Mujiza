@@ -7,8 +7,12 @@ import {
 	ADD_AIRTIME_FAIL,
 	ADD_CABLE,
 	ADD_CABLE_FAIL,
+	ADD_CONVERTER_NUMBER,
+	ADD_CONVERTER_NUMBER_FAIL,
 	ADD_DATA,
 	ADD_DATA_FAIL,
+	ADD_EDUCATION,
+	ADD_EDUCATION_FAIL,
 	ADD_ELECTRICITY,
 	ADD_ELECTRICITY_FAIL,
 	ADD_FUND,
@@ -23,6 +27,8 @@ import {
 	GET_AIRTIME_CONVERTER,
 	GET_AIRTIME_CONVERTER_FAIL,
 	GET_AIRTIME_FAIL,
+	GET_ALL_BONUS,
+	GET_ALL_MANUAL,
 	GET_ALL_TRANSACTIONS,
 	GET_ALL_TRANSACTIONS_FAIL,
 	GET_BANKS,
@@ -37,12 +43,16 @@ import {
 	GET_CARDS,
 	GET_CARDS_FAIL,
 	GET_COMMISSION,
+	GET_CONVERTER_NUMBER,
+	GET_CONVERTER_NUMBER_FAIL,
 	GET_CREATE_DATA,
 	GET_CREATE_DATA_FAIL,
 	GET_DATA,
 	GET_DATA_DIRECT,
 	GET_DATA_DIRECT_FAIL,
 	GET_DATA_FAIL,
+	GET_EDUCATION,
+	GET_EDUCATION_FAIL,
 	GET_ELECTRICITY,
 	GET_ELECTRICITY_DIRECT,
 	GET_ELECTRICITY_DIRECT_FAIL,
@@ -61,6 +71,10 @@ import {
 	MOVE_COMMISSION_FAIL,
 	TRANSFER_FUND,
 	TRANSFER_FUND_FAIL,
+	UPDATE_CONVERTER_DETAIL,
+	UPDATE_CONVERTER_DETAIL_FAIL,
+	UPDATE_CONVERTER_NUMBER,
+	UPDATE_CONVERTER_NUMBER_FAIL,
 	UPDATE_DATA,
 	UPDATE_WALLET,
 	UPDATE_WALLET_FAIL,
@@ -124,6 +138,8 @@ export const getServicesHistory = (type, data) => async dispatch => {
 					? GET_DATA
 					: type === "electricity"
 					? GET_ELECTRICITY
+					: type === "education"
+					? GET_EDUCATION
 					: type === "all"
 					? GET_ALL_TRANSACTIONS
 					: null,
@@ -142,6 +158,8 @@ export const getServicesHistory = (type, data) => async dispatch => {
 					? GET_DATA_FAIL
 					: type === "electricity"
 					? GET_ELECTRICITY_FAIL
+					: type === "education"
+					? GET_EDUCATION_FAIL
 					: type === "all"
 					? GET_ALL_TRANSACTIONS_FAIL
 					: null,
@@ -163,6 +181,8 @@ export const buyServices = (type, data) => async dispatch => {
 					? ADD_AIRTIME
 					: type === "electricity"
 					? ADD_ELECTRICITY
+					: type === "education"
+					? ADD_EDUCATION
 					: null,
 			payload: res.data,
 		});
@@ -190,20 +210,51 @@ export const buyServices = (type, data) => async dispatch => {
 					? ADD_AIRTIME_FAIL
 					: type === "electricity"
 					? ADD_ELECTRICITY_FAIL
+					: type === "education"
+					? ADD_EDUCATION_FAIL
 					: null,
 		});
 	}
 };
 
-export const converterServices = (method, type, data) => async dispatch => {
+export const converterServices = (method, type, data, id) => async dispatch => {
 	try {
 		let res;
 		// console.log({ data });
-		if (method === "post") {
-			res = await axios.post(`/api/v1/airtime/${type}`, { ...data });
+		if (method === "put") {
+			res = await axios.put(`/api/v1/airtime/${type}${id ? `/${id}` : ""}`, {
+				...data,
+			});
 
 			dispatch({
-				type: type === "converter" ? ADD_AIRTIME_CONVERTER : null,
+				type:
+					type === "converter"
+						? id
+							? UPDATE_CONVERTER_DETAIL
+							: ADD_AIRTIME_CONVERTER
+						: type === "converter-number"
+						? id
+							? UPDATE_CONVERTER_NUMBER
+							: ADD_CONVERTER_NUMBER
+						: null,
+				payload: res.data,
+			});
+		} else if (method === "post") {
+			res = await axios.post(`/api/v1/airtime/${type}${id ? `/${id}` : ""}`, {
+				...data,
+			});
+
+			dispatch({
+				type:
+					type === "converter"
+						? id
+							? UPDATE_CONVERTER_DETAIL
+							: ADD_AIRTIME_CONVERTER
+						: type === "converter-number"
+						? id
+							? UPDATE_CONVERTER_NUMBER
+							: ADD_CONVERTER_NUMBER
+						: null,
 				payload: res.data,
 			});
 		} else {
@@ -217,17 +268,19 @@ export const converterServices = (method, type, data) => async dispatch => {
 						? GET_AIRTIME_CONVERTER
 						: type === "banks"
 						? GET_BANKS
+						: type === "converter-number"
+						? GET_CONVERTER_NUMBER
 						: null,
 				payload: res.data,
 			});
 		}
 		// console.log({ data: res?.data });
-		if (method === "post") toast.success(res?.data?.msg);
+		if (method === "post" || method === "put") toast.success(res?.data?.msg);
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		if (method === "post") {
+		if (method === "post" || method === 'put') {
 			error.forEach(error =>
 				error?.param
 					? error?.param !== "suggestion" &&
@@ -237,12 +290,22 @@ export const converterServices = (method, type, data) => async dispatch => {
 		}
 		dispatch({
 			type:
-				type === "converter"
-					? method === "post"
-						? ADD_AIRTIME_CONVERTER_FAIL
-						: GET_AIRTIME_CONVERTER_FAIL
-					: type === "banks" && method === "get"
-					? GET_BANKS_FAIL
+				method === "post" || method === "put"
+					? type === "converter"
+						? id
+							? UPDATE_CONVERTER_DETAIL_FAIL
+							: ADD_AIRTIME_CONVERTER_FAIL
+						: type === "converter-number"
+						? id
+							? UPDATE_CONVERTER_NUMBER_FAIL
+							: ADD_CONVERTER_NUMBER_FAIL
+						: type === "converter"
+						? GET_AIRTIME_CONVERTER_FAIL
+						: type === "banks"
+						? GET_BANKS_FAIL
+						: type === "converter-number"
+						? GET_CONVERTER_NUMBER_FAIL
+						: null
 					: null,
 		});
 	}
@@ -291,6 +354,31 @@ export const dataServices = (method, data) => async dispatch => {
 	}
 };
 
+export const getManualBonusHistory = (type, data) => async dispatch => {
+	try {
+		let res = await axios.get(
+			`/api/v1/wallet/${type}
+			${data?.limit ? `?limit=${data?.limit}` : ""}
+				`
+		);
+
+		dispatch({
+			type:
+				type === "manual-funding"
+					? GET_ALL_MANUAL
+					: type === "manage-bonus"
+					? GET_ALL_BONUS
+					: null,
+			payload: res.data,
+		});
+	} catch (err) {
+		if (err) console.log({ err });
+		if (err) console.log(err?.response ? err?.response?.data : err?.message);
+		dispatch({
+			type: GET_WALLET_FAIL,
+		});
+	}
+};
 export const getWalletHistory = (type, data) => async dispatch => {
 	try {
 		let res = await axios.get(

@@ -7,6 +7,7 @@ import {
 	GET_NETWORK,
 	GET_NETWORK_FAIL,
 	GET_NETWORK_LOADING,
+	LOGOUT,
 } from "../Actions/ActionTypes";
 
 const initialState = {
@@ -56,6 +57,8 @@ const GeneralReducer = (state = initialState, action) => {
 				...state,
 				isLoading: false,
 			};
+		case LOGOUT:
+			return initialState;
 		default:
 			return state;
 	}

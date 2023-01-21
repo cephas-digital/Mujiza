@@ -48,7 +48,11 @@ export const UserListOne = () => {
 	let [data, setData] = useState(null),
 		[isOpen, setIsOpen] = useState(false),
 		[loading, setLoading] = useState(false),
+		[mainUser, setMainUser] = useState(null),
 		toggle = () => {
+			if (isOpen) {
+				setMainUser(null);
+			}
 			setIsOpen(!isOpen);
 		},
 		navigate = useNavigate(),
@@ -100,25 +104,25 @@ export const UserListOne = () => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 py-3 text-capitalize">
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
 					Name
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
 					number
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend d-none d-md-flex">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend d-none d-md-flex">
 					date
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
 					balance
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend d-none d-md-flex">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend d-none d-md-flex">
 					Email
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend d-none d-md-flex">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend d-none d-md-flex">
 					Wallet ID
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce3 fw-bold Lexend">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
 					Action
 				</div>
 			</div>
@@ -128,7 +132,7 @@ export const UserListOne = () => {
 				) : (
 					data?.map((item, index) => (
 						<div key={index} className="row mx-0 p-3">
-							<div className="col fontReduce3 textTrunc my-auto">
+							<div className="col fontReduce2 textTrunc my-auto">
 								<div className="d-flex align-items-center">
 									<img
 										src={item?.avatar ? item?.avatar?.url : user}
@@ -139,29 +143,32 @@ export const UserListOne = () => {
 											width: "3rem",
 										}}
 									/>
-									<span className="fontInherit my-0 ps-0 ps-md-1 textTrunc">
+									<span className="fontInherit my-0 ps-0 ps-md-1 textTrunc fontReduce2">
 										{item?.lastName} {item?.firstName}
 									</span>
 								</div>
 							</div>
-							<div className="col fontReduce3 textTrunc my-auto">
+							<div className="col fontReduce2 textTrunc my-auto">
 								{item?.telephone}
 							</div>
-							<div className="col fontReduce3 textTrunc my-auto d-none d-md-flex">
+							<div className="col fontReduce2 textTrunc my-auto d-none d-md-flex">
 								{moment(item?.createdAt).format("L")}
 							</div>
-							<div className="col fontReduce3 textTrunc my-auto">
+							<div className="col fontReduce2 textTrunc my-auto">
 								NGN {numberWithCommas(item?.wallet?.available)}
 							</div>
-							<div className="col fontReduce3 textTrunc my-auto d-none d-md-flex">
+							<div className="col fontReduce2 textTrunc my-auto d-none d-md-flex">
 								{item?.email}
 							</div>
-							<div className="col fontReduce3 textTrunc my-auto d-none d-md-flex">
+							<div className="col fontReduce2 textTrunc my-auto d-none d-md-flex">
 								{item?.wallet?.wallet_id}
 							</div>
 							<div
-								className="col fontReduce3 textTrunc my-auto myCursor"
-								onClick={toggle}>
+								className="col fontReduce2 textTrunc my-auto myCursor"
+								onClick={() => {
+									setMainUser(item);
+									toggle();
+								}}>
 								<BiCog size={24} />
 							</div>
 							<ModalComponents
@@ -176,10 +183,13 @@ export const UserListOne = () => {
 													a?.type === "button"
 														? a?.link === "notification"
 															? () => {
-																	setIsUser(item?._id);
+																	setIsUser(mainUser?._id);
 															  }
 															: null
-														: () => navigate(`${a?.link}/${item?._id}`)
+														: () =>
+																navigate(
+																	`${a?.link}/${mainUser?._id}?name=${mainUser?.lastName}_${mainUser?.firstName}`
+																)
 												}
 												className="btn btn-outline-primary1 text-capitalize w-100 py-3">
 												{a?.name}

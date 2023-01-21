@@ -242,6 +242,7 @@ const ProfileSetup = ({
 					</button>
 				</div>
 			</div>
+			<PasswordBox />
 		</>
 	);
 };
@@ -620,6 +621,91 @@ export const ProfileForm = ({ state, textChange }) => {
 					onChange={textChange("bio")}
 					readOnly={params?.page === "users"}
 				/>
+			</div>
+		</div>
+	);
+};
+
+export const PasswordBox = () => {
+	let { updatePassword, auth } = useContext(GlobalState);
+	let init = {
+			oldPassword: "",
+			newPassword: "",
+		},
+		[state, setState] = useState(init),
+		[loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false),
+		textChange =
+			name =>
+			({ target: { value } }) => {
+				setState({ ...state, [name]: value });
+			},
+		handleSubmit = async e => {
+			e.preventDefault();
+			if (!state?.oldPassword || !state?.newPassword) return;
+			setLoading(true);
+			await updatePassword(state);
+			setLoading(false);
+			setSubmit(true);
+		};
+
+	useEffect(() => {
+		if (submit && auth?.isPassword) {
+			setState(init);
+			setSubmit(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, auth?.isPassword]);
+
+	return (
+		<div className="py-4 py-md-5">
+			<h6 className="Lexend fw-600 fontReduceBig text-uppercase mt-3 mt-md-5">
+				change password
+			</h6>
+			<small className="">
+				Please enter your current password to change your password.
+			</small>
+			<div className="row mx-0 g-5 col-md-8 mt-3">
+				<div className="col-md-6">
+					<label className="dmMonoFont text-uppercase" htmlFor="password">
+						old Password
+					</label>
+					<input
+						type="password"
+						className="form-control py-3 dmMonoFont"
+						name="password"
+						placeholder="Old Password"
+						value={state?.oldPassword}
+						onChange={textChange("oldPassword")}
+					/>
+				</div>
+				<div className="col-md-6">
+					<label className="dmMonoFont text-uppercase" htmlFor="password">
+						new Password
+					</label>
+					<input
+						type="password"
+						className="form-control py-3 dmMonoFont"
+						name="password"
+						placeholder="New Password"
+						value={state?.newPassword}
+						onChange={textChange("newPassword")}
+					/>
+				</div>
+			</div>
+			<div className="d-flex align-items-center my-3">
+				<Buttons
+					onClick={handleSubmit}
+					loading={loading}
+					css="btn-primary1 text-capitalize px-md-4 px-3 fontReduce mx-md-3 mx-2 py-2 text-white"
+					title={"save"}
+					width="w-auto"
+				/>
+				<button
+					onClick={() => setState(init)}
+					className={`btn btn-outline-primary1 text-capitalize px-md-4 px-3 fontReduce mx-md-3 mx-2 py-2 text-primary1`}>
+					cancel
+				</button>
 			</div>
 		</div>
 	);

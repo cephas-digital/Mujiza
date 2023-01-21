@@ -205,6 +205,7 @@ header.close .image-text .header-text {
 @media screen and (max-width: 768px) {
 	.sidebar {
 		padding: 10px 0px 5px;
+		z-index: 1100 !important;
 	}
 	.fontReduce {
 		font-size: 12px;

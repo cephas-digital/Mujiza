@@ -7,9 +7,10 @@ import { GlobalState } from "../Data/Context";
 import { toast } from "react-toastify";
 import { useValidation } from "../Data/useFetch";
 import LoadMore, { BottomTab } from "./LoadMore";
+import { ModalComponents } from "./DefaultHeader";
 
 const MainConvert = () => {
-	let { setStateName } = useContext(GlobalState);
+	let { setStateName, auth } = useContext(GlobalState);
 	useEffect(() => {
 		setStateName("airtime converter");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -17,7 +18,11 @@ const MainConvert = () => {
 	return (
 		<div className="bg-white aboutScreen">
 			<Container>
-				<ConvertTop />
+				{auth?.user?.privilege === "user" ? (
+					<ConvertTop />
+				) : (
+					<ConvertAgentTop />
+				)}
 				<ConverterHistory />
 			</Container>
 		</div>
@@ -27,7 +32,8 @@ const MainConvert = () => {
 export default MainConvert;
 
 const ConvertTop = () => {
-	const { converterServices, general, converter } = useContext(GlobalState);
+	const { converterServices, general, converter, settings } =
+		useContext(GlobalState);
 	let init = {
 			account_number: "",
 			account_name: "",
@@ -36,7 +42,10 @@ const ConvertTop = () => {
 			reference: "",
 			amount: "",
 			network: "",
+			send_to: "",
+			send_type: "number",
 		},
+		[returnValue, setReturnValue] = useState(""),
 		[loading, setLoading] = useState(false),
 		[newState, setNewState] = useState(false),
 		[submit, setSubmit] = useState(false),
@@ -98,27 +107,67 @@ const ConvertTop = () => {
 		if (submit && converter?.isAdded) {
 			setSubmit(false);
 			setState(init);
+			setReturnValue("");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [converter, submit]);
 
+	useEffect(() => {
+		if (state?.amount) {
+			let commission = 80;
+			if (settings?.settings?.airtimeToCashCommission)
+				commission = settings?.settings?.airtimeToCashCommission;
+
+			setReturnValue(
+				Number(Number(state?.amount) * (commission / 100)).toFixed(2)
+			);
+		}
+	}, [state?.amount, settings?.settings]);
+
+	useEffect(() => {
+		if (state?.network) {
+			converter?.numbers?.map(
+				item =>
+					item?.network?.toLowerCase() === state?.network?.toLowerCase() &&
+					setState({ ...state, send_to: item?.telephone })
+			);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state?.network, converter?.numbers]);
+	// console.log({ state, numbers: converter?.numbers });
 	return (
 		<>
 			{/* {validateLoading && <Loaded />} */}
 			<section className="row mx-0">
-				<form className="mt-4 col-md-4">
-					<div className="mb-md-5 mb-3">
+				<form className="mt-4 col-md-7 row mx-0 g-3 g-md-5">
+					<div className="mb-3 col-md-6">
+						<label className="text-capitalize" htmlFor="network">
+							Send format
+						</label>
+						<select
+							className="form-control py-3 py-md-4 bg-transparent text-capitalize rounded20 form-select"
+							name="network"
+							placeholder="Network"
+							value={state?.send_type}
+							onChange={textChange("send_type")}
+							readOnly={validateLoading}
+							id="network">
+							<option value="">select send format</option>
+							<option value="number">Transfer</option>
+							<option value="reference">Airtime pin</option>
+						</select>
+					</div>
+					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="network">
 							Network
 						</label>
 						<select
-							className="form-control py-3 py-md-4 bg-transparent text-capitalize form-select"
+							className="form-control py-3 py-md-4 bg-transparent text-capitalize rounded20 form-select"
 							name="network"
 							placeholder="Network"
 							value={state?.network}
 							onChange={textChange("network")}
 							readOnly={validateLoading}
-							style={{ borderRadius: "30px" }}
 							id="network">
 							<option value="">select network</option>
 							{general?.networks?.map((item, i) => (
@@ -128,32 +177,44 @@ const ConvertTop = () => {
 							))}
 						</select>
 					</div>
-					<div className="mb-md-5 mb-3">
+					{state?.network && state?.send_type === "number" && (
+						<div className="mb-3 col-md-6">
+							<label className="text-capitalize" htmlFor="name">
+								Number to send to
+							</label>
+							<input
+								type="text"
+								name="reference"
+								className="form-control py-3 py-md-4 bg-transparent rounded20"
+								value={state?.send_to}
+								readOnly
+							/>
+						</div>
+					)}
+					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="name">
-							Airtime reference
+							{state?.send_type === "number" ? "Phone number" : `Airtime pin`}
 						</label>
 						<input
 							type="text"
 							required
 							name="reference"
-							className="form-control py-3 py-md-4 bg-transparent"
+							className="form-control py-3 py-md-4 bg-transparent rounded20"
 							value={state?.reference}
 							onChange={textChange("reference")}
-							style={{ borderRadius: "30px" }}
 						/>
 					</div>
-					<div className="mb-md-5 mb-3">
+					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="bank_code">
 							Account Bank
 						</label>
 						<select
 							className="form-control py-3 py-md-4 bg-transparent text-capitalize form-select"
-							name="bank_code"
+							name="bank_code rounded20"
 							placeholder="Account Bank"
 							value={state?.bank_code}
 							onChange={textChange("bank_code")}
 							readOnly={validateLoading}
-							style={{ borderRadius: "30px" }}
 							id="bank_code">
 							<option value="">select bank</option>
 							{converter?.banks?.map((item, i) => (
@@ -163,23 +224,22 @@ const ConvertTop = () => {
 							))}
 						</select>
 					</div>
-					<div className="mb-md-5 mb-3">
+					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="name">
 							Bank account
 						</label>
 						<input
 							type="number"
-							className="form-control py-3 py-md-4 bg-transparent"
+							className="form-control py-3 py-md-4 bg-transparent rounded20"
 							required
 							name="account_number"
 							readOnly={validateLoading}
 							value={state?.account_number}
-							style={{ borderRadius: "30px" }}
 							onChange={textChange("account_number")}
 						/>
 					</div>
 					{state?.account_name && state?.account_number?.length === 10 && (
-						<div className="mb-md-5 mb-3">
+						<div className="mb-3 col-md-6">
 							<label className="text-capitalize" htmlFor="name">
 								Account name
 							</label>
@@ -188,14 +248,13 @@ const ConvertTop = () => {
 								required
 								name="account_name"
 								readOnly
-								className="form-control py-3 py-md-4 bg-transparent"
+								className="form-control py-3 py-md-4 bg-transparent rounded20"
 								value={state?.account_name}
 								onChange={textChange("account_name")}
-								style={{ borderRadius: "30px" }}
 							/>
 						</div>
 					)}
-					<div className="mb-md-5 mb-3">
+					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="name">
 							Amount
 						</label>
@@ -203,22 +262,38 @@ const ConvertTop = () => {
 							type="number"
 							required
 							name="amount"
-							className="form-control py-3 py-md-4 bg-transparent"
+							className="form-control py-3 py-md-4 bg-transparent rounded20"
 							value={state?.amount}
 							onChange={textChange("amount")}
-							style={{ borderRadius: "30px" }}
 						/>
 					</div>
-					<Buttons
-						title={"convert"}
-						css="btn-primary1 text-capitalize py-3 w-50 my-4"
-						width={"w-50"}
-						style={{ borderRadius: "30px" }}
-						loading={loading}
-						onClick={handleSubmitCard}
-					/>
+					{state?.amount && (
+						<div className="mb-3 col-md-6">
+							<label className="text-capitalize" htmlFor="name">
+								Return Amount
+							</label>
+							<input
+								type="number"
+								name="amount"
+								readOnly
+								className="form-control py-3 py-md-4 bg-transparent rounded20"
+								value={returnValue}
+								onChange={textChange("returnValue")}
+							/>
+						</div>
+					)}
+					<div>
+						<Buttons
+							title={"convert"}
+							css="btn-primary1 text-capitalize py-3 w-50 my-4"
+							width={"w-50"}
+							style={{ borderRadius: "30px" }}
+							loading={loading}
+							onClick={handleSubmitCard}
+						/>
+					</div>
 				</form>
-				<div className="col-lg-8 h-100 my-auto d-none d-md-flex">
+				<div className="col-lg-5 h-100 my-auto d-none d-md-flex">
 					<img src={img1} alt="Banner" className="img-fluid mx-auto" />
 				</div>
 			</section>
@@ -226,11 +301,184 @@ const ConvertTop = () => {
 	);
 };
 
+const ConvertAgentTop = () => {
+	let { converterServices, converter, general } = useContext(GlobalState);
+	let [isNumber, setIsNumber] = useState(false),
+		[isUpdateNumber, setIsUpdateNumber] = useState(false),
+		init = { network: "", telephone: "" },
+		[state, setState] = useState(init),
+		[submit, setSubmit] = useState(false),
+		[loading, setLoading] = useState(false);
+	let clearAll = () => {
+		setIsNumber(false);
+		setIsUpdateNumber(false);
+		setSubmit(false);
+		setState(init);
+	};
+	useEffect(() => {
+		if (submit && converter?.isNumberAdded) {
+			clearAll();
+		}
+		if (submit && converter?.isNumberUpdated) {
+			clearAll();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, converter?.isAddedNumber]);
+
+	let handleSubmit = (type, method) => async e => {
+		e?.preventDefault();
+		setLoading(true);
+		await converterServices(
+			method,
+			type,
+			isUpdateNumber ? isUpdateNumber : state,
+			isUpdateNumber ? isUpdateNumber?._id : ""
+		);
+		setLoading(false);
+		setSubmit(true);
+	};
+
+	return (
+		<>
+			<div className="py-3 py-md-5">
+				<h3 className="Lexend text-capitalize fontReduceBig">
+					Phone Number convert
+				</h3>
+				<div className="d-flex w-100 justify-content-end py-3">
+					<button
+						onClick={() => setIsNumber(true)}
+						className="btn-primary1 btn p-3 px-md-5 text-capitalize">
+						add new number
+					</button>
+				</div>
+				<div className="py-3">
+					<div className="row mx-0 bland p-3 text-capitalize">
+						<div className="col textTrunc fontReduce fw-bold Lexend">S/N</div>
+						<div className="col textTrunc fontReduce fw-bold Lexend">
+							Network
+						</div>
+						<div className="col textTrunc fontReduce fw-bold Lexend">
+							Telephone
+						</div>
+						<div className="col textTrunc fontReduce fw-bold Lexend">
+							Update
+						</div>
+					</div>
+					{converter?.numbers?.map((item, i) => (
+						<div className="row bland2 p-3 mx-0 text-uppercase" key={i}>
+							<div className="col textTrunc fontReduce2">{i + 1}</div>
+							<div className="col textTrunc fontReduce2">{item?.network}</div>
+							<div className="col textTrunc fontReduce2">{item?.telephone}</div>
+							<div
+								className="col textTrunc fontReduce2 myCursor text-info"
+								onClick={() => setIsUpdateNumber(item)}>
+								{" "}
+								edit{" "}
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+
+			<ModalComponents
+				title={"Add new number"}
+				isOpen={isNumber}
+				back={() => {
+					setIsNumber(false);
+					setState(init);
+				}}>
+				<div>
+					<div className=" mb-3">
+						<label className="text-capitalize" htmlFor="network">
+							Network
+						</label>
+						<select
+							className="form-control py-3 py-md-4 bg-transparent text-capitalize form-select"
+							name="network"
+							placeholder="Network"
+							value={state?.network}
+							onChange={e => setState({ ...state, network: e.target.value })}
+							id="network">
+							<option value="">select network</option>
+							{general?.networks?.map((item, i) => (
+								<option value={item} key={i}>
+									{item}
+								</option>
+							))}
+						</select>
+					</div>
+					<div className="mb-3">
+						<label className="text-capitalize" htmlFor="name">
+							telephone
+						</label>
+						<input
+							type="tel"
+							className="form-control py-3 py-md-4 text-capitalize"
+							name="telephone"
+							id="telephone"
+							value={state?.telephone}
+							onChange={e => setState({ ...state, telephone: e.target.value })}
+							placeholder="0800 000 0000"
+						/>
+					</div>
+					<Buttons
+						loading={loading}
+						title="send"
+						onClick={handleSubmit("converter-number", "post")}
+						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+						width={"w-50"}
+					/>
+				</div>
+			</ModalComponents>
+			<ModalComponents
+				title={"Update number"}
+				isOpen={isUpdateNumber}
+				back={() => {
+					setIsUpdateNumber(false);
+					setState(init);
+				}}>
+				<div className="mb-3">
+					<label className="text-capitalize" htmlFor="name">
+						telephone
+					</label>
+					<input
+						type="tel"
+						className="form-control py-3 py-md-4 text-capitalize"
+						name="telephone"
+						id="telephone"
+						value={isUpdateNumber?.telephone}
+						onChange={e =>
+							setIsUpdateNumber({
+								...isUpdateNumber,
+								telephone: e.target.value,
+							})
+						}
+						placeholder="0800 000 0000"
+					/>
+				</div>
+				<Buttons
+					loading={loading}
+					title="update"
+					onClick={handleSubmit("converter-number", "put")}
+					css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+					width={"w-50"}
+				/>
+			</ModalComponents>
+		</>
+	);
+};
+
 const ConverterHistory = () => {
-	const { converter, numberWithCommas, converterServices } =
+	const { converter, numberWithCommas, converterServices, auth } =
 		useContext(GlobalState);
 	let [state, setState] = useState(null),
-		[loading, setLoading] = useState(false);
+		[loading, setLoading] = useState(false),
+		[isUpdate, setIsUpdate] = useState(false),
+		[isDecline, setIsDecline] = useState(false),
+		init = { reason: "" },
+		[data, setData] = useState(init),
+		[submit, setSubmit] = useState(false),
+		[loading2, setLoading2] = useState(false);
 
 	useEffect(() => {
 		setState(converter?.airtime);
@@ -245,44 +493,174 @@ const ConverterHistory = () => {
 		setLoading(false);
 	};
 
+	let clearAll = () => {
+		setIsDecline(false);
+		setIsUpdate(false);
+		setSubmit(false);
+		setData(init);
+	};
+	useEffect(() => {
+		if (submit && converter?.isUpdated) {
+			clearAll();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, converter?.isAddedNumber]);
+
+	let handleSubmit = (type, method) => async e => {
+		e?.preventDefault();
+		setLoading2(true);
+		await converterServices(
+			method,
+			type,
+			data,
+			isUpdate ? isUpdate?._id : isDecline ? isDecline?._id : ""
+		);
+		setLoading2(false);
+		setSubmit(true);
+	};
+
 	if (!state) return;
+	// console.log({ state, converter });
 
 	return (
-		<div className="pb-5 mt-5">
-			<div className="bland row mx-0 p-3 text-capitalize">
-				<div className="col textTrunc d-none d-md-flex">ID</div>
-				<div className="col textTrunc">Reference</div>
-				<div className="col textTrunc d-none d-md-flex">date</div>
-				{/* <div className="col textTrunc">number</div> */}
-				<div className="col textTrunc">amount</div>
-				<div className="col textTrunc">network </div>
-				<div className="col textTrunc">status</div>
-			</div>
-			<div className="bg-white row mx-0">
-				{state?.map((item, index) => (
-					<div key={index} className="row mx-0 p-3">
-						<div className="col d-none d-md-flex textTrunc my-auto">
-							{item?.item_id}
-						</div>
-						<div className="col textTrunc my-auto">{item?.reference}</div>
-						<div className="col d-none d-md-flex textTrunc my-auto">
-							{moment(item?.createdAt).format("L")}
-						</div>
-						{/* <div className="col textTrunc my-auto">{item?.telephone}</div> */}
-						<div className="col textTrunc my-auto">
-							{numberWithCommas(item?.amount)}
-						</div>
-						<div className="col textTrunc my-auto">{item?.network}</div>
-						<div className="col textTrunc my-auto">{item?.statusText}</div>
+		<>
+			<div className="pb-5 mt-5">
+				<h3 className="Lexend text-capitalize mb-2 fontReduceBig">
+					{" "}
+					conversion history
+				</h3>
+				<div className="bland row mx-0 p-3 text-capitalize">
+					<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+						ID
 					</div>
-				))}
+					<div className="col textTrunc fontReduce fw-bold Lexend">
+						Reference
+					</div>
+					<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+						date
+					</div>
+					{/* <div className="col textTrunc">number</div> */}
+					<div className="col textTrunc fontReduce fw-bold Lexend">amount</div>
+					<div className="col textTrunc fontReduce fw-bold Lexend">
+						network{" "}
+					</div>
+					<div className="col textTrunc fontReduce fw-bold Lexend">status</div>
+					{auth?.user?.privilege === "agent" && (
+						<div className="col textTrunc fontReduce fw-bold Lexend">
+							action
+						</div>
+					)}
+				</div>
+				<div className="bg-white row mx-0">
+					{state?.map((item, index) => (
+						<div key={index} className="row mx-0 p-3">
+							<div className="col d-none d-md-flex textTrunc my-auto fontReduce2">
+								{item?.item_id}
+							</div>
+							<div className="col textTrunc my-auto fontReduce2">
+								{item?.reference}
+							</div>
+							<div className="col d-none d-md-flex textTrunc my-auto fontReduce2">
+								{moment(item?.createdAt).format("L")}
+							</div>
+							{/* <div className="col textTrunc my-auto">{item?.telephone}</div> */}
+							<div className="col textTrunc my-auto fontReduce2">
+								{numberWithCommas(item?.amount)}
+							</div>
+							<div className="col textTrunc my-auto fontReduce2">
+								{item?.network}
+							</div>
+							<div
+								className={`col textTrunc my-auto text-capitalize fontReduce2 ${
+									item?.status
+										? "text-success"
+										: item?.statusText === "declined"
+										? "text-danger"
+										: ""
+								}`}>
+								{item?.statusText}
+							</div>
+							{auth?.user?.privilege === "agent" && (
+								<div className="col textTrunc my-auto btn-group fontReduce2 w-100 d-block d-md-flex">
+									<button
+										onClick={() => setIsUpdate(item)}
+										className="btn  btn-success2 text-capitalize py-1 py-md-2 w-100 fontReduce2">
+										done
+									</button>
+									<button
+										onClick={() => setIsDecline(item)}
+										className="btn  btn-danger2 text-capitalize py-1 py-md-2 w-100 fontReduce2">
+										decline
+									</button>
+								</div>
+							)}
+						</div>
+					))}
+				</div>
+				<BottomTab state={state} paginate={converter?.paginate} />
+				<LoadMore
+					next={converter?.paginate?.next}
+					handleLoadMore={handleLoadMore}
+					loading={loading}
+				/>
 			</div>
-			<BottomTab state={state} paginate={converter?.paginate} />
-			<LoadMore
-				next={converter?.paginate?.next}
-				handleLoadMore={handleLoadMore}
-				loading={loading}
-			/>
-		</div>
+			<ModalComponents
+				title={"Decline conversion"}
+				isOpen={isDecline}
+				back={() => {
+					setIsDecline(false);
+				}}>
+				<div className="mb-3">
+					<label className="text-capitalize" htmlFor="name">
+						Reason
+					</label>
+					<textarea
+						className="form-control py-3 py-md-4 text-capitalize"
+						name="reason"
+						id="reason"
+						style={{
+							resize: "none",
+							height: "10rem",
+						}}
+						value={data?.reason}
+						onChange={e =>
+							setData({
+								...data,
+								reason: e.target.value,
+							})
+						}
+						placeholder="Reason for decline"
+					/>
+				</div>
+				<Buttons
+					loading={loading2}
+					title="decline"
+					onClick={handleSubmit("converter", "post")}
+					css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+					width={"w-50"}
+				/>
+			</ModalComponents>
+			<ModalComponents
+				title={"Mark as done"}
+				isOpen={isUpdate}
+				back={() => {
+					setIsUpdate(false);
+				}}>
+				<div className="downH2 d-flex">
+					<div className="my-auto w-100">
+						<p className="text-center">Has the transaction been completed?</p>
+						<div className="d-flex w-100">
+							<Buttons
+								loading={loading2}
+								title="confirm"
+								onClick={handleSubmit("converter", "put")}
+								css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+								width={"w-50"}
+							/>
+						</div>
+					</div>
+				</div>
+			</ModalComponents>
+		</>
 	);
 };

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalState } from "../Data/Context";
 import Calendar from "react-calendar";
 import { Container } from "reactstrap";
@@ -7,6 +7,7 @@ import { UserListOne } from "./Users";
 // import Charts, { LineMixedCharts } from "./Charts";
 import { useNavigate } from "react-router-dom";
 import TransactionsFolder from "./Transactions";
+import { productArr } from "./Products";
 
 const Dashboard = ({ usersArr }) => {
 	let { setStateName, auth } = useContext(GlobalState);
@@ -21,6 +22,7 @@ const Dashboard = ({ usersArr }) => {
 				<div className="row mx-0 w-100">
 					<div className="col-md-8">
 						<FourBoxBar list={usersArr} />
+						<ProductList />
 						{/* <div className="row mx-0 w-100">
 							<div className="h25 col-md-6">
 								<Charts
@@ -125,5 +127,37 @@ export const FourBoxBar = ({ list }) => {
 				))}
 			</div>
 		</>
+	);
+};
+
+export const ProductList = () => {
+	let { auth } = useContext(GlobalState);
+	let [state, setState] = useState([]),
+		navigate = useNavigate();
+
+	useEffect(() => {
+		setState(productArr);
+	}, [auth?.user]);
+	return (
+		<div className="py-3 py-md-4">
+			<div className="row g-4 mx-0">
+				{state?.map((item, i) => (
+					<div className="col-4 px-2 p-md-3 text-center" key={i}>
+						<div
+							onClick={() =>
+								navigate(
+									item?.link?.includes("converter")
+										? item?.link
+										: `/products${item?.link}`
+								)
+							}
+							className="shadow2 px-3 py-3 py-md-5 eachProduct rounded20 h-100">
+							<div className="mb-3">{item?.icon}</div>
+							<h6 className="Lexend textTrunc textTrunc2">{item?.name}</h6>
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
 	);
 };

@@ -36,7 +36,9 @@ const TVSub = () => {
 				setState({ ...state, [name]: value });
 			},
 		[type, setType] = useState([]),
-		{ handleFetch } = useValidation("smartCardNo", state, setNewState);
+		{ handleFetch } = useValidation("smartCardNo", state, setNewState),
+		[active, setActive] = useState(0),
+		btnTab = ["cable history", "cable list"];
 
 	useEffect(() => {
 		if (state?.smartCardNo?.length >= 10 && state?.type) handleFetch();
@@ -106,7 +108,114 @@ const TVSub = () => {
 					onClick={toggle}
 					style={{ borderRadius: "30px" }}
 				/>
-				<TVSubHistory />
+				<div className="btn-group w-100 py-3">
+					{btnTab?.map((item, i) => (
+						<button
+							key={i}
+							className={`btn py-3 text-capitalize fw-bold ${
+								i === active ? "border-bottom textColor" : ""
+							} rounded-0`}
+							onClick={() => setActive(i)}>
+							{item}
+						</button>
+					))}
+				</div>
+				{active === 0 ? (
+					<TVSubHistory />
+				) : (
+					<>
+						<h5 className="Lexend mb-3 fontReduceBig">Cable List</h5>
+						<div className="row mx-0 p-3 bland">
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								S/N
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Name
+							</div>
+						</div>
+						{cables?.cable_direct?.map((item, i) => (
+							<div className="row mx-0 p-3" key={i}>
+								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
+								<div className="col my-auto textTrunc fontReduce2">{item}</div>
+							</div>
+						))}
+						<h5 className="Lexend my-3 fontReduceBig">DStv List</h5>
+						<div className="row mx-0 p-3 bland">
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								S/N
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Name
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Price
+							</div>
+						</div>
+						{cables?.cable_package?.dstv?.map((item, i) => (
+							<div className="row mx-0 p-3" key={i}>
+								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									{item?.name}
+								</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									NGN{" "}
+									{item?.price &&
+										numberWithCommas(Number(item?.price).toFixed(2))}
+								</div>
+							</div>
+						))}
+						<h5 className="Lexend my-3 fontReduceBig">GOtv List</h5>
+						<div className="row mx-0 p-3 bland">
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								S/N
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Name
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Price
+							</div>
+						</div>
+						{cables?.cable_package?.gotv?.map((item, i) => (
+							<div className="row mx-0 p-3" key={i}>
+								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									{item?.name}
+								</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									NGN{" "}
+									{item?.price &&
+										numberWithCommas(Number(item?.price).toFixed(2))}
+								</div>
+							</div>
+						))}
+						<h5 className="Lexend my-3 fontReduceBig">Startimes List</h5>
+						<div className="row mx-0 p-3 bland">
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								S/N
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Name
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Price
+							</div>
+						</div>
+						{cables?.cable_package?.startimes?.map((item, i) => (
+							<div className="row mx-0 p-3" key={i}>
+								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									{item?.name}
+								</div>
+								<div className="col my-auto textTrunc fontReduce2">
+									NGN{" "}
+									{item?.price &&
+										numberWithCommas(Number(item?.price).toFixed(2))}
+								</div>
+							</div>
+						))}
+					</>
+				)}
 			</Container>
 			<ModalComponents title="cable subscription" isOpen={isOpen} back={toggle}>
 				<div className="downH2 d-flex">
@@ -208,27 +317,39 @@ const TVSubHistory = () => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 p-3 text-capitalize">
-				<div className="col">ID</div>
-				<div className="col">date</div>
-				<div className="col">Type</div>
-				<div className="col">Package name</div>
-				<div className="col">price</div>
-				<div className="col">status</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					ID
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					date
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Type</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">
+					Package name
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">price</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">status</div>
 			</div>
 			<div className="bg-white row mx-0">
 				{state?.map((item, index) => (
 					<div key={index} className="row mx-0 py-3">
-						<div className="col my-auto">{item?.item_id}</div>
-						<div className="col my-auto">
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.item_id}
+						</div>
+						<div className="col my-auto textTrunc fontReduce2">
 							{moment(item?.createdAt).format("L")}
 						</div>
-						<div className="col my-auto">{item?.properties?.type}</div>
-						<div className="col my-auto">{item?.properties?.packagename}</div>
-						<div className="col my-auto">
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.properties?.type}
+						</div>
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.properties?.packagename}
+						</div>
+						<div className="col my-auto textTrunc fontReduce2">
 							{numberWithCommas(item?.properties?.amount)}
 						</div>
 						<div
-							className={`col my-auto ${
+							className={`col my-auto textTrunc fontReduce2 ${
 								item?.status ? "text-success" : "text-danger"
 							}`}>
 							{item?.statusText}

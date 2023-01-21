@@ -3,13 +3,22 @@ import {
 	ADD_AIRTIME_CONVERTER,
 	ADD_AIRTIME_CONVERTER_FAIL,
 	ADD_AIRTIME_FAIL,
+	ADD_CONVERTER_NUMBER,
+	ADD_CONVERTER_NUMBER_FAIL,
 	GET_AIRTIME,
 	GET_AIRTIME_CONVERTER,
 	GET_AIRTIME_CONVERTER_FAIL,
 	GET_AIRTIME_FAIL,
 	GET_AIRTIME_LOADING,
 	GET_BANKS,
+	GET_CONVERTER_NUMBER,
+	LOGOUT,
+	UPDATE_CONVERTER_DETAIL,
+	UPDATE_CONVERTER_DETAIL_FAIL,
+	UPDATE_CONVERTER_NUMBER,
+	UPDATE_CONVERTER_NUMBER_FAIL,
 } from "../Actions/ActionTypes";
+import { EditData } from "./DataReducer";
 
 const initialState = {
 	isLoading: false,
@@ -56,6 +65,8 @@ const AirtimeReducer = (state = initialState, action) => {
 				...state,
 				isLoading: true,
 			};
+		case LOGOUT:
+			return initialState;
 		default:
 			return state;
 	}
@@ -70,6 +81,10 @@ const initialState2 = {
 	isDeleted: false,
 	paginate: null,
 	banks: null,
+	isNumberAdded: null,
+	isNumberUpdated: null,
+	isUpdated: null,
+	numbers: [],
 };
 
 export const AirtimeConverterReducer = (state = initialState2, action) => {
@@ -87,10 +102,21 @@ export const AirtimeConverterReducer = (state = initialState2, action) => {
 				},
 			};
 		case ADD_AIRTIME_CONVERTER_FAIL:
+		case UPDATE_CONVERTER_DETAIL_FAIL:
 			return {
 				...state,
 				isAdded: false,
 				isDeleted: false,
+				isUpdated: false,
+			};
+		case UPDATE_CONVERTER_DETAIL:
+			return {
+				...state,
+				isUpdated: true,
+				airtime: EditData(
+					state?.airtime,
+					payload?.data ? payload?.data : payload
+				),
 			};
 		case GET_AIRTIME_CONVERTER:
 			return {
@@ -109,6 +135,32 @@ export const AirtimeConverterReducer = (state = initialState2, action) => {
 				...state,
 				banks: payload?.data,
 			};
+		case GET_CONVERTER_NUMBER:
+			return {
+				...state,
+				isLoading: false,
+				numbers: payload?.data ? payload?.data : payload,
+			};
+		case ADD_CONVERTER_NUMBER:
+			return {
+				...state,
+				isNumberAdded: true,
+				numbers: [payload?.data ? payload?.data : payload, ...state.numbers],
+			};
+		case ADD_CONVERTER_NUMBER_FAIL:
+		case UPDATE_CONVERTER_NUMBER_FAIL:
+			return { ...state, isNumberAdded: false, isNumberUpdated: false };
+		case UPDATE_CONVERTER_NUMBER:
+			return {
+				...state,
+				isNumberUpdated: true,
+				numbers: EditData(
+					state?.numbers,
+					payload?.data ? payload?.data : payload
+				),
+			};
+		case LOGOUT:
+			return initialState2;
 		default:
 			return state;
 	}

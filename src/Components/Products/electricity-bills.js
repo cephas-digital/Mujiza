@@ -12,7 +12,9 @@ const ElectricityBill = () => {
 	let [isOpen, setIsOpen] = useState(false),
 		toggle = () => {
 			setIsOpen(!isOpen);
-		};
+		},
+		[active, setActive] = useState(0),
+		btnTab = ["bill history", "bill list"];
 
 	useEffect(() => {
 		setStateName("bills history");
@@ -81,7 +83,38 @@ const ElectricityBill = () => {
 					onClick={toggle}
 					style={{ borderRadius: "30px" }}
 				/>
-				<ElectricityBillHistory />
+				<div className="btn-group w-100 py-3">
+					{btnTab?.map((item, i) => (
+						<button
+							key={i}
+							className={`btn py-3 text-capitalize fw-bold ${
+								i === active ? "border-bottom textColor" : ""
+							} rounded-0`}
+							onClick={() => setActive(i)}>
+							{item}
+						</button>
+					))}
+				</div>
+				{active === 0 ? (
+					<ElectricityBillHistory />
+				) : (
+					<>
+						<div className="row mx-0 p-3 bland">
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								S/N
+							</div>
+							<div className="col my-auto textTrunc fontReduce fw-bold Lexend">
+								Name
+							</div>
+						</div>
+						{electricity?.electricity_direct?.map((item, i) => (
+							<div className="row mx-0 p-3" key={i}>
+								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
+								<div className="col my-auto textTrunc fontReduce2">{item}</div>
+							</div>
+						))}
+					</>
+				)}
 			</Container>
 			<ModalComponents title="pay bills" isOpen={isOpen} back={toggle}>
 				<div className="downH2 d-flex">
@@ -188,27 +221,37 @@ const ElectricityBillHistory = () => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 p-3 text-capitalize">
-				<div className="col">ID</div>
-				<div className="col">Disco</div>
-				<div className="col">date</div>
-				<div className="col">Meter no</div>
-				<div className="col">price</div>
-				<div className="col">status</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					ID
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Disco</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					date
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Meter no</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">price</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">status</div>
 			</div>
 			<div className="bg-white row mx-0">
 				{state?.map((item, index) => (
 					<div key={index} className="row mx-0 py-3">
-						<div className="col my-auto">{item?.item_id}</div>
-						<div className="col my-auto">{item?.properties?.disco}</div>
-						<div className="col my-auto">
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.item_id}
+						</div>
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.properties?.disco}
+						</div>
+						<div className="col my-auto textTrunc fontReduce2">
 							{moment(item?.createdAt).format("L")}
 						</div>
-						<div className="col my-auto">{item?.properties?.meterNo}</div>
-						<div className="col textTrunc my-auto">
+						<div className="col my-auto textTrunc fontReduce2">
+							{item?.properties?.meterNo}
+						</div>
+						<div className="col textTrunc my-auto textTrunc fontReduce2">
 							{numberWithCommas(item?.properties?.amount)}
 						</div>
 						<div
-							className={`col my-auto ${
+							className={`col my-auto textTrunc fontReduce2 ${
 								item?.status ? "text-success" : "text-danger"
 							}`}>
 							{item?.statusText}

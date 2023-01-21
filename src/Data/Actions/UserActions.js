@@ -6,6 +6,8 @@ import {
 	ADD_NOTIFICATONS_FAIL,
 	GET_ALL_USERS,
 	GET_ALL_USERS_FAIL,
+	GET_HONOUR_BALANCE,
+	GET_HONOUR_BALANCE_FAIL,
 	GET_MY_NOTIFICATONS,
 	GET_MY_NOTIFICATONS_FAIL,
 	GET_NOTIFICATONS,
@@ -29,6 +31,21 @@ export const loadAllUser = data => async dispatch => {
 		if (err) console.log(err.response?.data?.error, { err });
 		if (err?.response?.status === 429) toast.error(err?.response?.data);
 		dispatch({ type: GET_ALL_USERS_FAIL });
+	}
+};
+
+export const getHonourBalance = () => async dispatch => {
+	dispatch(clearErrors());
+	try {
+		let res = await axios.get(`/api/v1/wallet/get-honourworld-balance`);
+		dispatch({
+			type: GET_HONOUR_BALANCE,
+			payload: res.data,
+		});
+	} catch (err) {
+		if (err) console.log(err.response?.data?.error, { err });
+		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		dispatch({ type: GET_HONOUR_BALANCE_FAIL });
 	}
 };
 

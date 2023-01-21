@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { Header, Sidebar, DefaultHeader, Footer } from "./Components";
+import {
+	Header,
+	Sidebar,
+	DefaultHeader,
+	Footer,
+	SideHeader,
+} from "./Components";
 import { GlobalState } from "./Data/Context";
 import PageRender from "./PageRender";
 import Home from "./Screens/home";
@@ -14,7 +20,10 @@ const Routers = () => {
 		<>
 			<ToastContainer />
 			{auth?.user?.privilege === "user" || auth?.user?.privilege === "agent" ? (
-				<Sidebar />
+				<>
+					<Sidebar />
+					<SideHeader noLogo />
+				</>
 			) : (
 				<Header />
 			)}

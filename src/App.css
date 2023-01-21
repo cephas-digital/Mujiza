@@ -499,7 +499,39 @@ body {
 .kemtech-logo {
 	width: 6rem;
 }
+.logo-height {
+	height: 70px;
+}
+
+.iconDash{
+	font-size: 28px;
+}
+.btn-danger2 {
+	transition: var(--trans-04) !important;
+	background: #ff476b !important;
+	color: #fff !important;
+}
+.btn-danger2:hover {
+	transition: var(--trans-04) !important;
+	background: #f9345b !important;
+}
+.btn-success2 {
+	background: #0bce83 !important;
+	color: #fff !important;
+}
+.btn-outline-success2 {
+	border-color: #0bce83 !important;
+}
+.sidehead{
+	min-height: 60px;
+}
 @media screen and (width <= 767.99px) {
+	.iconDash{
+		font-size: 24px;
+	}
+	.logo-height {
+	height: 50px;
+}
 	.footerDiv,
 	.product-service {
 		grid-template-columns: repeat(2, 1fr);
@@ -518,6 +550,9 @@ body {
 	}
 	.w-50.w50 {
 		width: 75% !important;
+	}
+	.w-25.w25 {
+		width: 50% !important;
 	}
 	.aboutImg {
 		max-height: 35vh;

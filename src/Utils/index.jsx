@@ -171,8 +171,10 @@ export const EmptyComponent = ({ subtitle }) => {
 	return (
 		<div className="d-flex flex-column justify-content-center align-items-center">
 			<img src={empty} alt="EmptyComponent" className="emptyData img-fluid" />
-			<h1 className="text-center text-uppercase">Nothing</h1>
-			<p>{subtitle ? subtitle : `Your collection list is empty`}</p>
+			<h1 className="text-center text-uppercase Lexend fw-bold">Nothing</h1>
+			<p className="Lexend fontReduce">
+				{subtitle ? subtitle : `Your collection list is empty`}
+			</p>
 		</div>
 	);
 };

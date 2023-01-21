@@ -2,10 +2,8 @@ import React, { createContext, useState } from "react";
 import { connect, useSelector } from "react-redux";
 import { BiHomeAlt } from "react-icons/bi";
 import { TbUsers } from "react-icons/tb";
-import {
-	VscBellDot,
-	// VscArrowSwap
-} from "react-icons/vsc";
+import { VscBellDot } from "react-icons/vsc";
+import { AiOutlineSwap } from "react-icons/ai";
 import {
 	GiChart,
 	GiWallet,
@@ -17,11 +15,11 @@ import { CgController } from "react-icons/cg";
 // import { BsBoxSeam } from "react-icons/bs";
 
 import {
-	getSetTempUser,
 	registerUser,
 	loginUser,
 	updateUser,
 	logoutUser,
+	updatePassword,
 } from "./Actions/AuthActions";
 
 import {
@@ -32,6 +30,7 @@ import {
 	manageWallet,
 	manageFundWallet,
 	generateVirtual,
+	getManualBonusHistory,
 } from "./Actions/GeneralAction";
 import { clearErrors } from "./Reducer/ErrorReducer";
 import { getSettings } from "./Reducer/SettingsReducer";
@@ -42,13 +41,13 @@ export const GlobalState = createContext();
 
 const DataProvider = ({
 	children,
-	getSetTempUser,
 	getServicesHistory,
 	buyServices,
 	converterServices,
 	dataServices,
 	manageWallet,
 	manageFundWallet,
+	generateVirtual,
 	registerUser,
 	loginUser,
 	updateUser,
@@ -58,7 +57,8 @@ const DataProvider = ({
 	getNotify,
 	manageNotify,
 	loadAllUser,
-	generateVirtual,
+	updatePassword,
+	getManualBonusHistory,
 }) => {
 	const {
 		auth,
@@ -75,6 +75,7 @@ const DataProvider = ({
 		users,
 		settings,
 		notifications,
+		educations,
 	} = useSelector(state => state);
 	let [stateName, setStateName] = useState("");
 
@@ -126,11 +127,11 @@ const DataProvider = ({
 			url: "/products",
 			icon: <IoCardOutline className="icon" size={24} />,
 		},
-		// {
-		// 	name: "Converter",
-		// 	url: "/converter",
-		// 	icon: <VscArrowSwap className="icon" size={24} />,
-		// },
+		{
+			name: "Converter",
+			url: "/converter",
+			icon: <AiOutlineSwap className="icon" size={24} />,
+		},
 		{
 			name: "Notification",
 			url: "/notifications",
@@ -178,11 +179,11 @@ const DataProvider = ({
 			url: "/products",
 			icon: <IoCardOutline className="icon" size={24} />,
 		},
-		// {
-		// 	name: "Converter",
-		// 	url: "/converter",
-		// 	icon: <VscArrowSwap className="icon" size={24} />,
-		// },
+		{
+			name: "Converter",
+			url: "/converter",
+			icon: <AiOutlineSwap className="icon" size={24} />,
+		},
 		{
 			name: "Notification",
 			url: "/notifications",
@@ -209,7 +210,6 @@ const DataProvider = ({
 		setStateName,
 
 		auth,
-		getSetTempUser,
 		registerUser,
 		loginUser,
 		logoutUser,
@@ -233,6 +233,7 @@ const DataProvider = ({
 		wallet,
 		manageWallet,
 		manageFundWallet,
+		generateVirtual,
 
 		bonus,
 		commission,
@@ -246,20 +247,22 @@ const DataProvider = ({
 		loadAllUser,
 
 		notifications,
-		generateVirtual,
+		updatePassword,
+		educations,
+		getManualBonusHistory,
 	};
 
 	return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
 };
 
 export default connect(null, {
-	getSetTempUser,
 	getServicesHistory,
 	buyServices,
 	converterServices,
 	dataServices,
 	manageWallet,
 	manageFundWallet,
+	generateVirtual,
 	registerUser,
 	loginUser,
 	updateUser,
@@ -269,5 +272,6 @@ export default connect(null, {
 	getNotify,
 	manageNotify,
 	loadAllUser,
-	generateVirtual,
+	updatePassword,
+	getManualBonusHistory,
 })(DataProvider);

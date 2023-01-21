@@ -6,23 +6,21 @@ import { ModalComponents } from "..";
 import { GlobalState } from "../../Data/Context";
 import LoadMore, { BottomTab } from "../LoadMore";
 
-const Airtime = () => {
+const Education = () => {
 	let [isOpen, setIsOpen] = useState(false),
 		toggle = () => {
 			setIsOpen(!isOpen);
 		};
 
-	let { setStateName, general, airtimes, buyServices } =
-		useContext(GlobalState);
+	let { setStateName, educations, buyServices } = useContext(GlobalState);
 	useEffect(() => {
-		setStateName("airtime history");
+		setStateName("education history");
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	let init = {
-			phone: "",
+			numberOfPin: "",
 			amount: "",
-			network: "",
 		},
 		[state, setState] = useState(init),
 		[loading, setLoading] = useState(false),
@@ -35,50 +33,47 @@ const Airtime = () => {
 		handleSubmit = async e => {
 			e?.preventDefault();
 			setLoading(true);
-			await buyServices("airtime", state);
+			await buyServices("education", state);
 			setLoading(false);
 			setSubmit(true);
 		};
 
 	useEffect(() => {
-		if (airtimes?.isAdded && submit) {
+		if (educations?.isAdded && submit) {
 			setIsOpen(false);
 			setSubmit(false);
 			setState(init);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [airtimes?.isAdded, submit]);
+	}, [educations?.isAdded, submit]);
 
 	return (
 		<div className="bg-white aboutScreen">
 			<Container className="py-5">
 				<Buttons
-					title={"buy airtime"}
+					title={"buy education"}
 					css="btn-primary1 text-capitalize py-3 px-4 px-lg-5"
 					width={"w-25 w25"}
 					onClick={toggle}
 					style={{ borderRadius: "30px" }}
 				/>
-				<AirtimeHistory />
+				<EducationHistory />
 			</Container>
-			<ModalComponents title="buy airtime" isOpen={isOpen} back={toggle}>
+			<ModalComponents title="buy education" isOpen={isOpen} back={toggle}>
 				<div className="downH2 d-flex">
 					<form className="w-100">
 						<div className="mb-4">
-							<label htmlFor="Newtwork">Network</label>
+							<label htmlFor="Education">Education type</label>
 							<select
 								className="form-control py-3 py-md-4 text-capitalize form-select"
-								name="network"
-								placeholder="Network"
-								value={state?.network}
-								onChange={textChange("network")}
-								id="network">
-								<option value="">select network</option>
-								{general?.networks?.map((item, i) => (
-									<option value={item} key={i}>
-										{item}
-									</option>
-								))}
+								name="type"
+								placeholder="Education"
+								value={state?.type}
+								onChange={textChange("type")}
+								id="type">
+								<option value="">select type</option>
+								<option value="WAEC">WAEC</option>
+								<option value="NECO">NECO</option>
 							</select>
 						</div>
 						<div className="mb-4">
@@ -92,13 +87,13 @@ const Airtime = () => {
 							/>
 						</div>
 						<div className="mb-4">
-							<label htmlFor="telephone">Phone number</label>
+							<label htmlFor="numberOfPin">Number of pins</label>
 							<input
-								type={"tel"}
-								placeholder="08012345678"
+								type={"number"}
+								placeholder="2"
 								className="form-control py-3"
-								value={state?.phone}
-								onChange={textChange("phone")}
+								value={state?.numberOfPin}
+								onChange={textChange("numberOfPin")}
 							/>
 						</div>
 						<Buttons
@@ -116,24 +111,26 @@ const Airtime = () => {
 	);
 };
 
-export default Airtime;
+export default Education;
 
-const AirtimeHistory = () => {
-	let { airtimes, numberWithCommas, getServicesHistory } =
+const EducationHistory = () => {
+	let { educations, numberWithCommas, getServicesHistory } =
 		useContext(GlobalState);
 
 	let [data, setData] = useState(null);
 
 	useEffect(() => {
-		setData(airtimes?.airtime);
-	}, [airtimes?.airtime]);
+		setData(educations?.education);
+	}, [educations?.education]);
 
 	let [loading, setLoading] = useState(false);
 	let handleLoadMore = async () => {
 		setLoading(true);
 
-		await getServicesHistory("airtime", {
-			limit: Number(airtimes?.paginate?.nextPage * airtimes?.paginate?.limit),
+		await getServicesHistory("education", {
+			limit: Number(
+				educations?.paginate?.nextPage * educations?.paginate?.limit
+			),
 		});
 		setLoading(false);
 	};
@@ -144,12 +141,9 @@ const AirtimeHistory = () => {
 	return (
 		<div className="pb-5 my-5">
 			<div className="bland row mx-0 p-3 text-capitalize">
-				<div className="col textTrunc fontReduce d-none d-md-flex">ID</div>
-				<div className="col textTrunc fontReduce fw-bold Lexend">network</div>
-				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
-					date
-				</div>
-				<div className="col textTrunc fontReduce fw-bold Lexend">Number</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">ID</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">type</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">date</div>
 				<div className="col textTrunc fontReduce fw-bold Lexend">amount</div>
 				<div className="col textTrunc fontReduce fw-bold Lexend">status</div>
 			</div>
@@ -159,23 +153,23 @@ const AirtimeHistory = () => {
 				) : (
 					data?.map((item, index) => (
 						<div key={index} className="row mx-0 py-3">
-							<div className="col textTrunc fontReduce2 my-auto d-none d-md-flex">
+							<div className="col my-auto textTrunc fontReduce2">
 								{item?.item_id}
 							</div>
-							<div className="col textTrunc fontReduce2 my-auto">
-								{item?.properties?.network}
+							<div className="col my-auto textTrunc fontReduce2">
+								{item?.properties?.type}
 							</div>
-							<div className="col textTrunc fontReduce2 my-auto d-none d-md-flex">
+							<div className="col my-auto textTrunc fontReduce2">
 								{moment(item?.createdAt).format("L")}
 							</div>
-							<div className="col textTrunc fontReduce2 my-auto">
-								{item?.properties?.phone}
+							<div className="col my-auto textTrunc fontReduce2">
+								{item?.properties?.numberOfPin}
 							</div>
-							<div className="col textTrunc fontReduce2 my-auto">
+							<div className="col my-auto textTrunc fontReduce2">
 								{numberWithCommas(item?.properties?.amount)}
 							</div>
 							<div
-								className={`col textTrunc fontReduce2 text-capitalize my-auto ${
+								className={`col textTrunc fontReduce2 my-auto text-capitalize ${
 									item?.status ? "text-success" : "text-danger"
 								}`}>
 								{item?.statusText}
@@ -184,9 +178,9 @@ const AirtimeHistory = () => {
 					))
 				)}
 			</div>
-			<BottomTab state={data} paginate={airtimes?.paginate} />
+			<BottomTab state={data} paginate={educations?.paginate} />
 			<LoadMore
-				next={airtimes?.paginate?.next}
+				next={educations?.paginate?.next}
 				handleLoadMore={handleLoadMore}
 				loading={loading}
 			/>
