@@ -57,9 +57,9 @@ export const loadUser = () => async dispatch => {
 				dispatch(getHonourBalance());
 				dispatch(getManualBonusHistory("manage-bonus"));
 				dispatch(getManualBonusHistory("manual-funding"));
+				dispatch(getDataHistory());
 			}
 			dispatch(getSettings());
-			dispatch(getDataHistory());
 			dispatch(getServicesHistory("all"));
 			dispatch(getServicesHistory("airtime"));
 			dispatch(getServicesHistory("data"));

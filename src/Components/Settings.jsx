@@ -255,6 +255,7 @@ const GeneralSettings = () => {
 		[airtelCommission, setAIRTELCommission] = useState(""),
 		[mobile9Commission, set9MobileCommission] = useState(""),
 		[cablesCommission, setCablesCommission] = useState(""),
+		[educationCommission, setEducationCommission] = useState(""),
 		[electricityCommission, setElectricityCommission] = useState(""),
 		[airtimeToCashCommission, setAirtimeToCashCommission] = useState(""),
 		[minimumDeposit, setMinimumDeposit] = useState(""),
@@ -275,6 +276,7 @@ const GeneralSettings = () => {
 			setAIRTELCommission("");
 			set9MobileCommission("");
 			setCablesCommission("");
+			setEducationCommission("");
 			setElectricityCommission("");
 			setAirtimeToCashCommission("");
 			setSubmit(false);
@@ -294,6 +296,9 @@ const GeneralSettings = () => {
 		if (type === "mobile9Commission") if (!mobile9Commission) return;
 		if (type === "cablesCommission") if (!cablesCommission) return;
 		if (type === "electricityCommission") if (!electricityCommission) return;
+		if (type === "airtimeToCashCommission")
+			if (!airtimeToCashCommission) return;
+		if (type === "educationCommission") if (!educationCommission) return;
 		if (type === "minimum-deposit") if (!minimumDeposit) return;
 
 		let data;
@@ -322,6 +327,12 @@ const GeneralSettings = () => {
 				cablesCommission: cablesCommission
 					? cablesCommission
 					: stateData?.cablesCommission,
+			};
+		if (type === "educationCommission")
+			data = {
+				educationCommission: educationCommission
+					? educationCommission
+					: stateData?.educationCommission,
 			};
 		if (type === "electricityCommission")
 			data = {
@@ -373,6 +384,9 @@ const GeneralSettings = () => {
 				</p>
 				<p className="fontReduce">
 					Cables commission: {stateData?.cablesCommission}%
+				</p>
+				<p className="fontReduce">
+					Education commission: {stateData?.educationCommission}%
 				</p>
 				<p className="fontReduce">
 					Airtime to cash return: {stateData?.airtimeToCashCommission}%
@@ -524,6 +538,30 @@ const GeneralSettings = () => {
 							css="btn btn-primary1 text-capitalize py-3 w-75 w75 d-block mx-auto my-4"
 							width={"w-75 w75"}
 							onClick={handleSubmit("electricityCommission")}
+						/>
+					</div>
+				</div>
+				<div className="mb-3 d-flex justify-content-center col-md-6">
+					<div className="w-75 w75">
+						<label
+							htmlFor="Price"
+							className="mb-3 textColor2 text-capitalize fontReduce">
+							Education commission
+						</label>
+						<input
+							type="number"
+							name="Price"
+							className="form-control w-100 py-3 borderColor"
+							placeholder="2%"
+							value={educationCommission}
+							onChange={e => setEducationCommission(e.target.value)}
+						/>
+						<Buttons
+							loading={loadingType === "educationCommission" && loading}
+							title="update"
+							css="btn btn-primary1 text-capitalize py-3 w-75 w75 d-block mx-auto my-4"
+							width={"w-75 w75"}
+							onClick={handleSubmit("educationCommission")}
 						/>
 					</div>
 				</div>
