@@ -45,8 +45,7 @@ const Commissions = () => {
 export default Commissions;
 
 export const DataCommission = () => {
-	const { general, numberWithCommas, getWalletHistory } =
-		useContext(GlobalState);
+	const { general, numberWithCommas, getDataHistory } = useContext(GlobalState);
 
 	let [state, setState] = useState(null);
 
@@ -54,7 +53,7 @@ export const DataCommission = () => {
 	let handleLoadMore = async () => {
 		setLoading(true);
 
-		await getWalletHistory({
+		await getDataHistory({
 			limit: Number(
 				general?.paginate_data?.nextPage * general?.paginate_data?.limit
 			),
