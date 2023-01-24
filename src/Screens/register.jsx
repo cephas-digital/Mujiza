@@ -68,7 +68,7 @@ const Register = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [submit, auth?.isRegistered]);
 	return (
-		<DefaultAuthComponent>
+		<DefaultAuthComponent nozoom>
 			<>
 				<h3 className="text-capitalize text-center">Create account</h3>
 				<small className="mb-4 d-block text-center">

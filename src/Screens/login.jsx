@@ -44,7 +44,7 @@ const Login = () => {
 	}, [submit, auth?.isLoggedIn]);
 
 	return (
-		<DefaultAuthComponent>
+		<DefaultAuthComponent nozoom>
 			<>
 				<h3 className="text-capitalize text-center">Login</h3>
 				<small className="mb-4 d-block text-center">
