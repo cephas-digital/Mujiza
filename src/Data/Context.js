@@ -31,6 +31,7 @@ import {
 	manageFundWallet,
 	generateVirtual,
 	getManualBonusHistory,
+	getDataHistory,
 } from "./Actions/GeneralAction";
 import { clearErrors } from "./Reducer/ErrorReducer";
 import { getSettings } from "./Reducer/SettingsReducer";
@@ -59,6 +60,7 @@ const DataProvider = ({
 	loadAllUser,
 	updatePassword,
 	getManualBonusHistory,
+	getDataHistory,
 }) => {
 	const {
 		auth,
@@ -250,6 +252,7 @@ const DataProvider = ({
 		updatePassword,
 		educations,
 		getManualBonusHistory,
+		getDataHistory,
 	};
 
 	return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
@@ -274,4 +277,5 @@ export default connect(null, {
 	loadAllUser,
 	updatePassword,
 	getManualBonusHistory,
+	getDataHistory,
 })(DataProvider);

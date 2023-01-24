@@ -22,6 +22,7 @@ import {
 	converterServices,
 	dataServices,
 	getCards,
+	getDataHistory,
 	getDirectDatas,
 	getManualBonusHistory,
 	getServicesHistory,
@@ -58,6 +59,7 @@ export const loadUser = () => async dispatch => {
 				dispatch(getManualBonusHistory("manual-funding"));
 			}
 			dispatch(getSettings());
+			dispatch(getDataHistory());
 			dispatch(getServicesHistory("all"));
 			dispatch(getServicesHistory("airtime"));
 			dispatch(getServicesHistory("data"));

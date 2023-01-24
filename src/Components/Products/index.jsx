@@ -58,7 +58,7 @@ export let productArr = [
 		icon: <BsPlugFill className="iconDash" />,
 	},
 	{
-		name: "TV Subscriptions",
+		name: "Cable Subscriptions",
 		link: "/tv-subscriptions",
 		color: "linear-gradient(90.18deg, #6CB731 -52.19%, #0F5A16 81.92%)",
 		textColor: "white",

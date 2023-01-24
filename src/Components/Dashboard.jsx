@@ -151,9 +151,13 @@ export const ProductList = () => {
 										: `/products${item?.link}`
 								)
 							}
-							className="shadow2 px-3 py-3 py-md-5 eachProduct rounded20 h-100">
-							<div className="mb-3">{item?.icon}</div>
-							<h6 className="Lexend textTrunc textTrunc2">{item?.name}</h6>
+							className="shadow2 p-3 py-md-5 eachProduct rounded20 h-100 d-flex align-items-center justify-content-center">
+							<div className="">
+								<div className="mb-3">{item?.icon}</div>
+								<h6 className="Lexend textTrunc textTrunc2 fontReduce2">
+									{item?.name}
+								</h6>
+							</div>
 						</div>
 					</div>
 				))}

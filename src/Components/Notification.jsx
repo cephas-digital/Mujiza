@@ -100,10 +100,14 @@ const NotificationList = ({ state, active }) => {
 							<div className="rounded10 shadow2 eachProduct p-2 p-md-3 dashHeight">
 								<small className="Lexend fw-bold mb-2 d-md-flex justify-content-md-between">
 									<span className="Lexend d-block d-md-inline">
-										{active === 1
+										{item?.title !== "notification"
+											? item?.title
+											: active === 1
 											? item?.recipients?.[0]?.lastName
 											: item?.user?.lastName}{" "}
-										{active === 1
+										{item?.title !== "notification"
+											? item?.title
+											: active === 1
 											? item?.recipients?.[0]?.firstName
 											: item?.user?.firstName}
 									</span>
@@ -118,7 +122,7 @@ const NotificationList = ({ state, active }) => {
 									</span>
 								</small>
 								<p>{item?.message}</p>
-								{active === 0 && (
+								{active === 0 && item?.title === "notification" && (
 									<button
 										onClick={() => {
 											setIsUser(item?.user?._id);

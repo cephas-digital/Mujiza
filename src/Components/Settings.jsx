@@ -248,7 +248,7 @@ const ProfileSetup = ({
 };
 
 const GeneralSettings = () => {
-	const { settings, getSettings, numberWithCommas } = useContext(GlobalState);
+	const { settings, getSettings } = useContext(GlobalState);
 
 	let [mtnCommission, setMTNCommission] = useState(""),
 		[gloCommission, setGLOCommission] = useState(""),
@@ -256,6 +256,7 @@ const GeneralSettings = () => {
 		[mobile9Commission, set9MobileCommission] = useState(""),
 		[cablesCommission, setCablesCommission] = useState(""),
 		[electricityCommission, setElectricityCommission] = useState(""),
+		[airtimeToCashCommission, setAirtimeToCashCommission] = useState(""),
 		[minimumDeposit, setMinimumDeposit] = useState(""),
 		[stateData, setStateData] = useState(null),
 		[loading, setLoading] = useState(false),
@@ -275,6 +276,7 @@ const GeneralSettings = () => {
 			set9MobileCommission("");
 			setCablesCommission("");
 			setElectricityCommission("");
+			setAirtimeToCashCommission("");
 			setSubmit(false);
 		}
 	}, [settings?.isUpdated, submit]);
@@ -333,6 +335,12 @@ const GeneralSettings = () => {
 					? minimumDeposit
 					: stateData?.minimumDeposit,
 			};
+		if (type === "airtimeToCashCommission")
+			data = {
+				airtimeToCashCommission: airtimeToCashCommission
+					? airtimeToCashCommission
+					: stateData?.airtimeToCashCommission,
+			};
 		// console.log({ data, state });
 		setLoadingType(type);
 		setLoading(true);
@@ -367,9 +375,12 @@ const GeneralSettings = () => {
 					Cables commission: {stateData?.cablesCommission}%
 				</p>
 				<p className="fontReduce">
+					Airtime to cash return: {stateData?.airtimeToCashCommission}%
+				</p>
+				{/* <p className="fontReduce">
 					Minimum amount to be funded: NGN{" "}
 					{numberWithCommas(Number(stateData?.minimumDeposit).toFixed(2))}
-				</p>
+				</p> */}
 			</div>
 			<div className="row mx-0 g-4 pt-5">
 				<div className="mb-3 d-flex justify-content-center col-md-6">
@@ -522,6 +533,30 @@ const GeneralSettings = () => {
 						<label
 							htmlFor="Price"
 							className="mb-3 textColor2 text-capitalize fontReduce">
+							Airtime to return percentage
+						</label>
+						<input
+							type="number"
+							name="Price"
+							className="form-control w-100 py-3 borderColor"
+							placeholder="85%"
+							value={airtimeToCashCommission}
+							onChange={e => setAirtimeToCashCommission(e.target.value)}
+						/>
+						<Buttons
+							loading={loadingType === "airtimeToCashCommission" && loading}
+							title="update"
+							css="btn btn-primary1 text-capitalize py-3 w-75 w75 d-block mx-auto my-4"
+							width={"w-75 w75"}
+							onClick={handleSubmit("airtimeToCashCommission")}
+						/>
+					</div>
+				</div>
+				{/* <div className="mb-3 d-flex justify-content-center col-md-6">
+					<div className="w-75 w75">
+						<label
+							htmlFor="Price"
+							className="mb-3 textColor2 text-capitalize fontReduce">
 							Minimum amount to be funded
 						</label>
 						<input
@@ -540,7 +575,7 @@ const GeneralSettings = () => {
 							onClick={handleSubmit("minimum-deposit")}
 						/>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</Container>
 	);

@@ -602,6 +602,9 @@ body {
 	.textMini2{
 		font-size: 16px;
 	}
+	.iconDash{
+		font-size: 20px;
+	}
 }
 @media screen and (width <= 425.99px) {
 	.product-service {

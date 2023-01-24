@@ -51,6 +51,8 @@ import {
 	GET_DATA_DIRECT,
 	GET_DATA_DIRECT_FAIL,
 	GET_DATA_FAIL,
+	GET_DATA_TRANSACTIONS,
+	GET_DATA_TRANSACTIONS_FAIL,
 	GET_EDUCATION,
 	GET_EDUCATION_FAIL,
 	GET_ELECTRICITY,
@@ -280,7 +282,7 @@ export const converterServices = (method, type, data, id) => async dispatch => {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		if (method === "post" || method === 'put') {
+		if (method === "post" || method === "put") {
 			error.forEach(error =>
 				error?.param
 					? error?.param !== "suggestion" &&
@@ -545,6 +547,27 @@ export const getCards = () => async dispatch => {
 
 		dispatch({
 			type: GET_CARDS_FAIL,
+		});
+	}
+};
+
+export const getDataHistory = data => async dispatch => {
+	try {
+		let res = await axios.get(
+			`/api/v1/transactions/data${data?.limit ? `?limit=${data?.limit}` : ""}`
+		);
+		dispatch({
+			type: GET_DATA_TRANSACTIONS,
+			payload: res?.data,
+		});
+
+		// console.log({ data: res?.data });
+	} catch (err) {
+		if (err) console.log({ err });
+		if (err) console.log(err?.response ? err?.response?.data : err?.message);
+
+		dispatch({
+			type: GET_DATA_TRANSACTIONS_FAIL,
 		});
 	}
 };

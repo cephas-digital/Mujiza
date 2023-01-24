@@ -248,4 +248,7 @@ header.close .image-text .header-text {
 		border-radius: 0%;
 		color: var(--blue);
 	}
+	.sidebar .text {
+		font-size: 14px;
+	}
 }

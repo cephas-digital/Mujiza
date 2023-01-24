@@ -102,12 +102,12 @@ const Wallets = () => {
 							<div className="d-flex align-items-center justify-content-between">
 								<button
 									onClick={toggleTransfer}
-									className="btn textGradient text-capitalize fw-bold">
-									transfer
+									className="btn text-capitalize fw-bold btn-primary1">
+									wallet transfer
 								</button>
 								{/* <button
 									onClick={toggleWithdraw}
-									className="btn textGradient text-capitalize fw-bold">
+									className="btn text-capitalize fw-bold btn-primary1">
 									withdraw
 								</button> */}
 							</div>
@@ -634,7 +634,7 @@ export const BonusCommission = ({ type }) => {
 						</div>
 						<div
 							className={`col textTrunc fontReduce2 my-auto text-capitalize ${
-								item?.type === "credit" ? "text-success" : "tex-danger"
+								item?.type === "credit" ? "text-success" : "text-danger"
 							}`}>
 							{item?.type}
 						</div>
