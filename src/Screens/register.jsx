@@ -63,7 +63,7 @@ const Register = () => {
 	useEffect(() => {
 		if (submit && auth?.isRegistered) {
 			setSubmit(false);
-			navigate("/activate");
+			navigate("/");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [submit, auth?.isRegistered]);

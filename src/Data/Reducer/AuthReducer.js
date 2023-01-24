@@ -28,15 +28,23 @@ const initialState = {
 const AuthReducer = (state = initialState, { type, payload }) => {
 	switch (type) {
 		case LOGIN_USER:
+		case REGISTER_USER:
 			localStorage.setItem(TOKEN, payload.token);
 			return {
 				...state,
 				isLoggedIn: true,
 				token: payload.token,
 				user: payload?.data,
+				isRegistered: true,
 			};
 		case LOGIN_USER_FAIL:
-			return { ...state, isLoggedIn: false, isThirdPartyLoading: false };
+		case REGISTER_USER_FAIL:
+			return {
+				...state,
+				isLoggedIn: false,
+				isThirdPartyLoading: false,
+				isRegistered: false,
+			};
 		case GET_USER:
 			if (payload?.token) {
 				localStorage.setItem(TOKEN, payload?.token);
@@ -58,13 +66,6 @@ const AuthReducer = (state = initialState, { type, payload }) => {
 				...state,
 				loading: true,
 			};
-		case REGISTER_USER:
-			return {
-				...state,
-				isRegistered: true,
-			};
-		case REGISTER_USER_FAIL:
-			return { ...state, isRegistered: false };
 		case UPDATE_USER:
 			return {
 				...state,
