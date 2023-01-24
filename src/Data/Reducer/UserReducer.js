@@ -1,4 +1,6 @@
 import {
+	ACTIVATE_USER,
+	ACTIVATE_USER_FAIL,
 	ADD_NOTIFICATONS,
 	ADD_NOTIFICATONS_FAIL,
 	GET_ALL_USERS,
@@ -20,6 +22,7 @@ const initialState = {
 	paginate: null,
 	wallet: 0,
 	transactions: 0,
+	isUpdated: false,
 };
 
 const UsersReducer = (state = initialState, action) => {
@@ -34,10 +37,18 @@ const UsersReducer = (state = initialState, action) => {
 				wallet: payload?.wallet,
 				transactions: payload?.transactions,
 			};
+		case ACTIVATE_USER:
+			return {
+				...state,
+				users: EditData(state?.users, payload?.data ? payload?.data : payload),
+				isUpdated: true,
+			};
+		case ACTIVATE_USER_FAIL:
 		case GET_ALL_USERS_FAIL:
 			return {
 				...state,
 				isLoading: false,
+				isUpdated: false,
 			};
 		case LOGOUT:
 			return initialState;

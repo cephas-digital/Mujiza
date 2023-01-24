@@ -33,10 +33,15 @@ import {
 	getManualBonusHistory,
 	getDataHistory,
 } from "./Actions/GeneralAction";
-import { clearErrors } from "./Reducer/ErrorReducer";
+import { clearErrors, restoreMsg } from "./Reducer/ErrorReducer";
 import { getSettings } from "./Reducer/SettingsReducer";
 
-import { getNotify, manageNotify, loadAllUser } from "./Actions/UserActions";
+import {
+	getNotify,
+	manageNotify,
+	manageUserActiveness,
+	loadAllUser,
+} from "./Actions/UserActions";
 
 export const GlobalState = createContext();
 
@@ -57,10 +62,12 @@ const DataProvider = ({
 	getSettings,
 	getNotify,
 	manageNotify,
+	manageUserActiveness,
 	loadAllUser,
 	updatePassword,
 	getManualBonusHistory,
 	getDataHistory,
+	restoreMsg,
 }) => {
 	const {
 		auth,
@@ -78,6 +85,7 @@ const DataProvider = ({
 		settings,
 		notifications,
 		educations,
+		success,
 	} = useSelector(state => state);
 	let [stateName, setStateName] = useState("");
 
@@ -246,6 +254,7 @@ const DataProvider = ({
 
 		getNotify,
 		manageNotify,
+		manageUserActiveness,
 		loadAllUser,
 
 		notifications,
@@ -253,6 +262,9 @@ const DataProvider = ({
 		educations,
 		getManualBonusHistory,
 		getDataHistory,
+
+		success,
+		restoreMsg,
 	};
 
 	return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
@@ -274,8 +286,10 @@ export default connect(null, {
 	getSettings,
 	getNotify,
 	manageNotify,
+	manageUserActiveness,
 	loadAllUser,
 	updatePassword,
 	getManualBonusHistory,
 	getDataHistory,
+	restoreMsg,
 })(DataProvider);

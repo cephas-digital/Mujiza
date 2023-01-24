@@ -145,7 +145,7 @@ export default Data;
 const MakeTransfer = ({ isOpen, back }) => {
 	const { data, general, buyServices } = useContext(GlobalState);
 	let [state, setState] = useState(null),
-		init = { network: "", planId: "", phone: "" },
+		init = { network: "", planId: "", phone: "", amount: "" },
 		[buy, setBuy] = useState(init),
 		[loading, setLoading] = useState(false),
 		[type, setType] = useState([]),
@@ -186,7 +186,20 @@ const MakeTransfer = ({ isOpen, back }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [submit, data?.isAdded]);
 
+	useEffect(() => {
+		if (buy?.network && buy?.planId) {
+			data?.main_data?.map(
+				item =>
+					item?.network?.toLowerCase() === buy?.network?.toLowerCase() &&
+					Number(item?.planId) === Number(buy?.planId) &&
+					setBuy({ ...buy, amount: item?.price })
+			);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [buy?.network, buy?.planId, data?.main_data]);
+
 	if (!state) return <></>;
+
 	return (
 		<>
 			<ModalComponents title="buy data" isOpen={isOpen} back={back}>
@@ -241,11 +254,24 @@ const MakeTransfer = ({ isOpen, back }) => {
 								</select>
 							</div>
 						)}
+						{buy?.network && buy?.planId && (
+							<div className="mb-4">
+								<label htmlFor="telephone">Amount</label>
+								<input
+									type={"number"}
+									placeholder="300"
+									readOnly
+									className="form-control py-3"
+									value={buy?.amount}
+									onChange={textChange("amount")}
+								/>
+							</div>
+						)}
 						<div className="mb-4">
 							<label htmlFor="telephone">Phone number</label>
 							<input
 								type={"tel"}
-								placeholder="08012345678"
+								placeholder="300"
 								className="form-control py-3"
 								value={buy?.phone}
 								onChange={textChange("phone")}

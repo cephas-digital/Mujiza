@@ -70,7 +70,7 @@ export const TransactionsData = ({ state }) => {
 					usage
 				</div>
 				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend">
-					User
+					recipient
 				</div>
 				<div className="col my-auto text-uppercase fontReduce2 fw-bold Lexend d-none d-md-flex">
 					date
@@ -102,14 +102,14 @@ export const TransactionsData = ({ state }) => {
 								? it?.properties?.disco
 								: it?.type === "data"
 								? `${
-										data?.data_direct?.find(
+										data?.main_data?.find(
 											list =>
 												list?.network?.toLowerCase() ===
 													it?.properties?.network?.toLowerCase() &&
 												Number(list?.planId) === Number(it?.properties?.planId)
 										)?.allowance
 								  }, ${
-										data?.data_direct?.find(
+										data?.main_data?.find(
 											list =>
 												list?.network?.toLowerCase() ===
 													it?.properties?.network?.toLowerCase() &&

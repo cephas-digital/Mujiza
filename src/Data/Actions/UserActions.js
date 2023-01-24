@@ -2,6 +2,8 @@ import { clearErrors } from "../Reducer/ErrorReducer";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
+	ACTIVATE_USER,
+	ACTIVATE_USER_FAIL,
 	ADD_NOTIFICATONS,
 	ADD_NOTIFICATONS_FAIL,
 	GET_ALL_USERS,
@@ -92,5 +94,27 @@ export const manageNotify = (data, id) => async dispatch => {
 				: toast.error(error.msg, { autoClose: false })
 		);
 		dispatch({ type: ADD_NOTIFICATONS_FAIL });
+	}
+};
+
+export const manageUserActiveness = (id, action) => async dispatch => {
+	try {
+		let res = await axios.post(`/api/v1/user/manage-users/${id}?type=${action}`);
+		dispatch({
+			type: ACTIVATE_USER,
+			payload: res.data,
+		});
+		toast.success(res?.data?.msg);
+	} catch (err) {
+		if (err) console.log(err.response?.data?.error, { err });
+		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		let error = err.response?.data?.error;
+		error.forEach(error =>
+			error?.param
+				? error?.param !== "suggestion" &&
+				  toast.error(error.msg, { autoClose: false })
+				: toast.error(error.msg, { autoClose: false })
+		);
+		dispatch({ type: ACTIVATE_USER_FAIL });
 	}
 };

@@ -13,7 +13,7 @@ const MainDashboard = () => {
 		{
 			name: "wallet balance",
 			number: wallet?.balance?.available
-				? numberWithCommas(wallet?.balance?.available)
+				? numberWithCommas(Number(wallet?.balance?.available).toFixed(2))
 				: 0,
 			color: "linear-gradient(90deg, #DE0DE2 16.14%, #0E102D 101.45%)",
 			link: "/wallets",
@@ -39,7 +39,7 @@ const MainDashboard = () => {
 		{
 			name: "total expenses",
 			number: wallet?.balance?.purchase
-				? numberWithCommas(wallet?.balance?.purchase)
+				? numberWithCommas(Number(wallet?.balance?.purchase).toFixed(2))
 				: 0,
 			color: "linear-gradient(90.18deg, #84C7DB -52.19%, #377FB6 81.92%)",
 			link: "/transactions",

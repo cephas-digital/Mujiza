@@ -8,7 +8,7 @@ import DataReducer from "./DataReducer";
 import GeneralReducer from "./GeneralReducer";
 import ElectricityReducer from "./ElectricityReducer";
 import AirtimeReducer, { AirtimeConverterReducer } from "./AirtimeReducer";
-import ErrorReducer from "./ErrorReducer";
+import ErrorReducer, { SuccessReducer } from "./ErrorReducer";
 import WalletReducer, {
 	BonusReducer,
 	CommissionReducer,
@@ -33,4 +33,5 @@ export default combineReducers({
 	settings: SettingsReducer,
 	notifications: NotificationReducer,
 	educations: EducationReducer,
+	success: SuccessReducer,
 });

@@ -522,8 +522,17 @@ body {
 .btn-outline-success2 {
 	border-color: #0bce83 !important;
 }
+.text-succcess2 {
+	color: #0bce83 !important;
+}
 .sidehead{
 	min-height: 60px;
+}
+.borderNone {
+	border: none !important;
+}
+.downH2 {
+	min-height: 25vh;
 }
 @media screen and (width <= 767.99px) {
 	.iconDash{

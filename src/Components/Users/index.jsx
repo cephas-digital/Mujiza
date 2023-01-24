@@ -5,7 +5,7 @@ import { BiCog } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
 import { GlobalState } from "../../Data/Context";
 import { ModalComponents } from "../DefaultHeader";
-import { EmptyComponent } from "../../Utils";
+import { Buttons, EmptyComponent } from "../../Utils";
 import { AddNotification } from "../Notification";
 import LoadMore, { BottomTab } from "../LoadMore";
 
@@ -60,6 +60,10 @@ export const UserListOne = () => {
 		[isUser, setIsUser] = useState(null),
 		toggleNotify = () => {
 			setIsUser(null);
+		},
+		[isDisable, setIsDisable] = useState(null),
+		toggleDisable = () => {
+			setIsDisable(null);
 		};
 
 	let handleLoadMore = async () => {
@@ -185,6 +189,10 @@ export const UserListOne = () => {
 															? () => {
 																	setIsUser(mainUser?._id);
 															  }
+															: a?.link === "disable"
+															? () => {
+																	setIsDisable(mainUser);
+															  }
 															: null
 														: () =>
 																navigate(
@@ -192,7 +200,9 @@ export const UserListOne = () => {
 																)
 												}
 												className="btn btn-outline-primary1 text-capitalize w-100 py-3">
-												{a?.name}
+												{a?.link === "disable"
+													? `${mainUser?.status ? "Disable" : "Activate"} user`
+													: a?.name}
 											</button>
 										</div>
 									))}
@@ -213,6 +223,73 @@ export const UserListOne = () => {
 				</>
 			)}
 			<AddNotification isOpen={isUser} back={toggleNotify} />
+			<DisableUser
+				isOpen={isDisable}
+				back={toggleDisable}
+				toggleAll={() => {
+					setMainUser(null);
+					setIsOpen(false);
+				}}
+			/>
 		</div>
+	);
+};
+
+const DisableUser = ({ isOpen, back, toggleAll }) => {
+	const { manageUserActiveness, users } = useContext(GlobalState);
+	let [loading, setLoading] = useState(false),
+		[submit, setSubmit] = useState(false);
+
+	useEffect(() => {
+		if (submit && users?.isUpdated) {
+			setSubmit(false);
+			toggleAll();
+			back();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit, users?.isUpdated]);
+	// console.log({ isOpen });
+	return (
+		<>
+			<ModalComponents
+				title={`${isOpen?.status ? "Suspend" : "Activate"} User`}
+				back={back}
+				isOpen={isOpen}>
+				<div className="downH2 d-flex">
+					<div className="my-auto w-100">
+						<form className="d-flex flex-column justify-content-center align-items-center h-100 w-100">
+							<p className="text2p">
+								Do you want to {isOpen?.status ? "Suspend" : "Activate"} this
+								user?
+							</p>
+							<div className="btn-group mx-auto w-50">
+								<Buttons
+									loading={loading}
+									onClick={async e => {
+										e.preventDefault();
+										setLoading(true);
+										await manageUserActiveness(
+											isOpen._id,
+											isOpen?.status ? "suspend" : "activate"
+										);
+										setSubmit(true);
+										setLoading(false);
+									}}
+									width="w-50"
+									css="btn-success2 text-capitalize py-3 w-50"
+									title={"yes"}
+								/>
+								<Buttons
+									onClick={back}
+									width="w-50"
+									css="btn-primary1 text-capitalize py-3 w-50"
+									title={"no"}
+								/>
+							</div>
+						</form>
+					</div>
+				</div>
+			</ModalComponents>
+		</>
 	);
 };

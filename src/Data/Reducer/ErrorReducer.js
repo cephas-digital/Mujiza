@@ -3,6 +3,8 @@ import {
 	CLEAR_ERRORS,
 	LOGOUT,
 	GET_ERRORS_TEXT,
+	SET_SUCCESS,
+	SET_SUCCESS_FAIL,
 } from "../Actions/ActionTypes";
 
 let initialState = {
@@ -31,6 +33,26 @@ const ErrorReducer = (state = initialState, action) => {
 	}
 };
 
+let initialState2 = {
+	msg: null,
+};
+
+export const SuccessReducer = (state = initialState2, action) => {
+	let { type, payload } = action;
+	switch (type) {
+		case SET_SUCCESS:
+			return {
+				msg: payload,
+			};
+		case SET_SUCCESS_FAIL:
+			return { msg: "" };
+		case LOGOUT:
+			return initialState;
+		default:
+			return state;
+	}
+};
+
 export default ErrorReducer;
 
 export let returnErrors = (error, status, id = null) => {
@@ -44,5 +66,10 @@ export let returnErrors = (error, status, id = null) => {
 export let clearErrors = () => {
 	return {
 		type: CLEAR_ERRORS,
+	};
+};
+export let restoreMsg = () => {
+	return {
+		type: SET_SUCCESS_FAIL,
 	};
 };

@@ -71,6 +71,7 @@ import {
 	MOVE_BONUS_FAIL,
 	MOVE_COMMISSION,
 	MOVE_COMMISSION_FAIL,
+	SET_SUCCESS,
 	TRANSFER_FUND,
 	TRANSFER_FUND_FAIL,
 	UPDATE_CONVERTER_DETAIL,
@@ -191,7 +192,8 @@ export const buyServices = (type, data) => async dispatch => {
 		dispatch(manageFundWallet());
 		dispatch(getWalletHistory("wallet"));
 		dispatch(getWalletHistory("commission"));
-		toast.success(res?.data?.msg);
+		// toast.success(res?.data?.msg);
+		dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
@@ -277,7 +279,10 @@ export const converterServices = (method, type, data, id) => async dispatch => {
 			});
 		}
 		// console.log({ data: res?.data });
-		if (method === "post" || method === "put") toast.success(res?.data?.msg);
+		if (method === "post" || method === "put") {
+			// toast.success(res?.data?.msg);
+			dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
+		}
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
@@ -334,7 +339,10 @@ export const dataServices = (method, data) => async dispatch => {
 			payload: res.data,
 		});
 
-		if (method !== "get") toast.success(res?.data?.msg);
+		if (method !== "get") {
+			toast.success(res?.data?.msg);
+			dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
+		}
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
@@ -435,7 +443,8 @@ export const manageWallet = (type, data, add) => async dispatch => {
 		dispatch(getWalletHistory("commission"));
 		dispatch(manageFundWallet());
 		if (add) dispatch(loadAllUser());
-		toast?.success(res?.data?.msg, { autoClose: 5000 });
+		// toast?.success(res?.data?.msg, { autoClose: 5000 });
+		dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
@@ -484,7 +493,10 @@ export const manageFundWallet = (data, update) => async dispatch => {
 			type: newType,
 			payload: data ? res?.data : res?.data?.data ? res?.data?.data : res?.data,
 		});
-		if (data) toast?.success(res?.data?.msg, { autoClose: 5000 });
+		if (data) {
+			toast?.success(res?.data?.msg, { autoClose: 5000 });
+			dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
+		}
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
@@ -515,7 +527,8 @@ export const generateVirtual = () => async dispatch => {
 			type: GENERATE_VIRTUAL,
 			payload: res?.data,
 		});
-		toast?.success(res?.data?.msg, { autoClose: 5000 });
+		// toast?.success(res?.data?.msg, { autoClose: 5000 });
+		dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
 		dispatch(manageFundWallet());
 	} catch (err) {
 		if (err) console.log({ err });
