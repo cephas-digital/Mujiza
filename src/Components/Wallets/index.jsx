@@ -180,22 +180,22 @@ const Wallets = () => {
 					</Link>
 				</div>
 				<div className="row mx-0 g-4">
-					<div className="col-md-9">
-						<div className="btn-group d-none d-md-block">
+					<div className="col-md-10">
+						{/* <div className="btn-group d-none d-md-block">
 							<button className="btn text-dark text-capitalize border-bottom fw-bold">
 								transfer
 							</button>
 							<button className="btn text-dark text-capitalize fw-bold text-muted">
 								cards
 							</button>
-						</div>
-						<div className="d-md-none Lexend fw-bold">History</div>
+						</div> */}
+						<div className="Lexend fw-bold mb-2">Wallet History</div>
 						<div>
 							<TransferList />
 						</div>
 					</div>
 					<div
-						className="col-md-3 rounded10 p-3 d-none d-block"
+						className="col-md-2 rounded10 p-3 d-none d-block"
 						style={{ background: "#FCFCF9" }}>
 						<h5 className="fw-bold">Your activity</h5>
 						<RoundCharts
@@ -767,6 +767,22 @@ const TransferList = () => {
 	};
 	return (
 		<>
+			<div className="bland row mx-0 py-3 px-0 text-capitalize">
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex"></div>
+				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
+					type
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">
+					Description
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Amount</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">
+					Previous balance
+				</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">Balance</div>
+				<div className="col textTrunc fontReduce fw-bold Lexend">date</div>
+				<div className="col d-none d-md-flex"></div>
+			</div>
 			{wallet?.wallet?.length === 0 ? (
 				<EmptyComponent subtitle={"Wallet is empty"} />
 			) : (
@@ -795,7 +811,20 @@ const TransferList = () => {
 							{it?.description}
 						</div>
 						<div className="col my-auto fontReduce2">
-							NGN {it?.amount ? numberWithCommas(it?.amount) : 0}
+							NGN{" "}
+							{it?.amount ? numberWithCommas(Number(it?.amount).toFixed(2)) : 0}
+						</div>
+						<div className="col my-auto fontReduce2">
+							NGN{" "}
+							{it?.prevBalance
+								? numberWithCommas(Number(it?.prevBalance).toFixed(2))
+								: 0}
+						</div>
+						<div className="col my-auto fontReduce2">
+							NGN{" "}
+							{it?.balance
+								? numberWithCommas(Number(it?.balance).toFixed(2))
+								: 0}
 						</div>
 						<div className="col my-auto fontReduce2">
 							{moment(it?.createdAt).format("DD/MM")}
