@@ -26,6 +26,8 @@ import {
 	MOVE_COMMISSION_FAIL,
 	TRANSFER_FUND,
 	TRANSFER_FUND_FAIL,
+	UPDATE_WALLET,
+	UPDATE_WALLET_FAIL,
 } from "../Actions/ActionTypes";
 
 let init = {
@@ -40,6 +42,8 @@ let init = {
 	honour_balance: null,
 	manual: [],
 	paginate_manual: null,
+	data: null,
+	isUpdated: null,
 };
 
 const WalletReducer = (state = init, action) => {
@@ -60,15 +64,43 @@ const WalletReducer = (state = init, action) => {
 			return {
 				...state,
 				isFunded: true,
-				wallet: [payload?.data ? payload?.data : payload, ...state?.wallet],
-				paginate: {
-					...state?.paginate,
-					result: state?.paginate?.result + 1,
-					total: state?.paginate?.total + 1,
-				},
+				wallet:
+					payload?.status?.toLowerCase() === "success"
+						? [payload?.data ? payload?.data : payload, ...state?.wallet]
+						: state?.wallet,
+				paginate:
+					payload?.status?.toLowerCase() === "success"
+						? {
+								...state?.paginate,
+								result: state?.paginate?.result + 1,
+								total: state?.paginate?.total + 1,
+						  }
+						: state?.paginate,
+				data: payload?.data ? payload?.data : payload,
+			};
+		case UPDATE_WALLET:
+			return {
+				...state,
+				isFunded: true,
+				isUpdated: payload?.status?.toLowerCase() === "success" ? true : false,
+				wallet:
+					payload?.status?.toLowerCase() === "success"
+						? [payload?.data ? payload?.data : payload, ...state?.wallet]
+						: state?.wallet,
+				paginate:
+					payload?.status?.toLowerCase() === "success"
+						? {
+								...state?.paginate,
+								result: state?.paginate?.result + 1,
+								total: state?.paginate?.total + 1,
+						  }
+						: state?.paginate,
+				data: payload?.data ? payload?.data : payload,
 			};
 		case FUND_WALLET_FAIL:
 			return { ...state, isFunded: false };
+		case UPDATE_WALLET_FAIL:
+			return { ...state, isUpdated: false };
 		case ADD_FUND:
 			return {
 				...state,

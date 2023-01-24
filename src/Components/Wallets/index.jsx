@@ -230,7 +230,11 @@ const Wallets = () => {
 			</Container>{" "}
 			<MakeTransfer isOpen={isTransfer} back={toggleTransfer} />
 			<MakeWithdraw isOpen={isWithdraw} back={toggleWithdraw} />
-			<MakeCards isOpen={isCard} back={toggleCard} />
+			<MakeCards
+				isOpen={isCard}
+				back={toggleCard}
+				back2={() => setIsCard(false)}
+			/>
 			<MakeVirtual isOpen={isVirtual} back={toggleVirtual} />
 			<MoveFund isOpen={moveType} back={() => setMoveType(false)} />
 		</div>
@@ -319,7 +323,7 @@ const MakeWithdraw = ({ isOpen, back }) => {
 	);
 };
 
-const MakeCards = ({ isOpen, back }) => {
+const MakeCards = ({ isOpen, back, back2 }) => {
 	const { manageFundWallet, wallet } = useContext(GlobalState);
 	let init = {
 			card_number: "",
@@ -331,6 +335,13 @@ const MakeCards = ({ isOpen, back }) => {
 		[amount, setAmount] = useState(""),
 		[loading, setLoading] = useState(false),
 		[submit, setSubmit] = useState(false),
+		[loading2, setLoading2] = useState(false),
+		[submit2, setSubmit2] = useState(false),
+		[updateType, setUpdateType] = useState(""),
+		[updateValue, setUpdateValue] = useState({
+			status: "",
+			reference: "",
+		}),
 		toggle = () => {
 			setIsAdd(!isAdd);
 		},
@@ -347,23 +358,73 @@ const MakeCards = ({ isOpen, back }) => {
 			setLoading(false);
 			setSubmit(true);
 		},
+		handleSubmitUpdate = async e => {
+			e?.preventDefault();
+			setLoading2(true);
+			let data = { ...updateValue };
+
+			if (updateValue?.status === "send_pin")
+				data = { ...data, pin: updateType };
+			else if (updateValue?.status === "send_otp")
+				data = { ...data, otp: updateType };
+			else if (updateValue?.status === "send_phone")
+				data = { ...data, phone: updateType };
+			else if (updateValue?.status === "send_birthday")
+				data = { ...data, birthday: updateType };
+
+			console.log({ data, updateValue });
+			await manageFundWallet(data, "update");
+			setLoading2(false);
+			setSubmit2(true);
+		},
 		setDetails = data => {
 			setPaymentData({ ...payment_data, ...data });
 		};
 
 	useEffect(() => {
-		if (submit && wallet?.isFunded) {
-			back();
+		if (
+			submit &&
+			wallet?.isFunded &&
+			wallet?.data?.status?.toLowerCase() === "success"
+		) {
+			back2();
+			setSubmit(false);
+			setPaymentData(init);
+		}
+		if (
+			submit &&
+			wallet?.isFunded &&
+			wallet?.data?.status?.toLowerCase() !== "success"
+		) {
+			setUpdateValue(wallet?.data);
+			back2();
 			setSubmit(false);
 			setPaymentData(init);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [submit, wallet?.isFunded]);
+	}, [submit, wallet?.isFunded, submit2]);
+
+	useEffect(() => {
+		if (wallet?.data) {
+			setUpdateValue(wallet?.data);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [wallet?.data]);
+
+	useEffect(() => {
+		if (submit2 && wallet?.isUpdated) {
+			back2();
+			setSubmit(false);
+			setPaymentData(init);
+			setUpdateValue({ status: "" });
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [submit2, wallet?.isUpdated]);
 
 	const { getCardNumberProps, getExpiryDateProps, getCVCProps, meta } =
 			usePaymentInputs(),
 		{ erroredInputs, touchedInputs } = meta;
-
+	// console.log({ wallet, updateValue });
 	return (
 		<>
 			<ModalComponents isOpen={isOpen} back={back} title="Choose card">
@@ -440,6 +501,42 @@ const MakeCards = ({ isOpen, back }) => {
 						style={{ borderRadius: "30px" }}
 						loading={loading}
 						onClick={handleSubmit}
+					/>
+				</form>
+			</ModalComponents>
+			<ModalComponents
+				isOpen={updateValue?.status}
+				back={() => setUpdateValue({ ...updateValue, status: "" })}
+				title="Finalize transaction">
+				<form>
+					<div className="mb-3">
+						<label htmlFor="value" className="text-capitalize">
+							{updateValue?.status?.split("_")?.join(" ")}
+						</label>
+						<input
+							type={
+								updateValue?.status === "send_pin" ||
+								updateValue?.status === "send_otp"
+									? "number"
+									: updateValue?.status === "send_phone"
+									? "tel"
+									: updateValue?.status === "send_birthday"
+									? "datetime-local"
+									: "text"
+							}
+							placeholder="1234"
+							className="form-control py-3 rounded10"
+							value={updateType}
+							onChange={e => setUpdateType(e.target.value)}
+						/>
+					</div>
+					<Buttons
+						title={"finalize"}
+						css="btn-primary1 text-capitalize py-3 w-50 my-4 mx-auto"
+						width={"w-50"}
+						style={{ borderRadius: "30px" }}
+						loading={loading2}
+						onClick={handleSubmitUpdate}
 					/>
 				</form>
 			</ModalComponents>

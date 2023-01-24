@@ -494,8 +494,9 @@ export const manageFundWallet = (data, update) => async dispatch => {
 			payload: data ? res?.data : res?.data?.data ? res?.data?.data : res?.data,
 		});
 		if (data) {
-			toast?.success(res?.data?.msg, { autoClose: 5000 });
-			dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
+			if (res?.data?.status === "success")
+				dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
+			else toast?.success(res?.data?.msg, { autoClose: 5000 });
 		}
 	} catch (err) {
 		if (err) console.log({ err });
