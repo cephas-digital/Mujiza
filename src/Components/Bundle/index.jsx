@@ -13,7 +13,7 @@ const Bundles = () => {
 	let params = useParams();
 
 	useEffect(() => {
-		if (auth?.user?.privilege === "user") {
+		if (auth?.user?.privilege !== "agent") {
 			setMainData([
 				{
 					name: "CG wallet",

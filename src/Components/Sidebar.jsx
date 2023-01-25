@@ -30,7 +30,7 @@ const Sidebar = () => {
 	useEffect(() => {
 		if (auth?.user?.privilege === "agent") {
 			setSidebarState(sidebarList);
-		} else if (auth?.user?.privilege === "user") {
+		} else if (auth?.user) {
 			setSidebarState(sidebarListUser);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps

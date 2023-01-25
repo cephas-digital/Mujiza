@@ -142,6 +142,7 @@ export const registerUser = userData => async dispatch => {
 			payload: res.data,
 		});
 		toast.success(res.data.msg);
+		dispatch(loadUser());
 	} catch (err) {
 		console.log({ err });
 		let error = err.response?.data?.error;

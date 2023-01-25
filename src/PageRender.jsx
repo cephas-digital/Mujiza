@@ -31,7 +31,13 @@ const PageRender = () => {
 		],
 		escapeAdmin = ["admins", "employees", "billers"],
 		escapeWallet = ["bonus", "commissions"],
-		escapeControl = ["bills", "broadcasts", "tv-subscriptions", "bonus", "manual"];
+		escapeControl = [
+			"bills",
+			"broadcasts",
+			"tv-subscriptions",
+			"bonus",
+			"manual",
+		];
 
 	useEffect(() => {
 		if (!auth?.isAuth) {
@@ -73,10 +79,10 @@ const PageRender = () => {
 
 	return generatePage(
 		pageName,
-		auth?.user?.privilege === "user"
-			? "Pages"
-			: auth?.user?.privilege === "agent"
+		auth?.user?.privilege === "agent"
 			? "Views"
+			: auth?.user
+			? "Pages"
 			: "Screens"
 	);
 };

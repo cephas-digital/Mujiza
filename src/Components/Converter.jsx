@@ -18,7 +18,7 @@ const MainConvert = () => {
 	return (
 		<div className="bg-white aboutScreen">
 			<Container>
-				{auth?.user?.privilege === "user" ? (
+				{auth?.user?.privilege !== "agent" ? (
 					<ConvertTop />
 				) : (
 					<ConvertAgentTop />

@@ -14,14 +14,14 @@ import PageRender from "./PageRender";
 import Home from "./Screens/home";
 import Home2 from "./Pages/home";
 import Home3 from "./Views/home";
-import gif from "./Assets/images (1).mp4";
+import gif from "./Assets/59945-success-confetti.gif";
 
 const Routers = () => {
 	const { auth, success, restoreMsg } = useContext(GlobalState);
 	return (
 		<>
 			<ToastContainer />
-			{auth?.user?.privilege === "user" || auth?.user?.privilege === "agent" ? (
+			{auth?.user ? (
 				<>
 					<Sidebar />
 					<SideHeader noLogo />
@@ -29,26 +29,16 @@ const Routers = () => {
 			) : (
 				<Header />
 			)}
-			<div
-				className={
-					auth?.user?.privilege === "user" || auth?.user?.privilege === "agent"
-						? "home"
-						: ""
-				}>
-				{auth?.user?.privilege === "user" ||
-				auth?.user?.privilege === "agent" ? (
-					<DefaultHeader />
-				) : (
-					<></>
-				)}
+			<div className={auth?.user ? "home" : ""}>
+				{auth?.user ? <DefaultHeader /> : <></>}
 				<Routes>
 					<Route
 						path="/"
 						element={
-							auth?.user?.privilege === "user" ? (
-								<Home2 />
-							) : auth?.user?.privilege === "agent" ? (
+							auth?.user?.privilege === "agent" ? (
 								<Home3 />
+							) : auth?.user ? (
+								<Home2 />
 							) : (
 								<Home />
 							)
@@ -59,11 +49,7 @@ const Routers = () => {
 					<Route path="/:page/:id/:step" element={<PageRender />} />
 				</Routes>
 			</div>
-			{auth?.user?.privilege === "user" || auth?.user?.privilege === "agent" ? (
-				<></>
-			) : (
-				<Footer />
-			)}
+			{auth?.user ? <></> : <Footer />}
 			<ModalComponents
 				isOpen={success?.msg}
 				title="Success"
@@ -73,9 +59,7 @@ const Routers = () => {
 				toggle={() => restoreMsg()}>
 				<div className="downH2 d-flex flex-column">
 					<div className="mx-auto">
-						<video className="" autoPlay muted loop id="myVideo">
-							<source src={gif} type="video/mp4" />
-						</video>
+						<img src={gif} alt="Gif" className="img-fluid" />
 					</div>
 					<p className="fw-bold Lexend text-center w-100">{success?.msg}</p>
 					<button

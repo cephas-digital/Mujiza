@@ -50,7 +50,7 @@ const Wallets = () => {
 							<h3 className="fontReduceBig">Wallet balance</h3>
 							<h1
 								className={`fw-bold text5 textMini ${
-									auth?.user?.privilege === "user" ? "mb-5" : ""
+									auth?.user?.privilege === "agent" ? "" : "mb-5"
 								}`}>
 								NGN{" "}
 								{numberWithCommas(
