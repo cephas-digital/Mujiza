@@ -24,6 +24,10 @@ import {
 	MOVE_BONUS_FAIL,
 	MOVE_COMMISSION,
 	MOVE_COMMISSION_FAIL,
+	SEARCH_WALLET,
+	SEARCH_WALLET_FAIL,
+	SEARCH_WALLET_LOADING,
+	SEARCH_WALLET_RELOAD,
 	TRANSFER_FUND,
 	TRANSFER_FUND_FAIL,
 	UPDATE_WALLET,
@@ -44,12 +48,45 @@ let init = {
 	paginate_manual: null,
 	data: null,
 	isUpdated: null,
+	isFound: null,
+	searchLoading: null,
+	mainSearch: [],
+	search: "",
+	search_paginate: null,
 };
 
 const WalletReducer = (state = init, action) => {
 	let { type, payload } = action;
 
 	switch (type) {
+		case SEARCH_WALLET:
+			return {
+				...state,
+				isFound: true,
+				searchLoading: false,
+				mainSearch: payload?.data,
+				search: action.search,
+				search_paginate: payload?.paginate,
+			};
+		case SEARCH_WALLET_FAIL:
+			return {
+				...state,
+				isFound: false,
+				searchLoading: false,
+				mainSearch: null,
+				search: "",
+				search_paginate: null,
+			};
+		case SEARCH_WALLET_LOADING:
+			return {
+				...state,
+				searchLoading: true,
+			};
+		case SEARCH_WALLET_RELOAD:
+			return {
+				...state,
+				isFound: false,
+			};
 		case GET_ALL_MANUAL:
 			return {
 				...state,

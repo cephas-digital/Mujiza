@@ -32,6 +32,8 @@ import {
 	generateVirtual,
 	getManualBonusHistory,
 	getDataHistory,
+	getReload,
+	getWalletHistory,
 } from "./Actions/GeneralAction";
 import { clearErrors, restoreMsg } from "./Reducer/ErrorReducer";
 import { getSettings } from "./Reducer/SettingsReducer";
@@ -67,6 +69,8 @@ const DataProvider = ({
 	updatePassword,
 	getManualBonusHistory,
 	getDataHistory,
+	getReload,
+	getWalletHistory,
 	restoreMsg,
 }) => {
 	const {
@@ -262,6 +266,8 @@ const DataProvider = ({
 		educations,
 		getManualBonusHistory,
 		getDataHistory,
+		getReload,
+		getWalletHistory,
 
 		success,
 		restoreMsg,
@@ -291,5 +297,7 @@ export default connect(null, {
 	updatePassword,
 	getManualBonusHistory,
 	getDataHistory,
+	getReload,
+	getWalletHistory,
 	restoreMsg,
 })(DataProvider);

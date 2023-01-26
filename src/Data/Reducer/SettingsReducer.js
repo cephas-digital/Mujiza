@@ -6,6 +6,7 @@ import {
 	UPDATE_SETTINGS,
 	UPDATE_SETTINGS_FAIL,
 } from "../Actions/ActionTypes";
+import { returnErrors } from "./ErrorReducer";
 
 let initialState = {
 	settings: null,
@@ -41,10 +42,13 @@ export const getSettings = data => async dispatch => {
 			type: !data ? GET_SETTINGS : UPDATE_SETTINGS,
 			payload: res.data.data,
 		});
-		if (data) toast.success(res.data.msg);
+		if (data) toast.success(res.data.msg, { autoClose: 6000 });
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
+		let error = err.response?.data?.error;
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
 		dispatch({ type: UPDATE_SETTINGS_FAIL });
 	}
 };

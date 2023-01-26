@@ -47,13 +47,13 @@ const MainSettings = () => {
 		handleSubmit = type => async e => {
 			if (e) e.preventDefault();
 			if (type === "profile-image") {
-				if (!logo) return toast.info("Image required");
+				if (!logo) return toast.info("Image required", {auth:10000});
 				setLoading(true);
 				await updateUser({ logo }, "profile-image");
 				setLoading(false);
 			} else {
 				if (!state?.gender && !state?.bio)
-					return toast.info("Gender or bio required");
+					return toast.info("Gender or bio required", {auth:10000});
 				setLoading(true);
 				await updateUser(state);
 				setLoading(false);

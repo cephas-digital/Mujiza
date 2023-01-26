@@ -123,10 +123,12 @@ const Wallets = () => {
 											.writeText(wallet?.balance?.wallet_id)
 											.then(
 												() => {
-													toast.info("Copied");
+													toast.info("Copied", { autoClose: 2000 });
 												},
 												err => {
-													toast.warn(`Could not copy: ${err}`);
+													toast.warn(`Could not copy: ${err}`, {
+														autoClose: 2000,
+													});
 												}
 											);
 									}}>
@@ -583,10 +585,12 @@ const MakeVirtual = ({ isOpen, back }) => {
 												onClick={() => {
 													navigator.clipboard.writeText(it?.accountNumber).then(
 														() => {
-															toast.info("Copied");
+															toast.info("Copied", { autoClose: 2000 });
 														},
 														err => {
-															toast.warn(`Could not copy: ${err}`);
+															toast.warn(`Could not copy: ${err}`, {
+																autoClose: 2000,
+															});
 														}
 													);
 												}}
@@ -754,19 +758,70 @@ export const BonusCommission = ({ type }) => {
 };
 
 const TransferList = () => {
-	const { wallet, getWalletHistory, numberWithCommas } =
+	const { wallet, getWalletHistory, numberWithCommas, getReload } =
 		useContext(GlobalState);
-	let [loading, setLoading] = useState(false);
+	let [loading, setLoading] = useState(false),
+		[search, setSearch] = useState(""),
+		[state, setState] = useState(null);
+
+	useEffect(() => {
+		if (search) {
+			document.getElementById("Search").addEventListener("search", () => {
+				getReload();
+			});
+			let handleSubmit = async () => {
+				if (!search) return;
+
+				await getWalletHistory("wallet", {
+					search,
+				});
+			};
+			handleSubmit();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [search]);
+
+	useEffect(() => {
+		if (wallet.isFound) {
+			setState(wallet.mainSearch);
+		} else setState(wallet.wallet);
+	}, [wallet.wallet, wallet.isFound, wallet.mainSearch]);
+
+	useEffect(() => {
+		getReload();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	let handleLoadMore = async () => {
 		setLoading(true);
 
-		await getWalletHistory("wallet", {
-			limit: Number(wallet?.paginate?.nextPage * wallet?.paginate?.limit),
-		});
+		if (search) {
+			await getWalletHistory("wallet", {
+				limit: Number(wallet?.paginate?.nextPage * wallet?.paginate?.limit),
+				search,
+			});
+		} else {
+			await getWalletHistory("wallet", {
+				limit: Number(wallet?.paginate?.nextPage * wallet?.paginate?.limit),
+			});
+		}
 		setLoading(false);
 	};
+
+	if (!state) return <></>;
 	return (
 		<>
+			<div className="w-50 mb-3">
+				<input
+					type="search"
+					name="search"
+					id="Search"
+					className="form-control w-100 py-3 borderColor2"
+					placeholder="Type here to search"
+					value={search}
+					onChange={e => setSearch(e.target.value)}
+				/>
+			</div>
 			<div className="bland row mx-0 py-3 px-0 text-capitalize">
 				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex"></div>
 				<div className="col textTrunc fontReduce fw-bold Lexend d-none d-md-flex">
@@ -783,10 +838,10 @@ const TransferList = () => {
 				<div className="col textTrunc fontReduce fw-bold Lexend">date</div>
 				<div className="col d-none d-md-flex"></div>
 			</div>
-			{wallet?.wallet?.length === 0 ? (
+			{state?.length === 0 ? (
 				<EmptyComponent subtitle={"Wallet is empty"} />
 			) : (
-				wallet?.wallet?.map((it, i) => (
+				state?.map((it, i) => (
 					<div key={i} className="row mx-0 my-2">
 						<div className="col d-none d-md-flex fontReduce2">
 							<div className="d-flex">
@@ -844,9 +899,12 @@ const TransferList = () => {
 					</div>
 				))
 			)}
-			<BottomTab state={wallet?.wallet} paginate={wallet?.paginate} />
+			<BottomTab
+				state={state}
+				paginate={search ? wallet?.search_paginate : wallet?.paginate}
+			/>
 			<LoadMore
-				next={wallet?.paginate?.next}
+				next={search ? wallet?.search_paginate?.next : wallet?.paginate?.next}
 				handleLoadMore={handleLoadMore}
 				loading={loading}
 			/>

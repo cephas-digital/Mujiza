@@ -511,6 +511,9 @@ body {
 	background: #ff476b !important;
 	color: #fff !important;
 }
+.text-danger2 {
+	color: #ff476b !important;
+}
 .btn-danger2:hover {
 	transition: var(--trans-04) !important;
 	background: #f9345b !important;

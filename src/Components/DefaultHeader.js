@@ -75,6 +75,8 @@ export const ModalComponents = ({
 	back,
 	size,
 	notHeader,
+	borderNone,
+	success,
 }) => {
 	useEffect(() => {
 		if (isOpen) {
@@ -94,7 +96,9 @@ export const ModalComponents = ({
 			{!notHeader && (
 				<ModalHeader
 					toggle={toggle}
-					className="borderNone text-capitalize genSansFont textColor2">
+					className={`${borderNone ? borderNone : ""} ${
+						success ? success : ""
+					} text-capitalize Lexend textColor2`}>
 					{back && <BiArrowBack className="me-3 myCursor" onClick={back} />}
 					{title}
 				</ModalHeader>

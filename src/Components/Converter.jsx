@@ -64,7 +64,7 @@ const ConvertTop = () => {
 				!state?.account_number &&
 				!state?.reference
 			)
-				return toast.info("Please provide bank name and account number");
+				return toast.info("Please provide bank name and account number", {autoClose:10000});
 			setLoading(true);
 			await converterServices("post", "converter", state);
 			setLoading(false);

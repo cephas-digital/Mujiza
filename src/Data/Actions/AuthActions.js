@@ -58,6 +58,7 @@ export const loadUser = () => async dispatch => {
 				dispatch(getManualBonusHistory("manage-bonus"));
 				dispatch(getManualBonusHistory("manual-funding"));
 				dispatch(getDataHistory());
+				dispatch(getDataHistory(null, "all"));
 			}
 			dispatch(getSettings());
 			dispatch(getServicesHistory("all"));
@@ -118,12 +119,12 @@ export const loginUser = userData => async dispatch => {
 		dispatch({ type: LOGIN_USER_FAIL });
 		if (error) {
 			dispatch(returnErrors({ error, status: err?.response?.status }));
-			error.forEach(
-				error =>
-					error?.param &&
-					error?.param !== "suggestion" &&
-					toast.error(error.msg)
-			);
+			// error.forEach(
+			// 	error =>
+			// 		error?.param &&
+			// 		error?.param !== "suggestion" &&
+			// 		toast.error(error.msg)
+			// );
 		}
 		if (err?.response?.status === 429 || err?.response?.status === 405)
 			toast.error(err?.response?.data ? err?.response?.data : err?.message);
@@ -141,7 +142,7 @@ export const registerUser = userData => async dispatch => {
 			type: REGISTER_USER,
 			payload: res.data,
 		});
-		toast.success(res.data.msg);
+		toast.success(res.data.msg, {autoClose:5000});
 		dispatch(loadUser());
 	} catch (err) {
 		console.log({ err });
@@ -149,12 +150,12 @@ export const registerUser = userData => async dispatch => {
 		console.log({ error });
 		if (error) {
 			dispatch(returnErrors({ error, status: err?.response?.status }));
-			error.forEach(
-				error =>
-					error?.param &&
-					error?.param !== "suggestion" &&
-					toast.error(error.msg)
-			);
+			// error.forEach(
+			// 	error =>
+			// 		error?.param &&
+			// 		error?.param !== "suggestion" &&
+			// 		toast.error(error.msg)
+			// );
 		}
 		dispatch({ type: REGISTER_USER_FAIL });
 
@@ -179,12 +180,12 @@ export const updatePassword = userData => async dispatch => {
 		dispatch({ type: UPDATE_PASSWORD_FAIL });
 		if (error) {
 			dispatch(returnErrors({ error, status: err?.response?.status }));
-			error.forEach(error =>
-				error?.param
-					? error?.param !== "suggestion" &&
-					  toast.error(error.msg, { autoClose: false })
-					: toast.error(error.msg, { autoClose: false })
-			);
+			// error.forEach(error =>
+			// 	error?.param
+			// 		? error?.param !== "suggestion" &&
+			// 		  toast.error(error.msg, { autoClose: false })
+			// 		: toast.error(error.msg, { autoClose: false })
+			// );
 		}
 		if (err?.response?.status === 429) toast.error(err?.response?.data);
 	}
@@ -217,12 +218,12 @@ export const updateUser = (userData, type) => async dispatch => {
 		dispatch({ type: UPDATE_USER_FAIL });
 		if (error) {
 			dispatch(returnErrors({ error, status: err?.response?.status }));
-			error.forEach(error =>
-				error?.param
-					? error?.param !== "suggestion" &&
-					  toast.error(error.msg, { autoClose: false })
-					: toast.error(error.msg, { autoClose: false })
-			);
+			// error.forEach(error =>
+			// 	error?.param
+			// 		? error?.param !== "suggestion" &&
+			// 		  toast.error(error.msg, { autoClose: false })
+			// 		: toast.error(error.msg, { autoClose: false })
+			// );
 		}
 		if (err?.response?.status === 429) toast.error(err?.response?.data);
 	}

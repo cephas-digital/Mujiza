@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { returnErrors } from "../Reducer/ErrorReducer";
 import {
 	ADD_AIRTIME,
 	ADD_AIRTIME_CONVERTER,
@@ -59,6 +60,8 @@ import {
 	GET_ELECTRICITY_DIRECT,
 	GET_ELECTRICITY_DIRECT_FAIL,
 	GET_ELECTRICITY_FAIL,
+	GET_MY_TRANSACTIONS,
+	GET_MY_TRANSACTIONS_FAIL,
 	GET_NETWORK,
 	GET_NETWORK_FAIL,
 	GET_WALLET,
@@ -71,6 +74,18 @@ import {
 	MOVE_BONUS_FAIL,
 	MOVE_COMMISSION,
 	MOVE_COMMISSION_FAIL,
+	SEARCH_MY_TRANSACTION,
+	SEARCH_MY_TRANSACTION_FAIL,
+	SEARCH_MY_TRANSACTION_LOADING,
+	SEARCH_MY_TRANSACTION_RELOAD,
+	SEARCH_TRANSACTION,
+	SEARCH_TRANSACTION_FAIL,
+	SEARCH_TRANSACTION_LOADING,
+	SEARCH_TRANSACTION_RELOAD,
+	SEARCH_WALLET,
+	SEARCH_WALLET_FAIL,
+	SEARCH_WALLET_LOADING,
+	SEARCH_WALLET_RELOAD,
 	SET_SUCCESS,
 	TRANSFER_FUND,
 	TRANSFER_FUND_FAIL,
@@ -125,10 +140,14 @@ export const getDirectDatas = type => async dispatch => {
 
 export const getServicesHistory = (type, data) => async dispatch => {
 	try {
+		if (data?.search) dispatch({ type: SEARCH_TRANSACTION_LOADING });
 		let res = await axios.get(
 			`/api/v1/transactions?type=${type}${
 				data?.limit ? `&limit=${data?.limit}` : ""
-			}${data?.user ? `&user=${data?.user}` : ""}`
+			}
+			${data?.user ? `&user=${data?.user}` : ""}
+			${data?.search ? `&search=${data?.search}` : ""}
+			`
 		);
 
 		dispatch({
@@ -144,9 +163,12 @@ export const getServicesHistory = (type, data) => async dispatch => {
 					: type === "education"
 					? GET_EDUCATION
 					: type === "all"
-					? GET_ALL_TRANSACTIONS
+					? data?.search
+						? SEARCH_TRANSACTION
+						: GET_ALL_TRANSACTIONS
 					: null,
 			payload: res.data,
+			search: data?.search ? data?.search : "",
 		});
 	} catch (err) {
 		if (err) console.log({ err });
@@ -164,7 +186,9 @@ export const getServicesHistory = (type, data) => async dispatch => {
 					: type === "education"
 					? GET_EDUCATION_FAIL
 					: type === "all"
-					? GET_ALL_TRANSACTIONS_FAIL
+					? data?.search
+						? SEARCH_TRANSACTION_FAIL
+						: GET_ALL_TRANSACTIONS_FAIL
 					: null,
 		});
 	}
@@ -198,12 +222,13 @@ export const buyServices = (type, data) => async dispatch => {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		error.forEach(error =>
-			error?.param
-				? error?.param !== "suggestion" &&
-				  toast.error(error.msg, { autoClose: false })
-				: toast.error(error.msg, { autoClose: false })
-		);
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
+		// error.forEach(error =>
+		// 	error?.param
+		// 		? error?.param !== "suggestion" &&
+		// 		  toast.error(error.msg, { autoClose: false })
+		// 		: toast.error(error.msg, { autoClose: false })
+		// );
 		dispatch({
 			type:
 				type === "data"
@@ -218,6 +243,8 @@ export const buyServices = (type, data) => async dispatch => {
 					? ADD_EDUCATION_FAIL
 					: null,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -288,12 +315,14 @@ export const converterServices = (method, type, data, id) => async dispatch => {
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
 		if (method === "post" || method === "put") {
-			error.forEach(error =>
-				error?.param
-					? error?.param !== "suggestion" &&
-					  toast.error(error.msg, { autoClose: false })
-					: toast.error(error.msg, { autoClose: false })
-			);
+			if (error)
+				dispatch(returnErrors({ error, status: err?.response?.status }));
+			// error.forEach(error =>
+			// 	error?.param
+			// 		? error?.param !== "suggestion" &&
+			// 		  toast.error(error.msg, { autoClose: false })
+			// 		: toast.error(error.msg, { autoClose: false })
+			// );
 		}
 		dispatch({
 			type:
@@ -315,6 +344,8 @@ export const converterServices = (method, type, data, id) => async dispatch => {
 						: null
 					: null,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -340,20 +371,22 @@ export const dataServices = (method, data) => async dispatch => {
 		});
 
 		if (method !== "get") {
-			toast.success(res?.data?.msg);
+			// toast.success(res?.data?.msg);
 			dispatch({ type: SET_SUCCESS, payload: res?.data?.msg });
 		}
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		if (method === "post") {
-			error.forEach(error =>
-				error?.param
-					? error?.param !== "suggestion" &&
-					  toast.error(error.msg, { autoClose: false })
-					: toast.error(error.msg, { autoClose: false })
-			);
+		if (method === "post" || method === "put") {
+			if (error)
+				dispatch(returnErrors({ error, status: err?.response?.status }));
+			// error.forEach(error =>
+			// 	error?.param
+			// 		? error?.param !== "suggestion" &&
+			// 		  toast.error(error.msg, { autoClose: false })
+			// 		: toast.error(error.msg, { autoClose: false })
+			// );
 		}
 		dispatch({
 			type:
@@ -361,6 +394,8 @@ export const dataServices = (method, data) => async dispatch => {
 					? CREATE_DATA_FAIL
 					: GET_CREATE_DATA_FAIL,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -389,31 +424,37 @@ export const getManualBonusHistory = (type, data) => async dispatch => {
 		});
 	}
 };
+
 export const getWalletHistory = (type, data) => async dispatch => {
 	try {
+		if (data?.search) dispatch({ type: SEARCH_WALLET_LOADING });
 		let res = await axios.get(
 			`/api/v1/wallet?type=${type}
 			${data?.limit ? `&limit=${data?.limit}` : ""}
 			${data?.user ? `&user=${data?.user}` : ""}
+			${data?.search ? `&search=${data?.search}` : ""}
 				`
 		);
 
 		dispatch({
 			type:
 				type === "wallet"
-					? GET_WALLET
+					? data?.search
+						? SEARCH_WALLET
+						: GET_WALLET
 					: type === "bonus"
 					? GET_BONUS
 					: type === "commission"
 					? GET_COMMISSION
 					: null,
 			payload: res.data,
+			search: data?.search ? data?.search : "",
 		});
 	} catch (err) {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		dispatch({
-			type: GET_WALLET_FAIL,
+			type: data?.search ? SEARCH_WALLET_FAIL : GET_WALLET_FAIL,
 		});
 	}
 };
@@ -449,12 +490,13 @@ export const manageWallet = (type, data, add) => async dispatch => {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		error.forEach(error =>
-			error?.param
-				? error?.param !== "suggestion" &&
-				  toast.error(error.msg, { autoClose: false })
-				: toast.error(error.msg, { autoClose: false })
-		);
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
+		// error.forEach(error =>
+		// 	error?.param
+		// 		? error?.param !== "suggestion" &&
+		// 		  toast.error(error.msg, { autoClose: false })
+		// 		: toast.error(error.msg, { autoClose: false })
+		// );
 
 		let newType;
 		if (add) {
@@ -468,6 +510,8 @@ export const manageWallet = (type, data, add) => async dispatch => {
 		dispatch({
 			type: newType,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -502,14 +546,16 @@ export const manageFundWallet = (data, update) => async dispatch => {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let newType;
+		let error = err.response?.data?.error;
 		if (data) {
-			let error = err.response?.data?.error;
-			error.forEach(error =>
-				error?.param
-					? error?.param !== "suggestion" &&
-					  toast.error(error.msg, { autoClose: false })
-					: toast.error(error.msg, { autoClose: false })
-			);
+			if (error)
+				dispatch(returnErrors({ error, status: err?.response?.status }));
+			// error.forEach(error =>
+			// 	error?.param
+			// 		? error?.param !== "suggestion" &&
+			// 		  toast.error(error.msg, { autoClose: false })
+			// 		: toast.error(error.msg, { autoClose: false })
+			// );
 			if (update) newType = UPDATE_WALLET_FAIL;
 			else newType = FUND_WALLET_FAIL;
 		} else {
@@ -518,6 +564,8 @@ export const manageFundWallet = (data, update) => async dispatch => {
 		dispatch({
 			type: newType,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -535,16 +583,19 @@ export const generateVirtual = () => async dispatch => {
 		if (err) console.log({ err });
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		error.forEach(error =>
-			error?.param
-				? error?.param !== "suggestion" &&
-				  toast.error(error.msg, { autoClose: false })
-				: toast.error(error.msg, { autoClose: false })
-		);
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
+		// error.forEach(error =>
+		// 	error?.param
+		// 		? error?.param !== "suggestion" &&
+		// 		  toast.error(error.msg, { autoClose: false })
+		// 		: toast.error(error.msg, { autoClose: false })
+		// );
 
 		dispatch({
 			type: GENERATE_VIRTUAL_FAIL,
 		});
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 	}
 };
 
@@ -565,14 +616,23 @@ export const getCards = () => async dispatch => {
 	}
 };
 
-export const getDataHistory = data => async dispatch => {
+export const getDataHistory = (data, type) => async dispatch => {
 	try {
+		if (data?.search) dispatch({ type: SEARCH_MY_TRANSACTION_LOADING });
 		let res = await axios.get(
-			`/api/v1/transactions/data${data?.limit ? `?limit=${data?.limit}` : ""}`
+			`/api/v1/transactions/data?type=${type ? type : "data"}
+			${data?.limit ? `&limit=${data?.limit}` : ""}
+			${data?.search ? `&search=${data?.search}` : ""}
+			`
 		);
 		dispatch({
-			type: GET_DATA_TRANSACTIONS,
+			type: type
+				? data?.search
+					? SEARCH_MY_TRANSACTION
+					: GET_MY_TRANSACTIONS
+				: GET_DATA_TRANSACTIONS,
 			payload: res?.data,
+			search: data?.search ? data?.search : "",
 		});
 
 		// console.log({ data: res?.data });
@@ -581,7 +641,17 @@ export const getDataHistory = data => async dispatch => {
 		if (err) console.log(err?.response ? err?.response?.data : err?.message);
 
 		dispatch({
-			type: GET_DATA_TRANSACTIONS_FAIL,
+			type: type
+				? data?.search
+					? SEARCH_MY_TRANSACTION_FAIL
+					: GET_MY_TRANSACTIONS_FAIL
+				: GET_DATA_TRANSACTIONS_FAIL,
 		});
 	}
+};
+
+export const getReload = () => async dispatch => {
+	dispatch({ type: SEARCH_WALLET_RELOAD });
+	dispatch({ type: SEARCH_TRANSACTION_RELOAD });
+	dispatch({ type: SEARCH_MY_TRANSACTION_RELOAD });
 };

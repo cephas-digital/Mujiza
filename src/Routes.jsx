@@ -15,12 +15,15 @@ import Home from "./Screens/home";
 import Home2 from "./Pages/home";
 import Home3 from "./Views/home";
 import gif from "./Assets/59945-success-confetti.gif";
+import gif2 from "./Assets/icons8-cancel.gif";
 
 const Routers = () => {
-	const { auth, success, restoreMsg } = useContext(GlobalState);
+	const { auth, success, restoreMsg, errors, clearErrors } =
+		useContext(GlobalState);
+
 	return (
 		<>
-			<ToastContainer />
+			<ToastContainer autoClose={false} />
 			{auth?.user ? (
 				<>
 					<Sidebar />
@@ -54,7 +57,7 @@ const Routers = () => {
 				isOpen={success?.msg}
 				title="Success"
 				size={"sm"}
-				success
+				success="text-success text-succcess2"
 				borderNone={"borderNone"}
 				toggle={() => restoreMsg()}>
 				<div className="downH2 d-flex flex-column">
@@ -65,6 +68,29 @@ const Routers = () => {
 					<button
 						onClick={() => restoreMsg()}
 						className="btn btn-success2 py-2 py-md-3 text-capitalize mx-auto my-3 px-3 px-md-5">
+						close
+					</button>
+				</div>
+			</ModalComponents>
+			<ModalComponents
+				isOpen={errors?.error?.error?.length > 0}
+				title="Error"
+				size={"sm"}
+				success="text-danger text-danger2"
+				borderNone={"borderNone"}
+				toggle={() => clearErrors()}>
+				<div className="downH2 d-flex flex-column">
+					<div className="mx-auto mb-3">
+						<img src={gif2} alt="Gif" className="img-fluid" />
+					</div>
+					{errors?.error?.error?.map((item, i) => (
+						<p key={i} className="fw-bold Lexend text-center w-100">
+							<span className="fontInherit me-2">{i + 1}.</span> {item?.msg}
+						</p>
+					))}
+					<button
+						onClick={() => clearErrors()}
+						className="btn btn-primary1 py-2 py-md-3 text-capitalize mx-auto my-3 px-3 px-md-5">
 						close
 					</button>
 				</div>

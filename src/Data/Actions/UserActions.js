@@ -1,4 +1,4 @@
-import { clearErrors } from "../Reducer/ErrorReducer";
+import { clearErrors, returnErrors } from "../Reducer/ErrorReducer";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
@@ -31,7 +31,8 @@ export const loadAllUser = data => async dispatch => {
 		});
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		dispatch({ type: GET_ALL_USERS_FAIL });
 	}
 };
@@ -46,7 +47,8 @@ export const getHonourBalance = () => async dispatch => {
 		});
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		dispatch({ type: GET_HONOUR_BALANCE_FAIL });
 	}
 };
@@ -65,7 +67,8 @@ export const getNotify = (type, data) => async dispatch => {
 		});
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		dispatch({
 			type:
 				type !== "incoming" ? GET_MY_NOTIFICATONS_FAIL : GET_NOTIFICATONS_FAIL,
@@ -82,39 +85,45 @@ export const manageNotify = (data, id) => async dispatch => {
 			type: id ? UPDATE_NOTIFICATONS : ADD_NOTIFICATONS,
 			payload: res.data,
 		});
-		toast.success(res?.data?.msg);
+		toast.success(res?.data?.msg, { autoClose: 7000 });
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		error.forEach(error =>
-			error?.param
-				? error?.param !== "suggestion" &&
-				  toast.error(error.msg, { autoClose: false })
-				: toast.error(error.msg, { autoClose: false })
-		);
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
+		// error.forEach(error =>
+		// 	error?.param
+		// 		? error?.param !== "suggestion" &&
+		// 		  toast.error(error.msg, { autoClose: false })
+		// 		: toast.error(error.msg, { autoClose: false })
+		// );
 		dispatch({ type: ADD_NOTIFICATONS_FAIL });
 	}
 };
 
 export const manageUserActiveness = (id, action) => async dispatch => {
 	try {
-		let res = await axios.post(`/api/v1/user/manage-users/${id}?type=${action}`);
+		let res = await axios.post(
+			`/api/v1/user/manage-users/${id}?type=${action}`
+		);
 		dispatch({
 			type: ACTIVATE_USER,
 			payload: res.data,
 		});
-		toast.success(res?.data?.msg);
+		toast.success(res?.data?.msg, { autoClose: 10000 });
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
-		if (err?.response?.status === 429) toast.error(err?.response?.data);
+		if (err?.response?.status === 429 || err?.response?.status === 405)
+			toast.error(err?.response?.data ? err?.response?.data : err?.message);
 		let error = err.response?.data?.error;
-		error.forEach(error =>
-			error?.param
-				? error?.param !== "suggestion" &&
-				  toast.error(error.msg, { autoClose: false })
-				: toast.error(error.msg, { autoClose: false })
-		);
+		if (error) dispatch(returnErrors({ error, status: err?.response?.status }));
+		// error.forEach(error =>
+		// 	error?.param
+		// 		? error?.param !== "suggestion" &&
+		// 		  toast.error(error.msg, { autoClose: false })
+		// 		: toast.error(error.msg, { autoClose: false })
+		// );
 		dispatch({ type: ACTIVATE_USER_FAIL });
 	}
 };
