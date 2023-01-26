@@ -45,7 +45,6 @@ const ConvertTop = () => {
 			amount: "",
 			network: "",
 			send_to: "",
-			send_type: "number",
 		},
 		[returnValue, setReturnValue] = useState(""),
 		[loading, setLoading] = useState(false),
@@ -141,26 +140,8 @@ const ConvertTop = () => {
 	// console.log({ state, numbers: converter?.numbers });
 	return (
 		<>
-			{/* {validateLoading && <Loaded />} */}
 			<section className="row mx-0">
 				<form className="mt-4 col-md-7 row mx-0 g-3 g-md-5">
-					<div className="mb-3 col-md-6">
-						<label className="text-capitalize" htmlFor="network">
-							Send format
-						</label>
-						<select
-							className="form-control py-3 py-md-4 bg-transparent text-capitalize rounded20 form-select"
-							name="network"
-							placeholder="Network"
-							value={state?.send_type}
-							onChange={textChange("send_type")}
-							readOnly={validateLoading}
-							id="network">
-							<option value="">select send format</option>
-							<option value="number">Transfer</option>
-							<option value="reference">Airtime pin</option>
-						</select>
-					</div>
 					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="network">
 							Network
@@ -181,7 +162,7 @@ const ConvertTop = () => {
 							))}
 						</select>
 					</div>
-					{state?.network && state?.send_type === "number" && (
+					{state?.network && (
 						<div className="mb-3 col-md-6">
 							<label className="text-capitalize" htmlFor="name">
 								Number to send to
@@ -197,7 +178,7 @@ const ConvertTop = () => {
 					)}
 					<div className="mb-3 col-md-6">
 						<label className="text-capitalize" htmlFor="name">
-							{state?.send_type === "number" ? "Phone number" : `Airtime pin`}
+							Phone number
 						</label>
 						<input
 							type="text"
