@@ -57,6 +57,7 @@ let init = {
 
 const WalletReducer = (state = init, action) => {
 	let { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
 
 	switch (type) {
 		case SEARCH_WALLET:
@@ -64,7 +65,7 @@ const WalletReducer = (state = init, action) => {
 				...state,
 				isFound: true,
 				searchLoading: false,
-				mainSearch: payload?.data,
+				mainSearch: data,
 				search: action.search,
 				search_paginate: payload?.paginate,
 			};
@@ -90,49 +91,41 @@ const WalletReducer = (state = init, action) => {
 		case GET_ALL_MANUAL:
 			return {
 				...state,
-				manual: payload?.data,
+				manual: data,
 				paginate_manual: payload?.paginate,
 			};
 		case GET_WALLET:
-			return { ...state, wallet: payload?.data, paginate: payload?.paginate };
+			return { ...state, wallet: data, paginate: payload?.paginate };
 		case GET_WALLET_FAIL:
 			return { ...state, wallet: state?.wallet, manual: state.manual };
 		case FUND_WALLET:
 			return {
 				...state,
 				isFunded: true,
-				wallet:
-					payload?.status?.toLowerCase() === "success"
-						? [payload?.data ? payload?.data : payload, ...state?.wallet]
-						: state?.wallet,
-				paginate:
-					payload?.status?.toLowerCase() === "success"
-						? {
-								...state?.paginate,
-								result: state?.paginate?.result + 1,
-								total: state?.paginate?.total + 1,
-						  }
-						: state?.paginate,
-				data: payload?.data ? payload?.data : payload,
+				wallet: data?._id ? [data, ...state?.wallet] : state?.wallet,
+				paginate: data?._id
+					? {
+							...state?.paginate,
+							result: state?.paginate?.result + 1,
+							total: state?.paginate?.total + 1,
+					  }
+					: state?.paginate,
+				data,
 			};
 		case UPDATE_WALLET:
 			return {
 				...state,
 				isFunded: true,
-				isUpdated: payload?.status?.toLowerCase() === "success" ? true : false,
-				wallet:
-					payload?.status?.toLowerCase() === "success"
-						? [payload?.data ? payload?.data : payload, ...state?.wallet]
-						: state?.wallet,
-				paginate:
-					payload?.status?.toLowerCase() === "success"
-						? {
-								...state?.paginate,
-								result: state?.paginate?.result + 1,
-								total: state?.paginate?.total + 1,
-						  }
-						: state?.paginate,
-				data: payload?.data ? payload?.data : payload,
+				isUpdated: data?._id ? true : false,
+				wallet: data?._id ? [data, ...state?.wallet] : state?.wallet,
+				paginate: data?._id
+					? {
+							...state?.paginate,
+							result: state?.paginate?.result + 1,
+							total: state?.paginate?.total + 1,
+					  }
+					: state?.paginate,
+				data,
 			};
 		case FUND_WALLET_FAIL:
 			return { ...state, isFunded: false };
@@ -142,7 +135,7 @@ const WalletReducer = (state = init, action) => {
 			return {
 				...state,
 				isAdded: true,
-				manual: [payload?.data ? payload?.data : payload, ...state?.manual],
+				manual: [data, ...state?.manual],
 				paginate_manual: {
 					...state?.paginate_manual,
 					result: state?.paginate_manual?.result + 1,
@@ -154,7 +147,7 @@ const WalletReducer = (state = init, action) => {
 		case GET_HONOUR_BALANCE:
 			return {
 				...state,
-				honour_balance: payload?.data ? payload?.data : payload,
+				honour_balance: data,
 			};
 		case GET_HONOUR_BALANCE_FAIL:
 			return { ...state, honour_balance: state?.honour_balance };
@@ -166,7 +159,7 @@ const WalletReducer = (state = init, action) => {
 			return {
 				...state,
 				isTransfer: true,
-				wallet: [payload?.data ? payload?.data : payload, ...state?.wallet],
+				wallet: [data, ...state?.wallet],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -180,7 +173,7 @@ const WalletReducer = (state = init, action) => {
 		case GET_WALLET_BALANCE_FAIL:
 			return { ...state, balance: state?.balance };
 		case GET_CARDS:
-			return { ...state, cards: payload?.data ? payload?.data : payload };
+			return { ...state, cards: data };
 		case GET_CARDS_FAIL:
 			return { ...state, cards: state?.cards };
 		case LOGOUT:
@@ -203,14 +196,15 @@ let init1 = {
 
 export const BonusReducer = (state = init1, action) => {
 	let { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
 
 	switch (type) {
 		case GET_BONUS:
-			return { ...state, bonus: payload?.data, paginate: payload?.paginate };
+			return { ...state, bonus: data, paginate: payload?.paginate };
 		case GET_ALL_BONUS:
 			return {
 				...state,
-				give_bonus: payload?.data,
+				give_bonus: data,
 				paginate_bonus: payload?.paginate,
 			};
 		case GET_WALLET_FAIL:
@@ -219,7 +213,7 @@ export const BonusReducer = (state = init1, action) => {
 			return {
 				...state,
 				isMoved: true,
-				bonus: [payload?.data ? payload?.data : payload, ...state?.bonus],
+				bonus: [data, ...state?.bonus],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -232,16 +226,13 @@ export const BonusReducer = (state = init1, action) => {
 			return {
 				...state,
 				isAdded: true,
-				bonus: [payload?.data ? payload?.data : payload, ...state?.bonus],
+				bonus: [data, ...state?.bonus],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
 					total: state?.paginate?.total + 1,
 				},
-				give_bonus: [
-					payload?.data ? payload?.data : payload,
-					...state?.give_bonus,
-				],
+				give_bonus: [data, ...state?.give_bonus],
 				paginate_bonus: {
 					...state?.paginate_bonus,
 					result: state?.paginate_bonus?.result + 1,
@@ -266,12 +257,13 @@ let init2 = {
 
 export const CommissionReducer = (state = init2, action) => {
 	let { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
 
 	switch (type) {
 		case GET_COMMISSION:
 			return {
 				...state,
-				commission: payload?.data,
+				commission: data,
 				paginate: payload?.paginate,
 			};
 		case GET_WALLET_FAIL:
@@ -280,10 +272,7 @@ export const CommissionReducer = (state = init2, action) => {
 			return {
 				...state,
 				isMoved: true,
-				commission: [
-					payload?.data ? payload?.data : payload,
-					...state?.commission,
-				],
+				commission: [data, ...state?.commission],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,

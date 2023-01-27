@@ -19,12 +19,14 @@ const initialState = {
 };
 const CableReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case ADD_CABLE:
 			return {
 				...state,
 				isAdded: true,
-				cable: [payload?.data ? payload?.data : payload, ...state.cable],
+				cable: [data, ...state.cable],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -41,18 +43,18 @@ const CableReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: false,
-				cable: payload?.data,
+				cable: data,
 				paginate: payload?.paginate,
 			};
 		case GET_CABLE_DIRECT_PACKAGE:
 			return {
 				...state,
-				cable_package: payload?.data,
+				cable_package: data,
 			};
 		case GET_CABLE_DIRECT_TYPE:
 			return {
 				...state,
-				cable_direct: payload?.data,
+				cable_direct: data,
 			};
 		case GET_CABLE_FAIL:
 			return {

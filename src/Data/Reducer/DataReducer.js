@@ -27,12 +27,14 @@ const initialState = {
 };
 const DataReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case ADD_DATA:
 			return {
 				...state,
 				isAdded: true,
-				data: [payload?.data ? payload?.data : payload, ...state.data],
+				data: [data, ...state.data],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -51,7 +53,7 @@ const DataReducer = (state = initialState, action) => {
 				...state,
 				isAddedMain: true,
 				main_data: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.main_data,
 				],
 			};
@@ -67,25 +69,25 @@ const DataReducer = (state = initialState, action) => {
 				isUpdatedMain: true,
 				main_data: EditData(
 					state.main_data,
-					payload?.data ? payload?.data : payload
+					data
 				),
 			};
 		case GET_DATA:
 			return {
 				...state,
 				isLoading: false,
-				data: payload?.data,
+				data,
 				paginate: payload?.paginate,
 			};
 		case GET_DATA_DIRECT:
 			return {
 				...state,
-				data_direct: payload?.data,
+				data_direct: data,
 			};
 		case GET_CREATE_DATA:
 			return {
 				...state,
-				main_data: payload?.data,
+				main_data: data,
 			};
 		case GET_CREATE_DATA_FAIL:
 			return {

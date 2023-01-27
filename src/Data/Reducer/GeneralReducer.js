@@ -42,13 +42,15 @@ const initialState = {
 };
 const GeneralReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case SEARCH_MY_TRANSACTION:
 			return {
 				...state,
 				my_isFound: true,
 				my_searchLoading: false,
-				my_mainSearch: payload?.data,
+				my_mainSearch: data,
 				my_search: action.search,
 				my_search_paginate: payload?.paginate,
 			};
@@ -76,7 +78,7 @@ const GeneralReducer = (state = initialState, action) => {
 				...state,
 				isFound: true,
 				searchLoading: false,
-				mainSearch: payload?.data,
+				mainSearch: data,
 				search: action.search,
 				search_paginate: payload?.paginate,
 			};
@@ -103,24 +105,24 @@ const GeneralReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: false,
-				networks: payload?.data,
+				networks: data,
 			};
 		case GET_DATA_TRANSACTIONS:
 			return {
 				...state,
-				data: payload?.data ? payload?.data : payload,
+				data,
 				paginate_data: payload?.paginate,
 			};
 		case GET_ALL_TRANSACTIONS:
 			return {
 				...state,
-				transactions: payload?.data ? payload?.data : payload,
+				transactions: data,
 				paginate: payload?.paginate,
 			};
 		case GET_MY_TRANSACTIONS:
 			return {
 				...state,
-				my_transactions: payload?.data ? payload?.data : payload,
+				my_transactions: data,
 				my_paginate: payload?.paginate,
 			};
 		case ADD_AIRTIME:
@@ -129,7 +131,7 @@ const GeneralReducer = (state = initialState, action) => {
 			return {
 				...state,
 				transactions: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.transactions,
 				],
 				paginate: {
@@ -138,7 +140,7 @@ const GeneralReducer = (state = initialState, action) => {
 					total: state?.paginate?.total + 1,
 				},
 				my_transactions: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.my_transactions,
 				],
 				my_paginate: {
@@ -151,7 +153,7 @@ const GeneralReducer = (state = initialState, action) => {
 			return {
 				...state,
 				transactions: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.transactions,
 				],
 				paginate: {
@@ -159,14 +161,14 @@ const GeneralReducer = (state = initialState, action) => {
 					result: state?.paginate?.result + 1,
 					total: state?.paginate?.total + 1,
 				},
-				data: [payload?.data ? payload?.data : payload, ...state.data],
+				data: [data, ...state.data],
 				paginate_data: {
 					...state?.paginate_data,
 					result: state?.paginate_data?.result + 1,
 					total: state?.paginate_data?.total + 1,
 				},
 				my_transactions: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.my_transactions,
 				],
 				my_paginate: {

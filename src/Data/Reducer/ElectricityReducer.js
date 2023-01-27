@@ -17,13 +17,15 @@ const initialState = {
 };
 const ElectricityReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case ADD_ELECTRICITY:
 			return {
 				...state,
 				isAdded: true,
 				electricity: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.electricity,
 				],
 				paginate: {
@@ -42,13 +44,13 @@ const ElectricityReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: false,
-				electricity: payload?.data,
+				electricity: data,
 				paginate: payload?.paginate,
 			};
 		case GET_ELECTRICITY_DIRECT:
 			return {
 				...state,
-				electricity_direct: payload?.data,
+				electricity_direct: data,
 			};
 		case GET_ELECTRICITY_FAIL:
 			return {

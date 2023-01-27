@@ -27,12 +27,14 @@ const initialState = {
 
 const UsersReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case GET_ALL_USERS:
 			return {
 				...state,
 				isLoading: false,
-				users: payload?.data,
+				users: data,
 				paginate: payload?.paginate,
 				wallet: payload?.wallet,
 				transactions: payload?.transactions,
@@ -40,7 +42,7 @@ const UsersReducer = (state = initialState, action) => {
 		case ACTIVATE_USER:
 			return {
 				...state,
-				users: EditData(state?.users, payload?.data ? payload?.data : payload),
+				users: EditData(state?.users, data),
 				isUpdated: true,
 			};
 		case ACTIVATE_USER_FAIL:
@@ -71,19 +73,21 @@ const initialState2 = {
 
 export const NotificationReducer = (state = initialState2, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case GET_NOTIFICATONS:
 			return {
 				...state,
 				isLoading: false,
-				incoming: payload?.data ? payload?.data : [],
+				incoming: data ? data : [],
 				paginate: payload?.paginate,
 			};
 		case GET_MY_NOTIFICATONS:
 			return {
 				...state,
 				isLoading: false,
-				outgoing: payload?.data ? payload?.data : [],
+				outgoing: data ? data : [],
 				paginate2: payload?.paginate,
 			};
 		case GET_NOTIFICATONS_FAIL:
@@ -96,7 +100,7 @@ export const NotificationReducer = (state = initialState2, action) => {
 			return {
 				...state,
 				isAdded: true,
-				outgoing: [payload?.data ? payload?.data : payload, ...state?.outgoing],
+				outgoing: [data, ...state?.outgoing],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -114,10 +118,7 @@ export const NotificationReducer = (state = initialState2, action) => {
 			return {
 				...state,
 				isUpdated: true,
-				incoming: EditData(
-					state?.incoming,
-					payload?.data ? payload?.data : payload
-				),
+				incoming: EditData(state?.incoming, data),
 			};
 		case LOGOUT:
 			return initialState;

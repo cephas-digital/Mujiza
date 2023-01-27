@@ -17,13 +17,15 @@ const initialState = {
 
 const EducationReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	let data = payload?.data ? payload?.data : payload;
+
 	switch (type) {
 		case ADD_EDUCATION:
 			return {
 				...state,
 				isAdded: true,
 				education: [
-					payload?.data ? payload?.data : payload,
+					data,
 					...state.education,
 				],
 				paginate: {
@@ -42,7 +44,7 @@ const EducationReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: false,
-				education: payload?.data,
+				education: data,
 				paginate: payload?.paginate,
 			};
 		case GET_EDUCATION_FAIL:
