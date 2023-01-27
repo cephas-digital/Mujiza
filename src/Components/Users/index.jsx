@@ -126,7 +126,7 @@ export const UserListOne = () => {
 				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend d-none d-md-flex">
 					Wallet ID
 				</div>
-				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
+				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend text-center">
 					Action
 				</div>
 			</div>
@@ -135,31 +135,36 @@ export const UserListOne = () => {
 					<EmptyComponent subtitle={"Users' list is empty"} />
 				) : (
 					data?.map((item, index) => (
-						<div key={index} className="row mx-0 p-3">
+						<div key={index} className="row mx-0 p-3 border-bottom">
 							<div className="col fontReduce2 textTrunc my-auto">
-								<div className="d-flex align-items-center">
+								<div className="d-flex align-items-center w-100">
 									<img
 										src={item?.avatar ? item?.avatar?.url : user}
 										alt="User"
-										className="img-fluid rounded-circle d-none d-md-flex"
+										className="img-fluid rounded-circle d-none d-md-flex imgFluid"
 										style={{
 											height: "3rem",
 											width: "3rem",
 										}}
 									/>
-									<span className="fontInherit my-0 ps-0 ps-md-1 textTrunc fontReduce2">
+									<span className="fontInherit my-0 ps-0 ps-md-1 textTrunc textTrunc2 fontReduce w-100">
 										{item?.lastName} {item?.firstName}
 									</span>
 								</div>
 							</div>
-							<div className="col fontReduce2 textTrunc my-auto">
+							<div className="col fontReduce textTrunc my-auto">
 								{item?.telephone}
 							</div>
 							<div className="col fontReduce2 textTrunc my-auto d-none d-md-flex">
 								{moment(item?.createdAt).format("L")}
 							</div>
-							<div className="col fontReduce2 textTrunc my-auto">
-								NGN {numberWithCommas(item?.wallet?.available)}
+							<div className="col fontReduce2 textTrunc my-auto d-flex w-100">
+								<span className="fontInherit d-none d-md-flex me-md-1">
+									NGN
+								</span>{" "}
+								<span>
+									{numberWithCommas(Number(item?.wallet?.available).toFixed(2))}
+								</span>
 							</div>
 							<div className="col fontReduce2 textTrunc my-auto d-none d-md-flex">
 								{item?.email}
@@ -168,12 +173,12 @@ export const UserListOne = () => {
 								{item?.wallet?.wallet_id}
 							</div>
 							<div
-								className="col fontReduce2 textTrunc my-auto myCursor"
+								className="col fontReduce2 textTrunc my-auto myCursor text-center"
 								onClick={() => {
 									setMainUser(item);
 									toggle();
 								}}>
-								<BiCog size={24} />
+								<BiCog className="iconDash" />
 							</div>
 							<ModalComponents
 								title={"Manage User"}

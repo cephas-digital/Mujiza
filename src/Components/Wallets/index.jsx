@@ -842,7 +842,7 @@ const TransferList = () => {
 				<EmptyComponent subtitle={"Wallet is empty"} />
 			) : (
 				state?.map((it, i) => (
-					<div key={i} className="row mx-0 my-2">
+					<div key={i} className="row mx-0 my-2 border-bottom">
 						<div className="col d-none d-md-flex fontReduce2">
 							<div className="d-flex">
 								<div
@@ -865,18 +865,18 @@ const TransferList = () => {
 						<div className="col my-auto text-capitalize textTrunc textTrunc2 fw-md-bold fontReduce2">
 							{it?.description}
 						</div>
-						<div className="col my-auto fontReduce2">
-							NGN{" "}
+						<div className="col my-auto fontReduce2 d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
 							{it?.amount ? numberWithCommas(Number(it?.amount).toFixed(2)) : 0}
 						</div>
-						<div className="col my-auto fontReduce2">
-							NGN{" "}
+						<div className="col my-auto fontReduce2 d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
 							{it?.prevBalance
 								? numberWithCommas(Number(it?.prevBalance).toFixed(2))
 								: 0}
 						</div>
-						<div className="col my-auto fontReduce2">
-							NGN{" "}
+						<div className="col my-auto fontReduce2 d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
 							{it?.balance
 								? numberWithCommas(Number(it?.balance).toFixed(2))
 								: 0}

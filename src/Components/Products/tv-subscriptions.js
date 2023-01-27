@@ -134,7 +134,7 @@ const TVSub = () => {
 							</div>
 						</div>
 						{cables?.cable_direct?.map((item, i) => (
-							<div className="row mx-0 p-3" key={i}>
+							<div className="row mx-0 p-3 border-bottom" key={i}>
 								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
 								<div className="col my-auto textTrunc fontReduce2">{item}</div>
 							</div>
@@ -152,7 +152,7 @@ const TVSub = () => {
 							</div>
 						</div>
 						{cables?.cable_package?.dstv?.map((item, i) => (
-							<div className="row mx-0 p-3" key={i}>
+							<div className="row mx-0 p-3 border-bottom" key={i}>
 								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
 								<div className="col my-auto textTrunc fontReduce2">
 									{item?.name}
@@ -177,7 +177,7 @@ const TVSub = () => {
 							</div>
 						</div>
 						{cables?.cable_package?.gotv?.map((item, i) => (
-							<div className="row mx-0 p-3" key={i}>
+							<div className="row mx-0 p-3 border-bottom" key={i}>
 								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
 								<div className="col my-auto textTrunc fontReduce2">
 									{item?.name}
@@ -202,7 +202,7 @@ const TVSub = () => {
 							</div>
 						</div>
 						{cables?.cable_package?.startimes?.map((item, i) => (
-							<div className="row mx-0 p-3" key={i}>
+							<div className="row mx-0 p-3 border-bottom" key={i}>
 								<div className="col my-auto textTrunc fontReduce2">{i + 1}</div>
 								<div className="col my-auto textTrunc fontReduce2">
 									{item?.name}
@@ -332,7 +332,7 @@ const TVSubHistory = () => {
 			</div>
 			<div className="bg-white row mx-0">
 				{state?.map((item, index) => (
-					<div key={index} className="row mx-0 py-3">
+					<div key={index} className="row mx-0 py-3 border-bottom">
 						<div className="col my-auto textTrunc fontReduce2">
 							{item?.item_id}
 						</div>

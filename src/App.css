@@ -394,6 +394,12 @@ body {
 .userbar img {
 	object-fit: contain !important;
 }
+.imgFluid{
+	object-fit: cover !important;
+}
+.text-right{
+	text-align: right !important;
+}
 
 .textTrunc {
 	display: -webkit-box;

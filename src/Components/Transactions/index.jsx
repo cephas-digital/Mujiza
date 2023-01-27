@@ -226,18 +226,20 @@ export const TransactionsData = ({ state }) => {
 				<EmptyComponent subtitle={"User purchase history is empty"} />
 			) : (
 				state?.map((it, i) => (
-					<div key={i} className="row mx-0 my-2 py-2 bland2">
+					<div key={i} className="row mx-0 my-2 py-3 bland2 border-bottom">
 						<div className="col my-auto text-capitalize d-none d-md-flex fontReduce2 textTrunc">
 							{it?.item_id}
 						</div>
 						<div className="col my-auto text-capitalize fontReduce2 textTrunc">
 							{it?.type}
 						</div>
-						<div className="col my-auto fontReduce2 textTrunc">
-							NGN{" "}
-							{it?.properties?.amount
-								? numberWithCommas(it?.properties?.amount)
-								: 0}
+						<div className="col my-auto fontReduce2 textTrunc d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
+							<span>
+								{it?.properties?.amount
+									? numberWithCommas(it?.properties?.amount)
+									: 0}
+							</span>
 						</div>
 						<div className="col my-auto fontReduce2 textTrunc">
 							{it?.type === "cables"

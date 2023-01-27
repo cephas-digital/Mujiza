@@ -158,7 +158,7 @@ const AirtimeHistory = () => {
 					<></>
 				) : (
 					data?.map((item, index) => (
-						<div key={index} className="row mx-0 py-3">
+						<div key={index} className="row mx-0 py-3 border-bottom">
 							<div className="col textTrunc fontReduce2 my-auto d-none d-md-flex">
 								{item?.item_id}
 							</div>

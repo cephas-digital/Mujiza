@@ -36,7 +36,6 @@ const UsersMain = () => {
 				? numberWithCommas(Number(users?.wallet).toFixed(2))
 				: 0,
 			color: "linear-gradient(96.86deg, #F4EA75 18.88%, #F7BA5E 125.77%)",
-			link: "/users/agents",
 		},
 	];
 	return (

@@ -152,7 +152,7 @@ const EducationHistory = () => {
 					<></>
 				) : (
 					data?.map((item, index) => (
-						<div key={index} className="row mx-0 py-3">
+						<div key={index} className="row mx-0 py-3 border-bottom">
 							<div className="col my-auto textTrunc fontReduce2">
 								{item?.item_id}
 							</div>

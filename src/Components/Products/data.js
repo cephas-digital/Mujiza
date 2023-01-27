@@ -521,7 +521,7 @@ const TransferHistory = () => {
 			</div>
 			<div className="bland2 row mx-0">
 				{state?.map((item, index) => (
-					<div key={index} className="row mx-0 py-3 px-0">
+					<div key={index} className="row mx-0 py-3 px-0 border-bottom">
 						<div className="col textTrunc my-auto">{item?.item_id}</div>
 						<div className="col textTrunc my-auto  d-none d-md-flex">
 							{moment(item?.createdAt).format("L")}
@@ -605,7 +605,7 @@ const DataList = ({ setIsEdit }) => {
 			</div>
 			<div className="bland2 row mx-0">
 				{state?.map((item, index) => (
-					<div key={index} className="row mx-0 py-3 px-0">
+					<div key={index} className="row mx-0 py-3 px-0 border-bottom">
 						<div className="col textTrunc my-auto   d-none d-md-flex fontReduce2">
 							{index + 1}
 						</div>
@@ -657,7 +657,7 @@ const DataList = ({ setIsEdit }) => {
 						{auth?.user?.privilege === "agent" && (
 							<div
 								onClick={() => setIsEdit(item)}
-								className="col textTrunc my-auto myCursor fontReduce2">
+								className="col textTrunc my-auto myCursor fontReduce2 text-primary1 text-uppercase">
 								edit
 							</div>
 						)}
@@ -691,7 +691,7 @@ const MainDataList = () => {
 			</div>
 			<div className="bland2 row mx-0">
 				{state?.map((item, index) => (
-					<div key={index} className="row mx-0 py-3 px-0">
+					<div key={index} className="row mx-0 py-3 px-0 border-bottom">
 						<div className="col textTrunc my-auto   d-none d-md-flex fontReduce2">
 							{index + 1}
 						</div>

@@ -59,21 +59,24 @@ export const WalletHistoryList = ({ state }) => {
 				<EmptyComponent subtitle={"User wallet history is empty"} />
 			) : (
 				state?.map((it, i) => (
-					<div key={i} className="row mx-0 my-2 py-2 bland2">
+					<div key={i} className="row mx-0 my-2 py-3 bland2 border-bottom">
 						<div className="col my-auto text-capitalize d-none d-md-flex fontReduce2 textTrunc">
 							{it?.item_id}
 						</div>
 						<div className="col my-auto text-capitalize textTrunc textTrunc2 fontReduce2">
 							{it?.description}
 						</div>
-						<div className="col my-auto fontReduce2 textTrunc">
-							NGN {it?.amount ? numberWithCommas(it?.amount) : 0}
+						<div className="col my-auto fontReduce2 textTrunc d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
+							{it?.amount ? numberWithCommas(it?.amount) : 0}
 						</div>
-						<div className="col my-auto fontReduce2 textTrunc">
-							NGN {it?.balance ? numberWithCommas(it?.balance) : 0}
+						<div className="col my-auto fontReduce2 textTrunc d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
+							{it?.balance ? numberWithCommas(it?.balance) : 0}
 						</div>
-						<div className="col my-auto fontReduce2 textTrunc">
-							NGN {it?.prevBalance ? numberWithCommas(it?.prevBalance) : 0}
+						<div className="col my-auto fontReduce2 textTrunc d-flex w-100">
+							<span className="fontInherit d-none d-md-flex me-md-1">NGN</span>{" "}
+							{it?.prevBalance ? numberWithCommas(it?.prevBalance) : 0}
 						</div>
 						<div className="col my-auto d-none d-md-flex fontReduce2 textTrunc">
 							{moment(it?.createdAt).format("L")}
