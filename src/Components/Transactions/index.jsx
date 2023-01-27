@@ -165,7 +165,7 @@ const TransactionsFolder = ({ active = 0 }) => {
 							state={active === 1 ? state2 : state}
 							paginate={
 								active === 1
-									? search
+									? search2
 										? general?.my_search_paginate
 										: general?.my_paginate
 									: active === 0
@@ -178,7 +178,7 @@ const TransactionsFolder = ({ active = 0 }) => {
 						<LoadMore
 							next={
 								active === 1
-									? search
+									? search2
 										? general?.my_search_paginate?.next
 										: general?.my_paginate?.next
 									: active === 0
