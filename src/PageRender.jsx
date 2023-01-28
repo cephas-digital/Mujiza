@@ -41,8 +41,8 @@ const PageRender = () => {
 
 	useEffect(() => {
 		if (!auth?.isAuth) {
-			if (errors?.errorText?.includes("jwt")) {
-				navigate("/login");
+			if (errors?.errorText?.includes("Unauthorized User")) {
+				navigate("/");
 				clearErrors();
 			}
 		}
