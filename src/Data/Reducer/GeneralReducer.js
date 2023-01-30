@@ -72,6 +72,7 @@ const GeneralReducer = (state = initialState, action) => {
 			return {
 				...state,
 				my_isFound: false,
+				my_searchLoading: false,
 			};
 		case SEARCH_TRANSACTION:
 			return {
@@ -100,6 +101,7 @@ const GeneralReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isFound: false,
+				searchLoading: false,
 			};
 		case GET_NETWORK:
 			return {
@@ -130,19 +132,13 @@ const GeneralReducer = (state = initialState, action) => {
 		case ADD_ELECTRICITY:
 			return {
 				...state,
-				transactions: [
-					data,
-					...state.transactions,
-				],
+				transactions: [data, ...state.transactions],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
 					total: state?.paginate?.total + 1,
 				},
-				my_transactions: [
-					data,
-					...state.my_transactions,
-				],
+				my_transactions: [data, ...state.my_transactions],
 				my_paginate: {
 					...state?.my_paginate,
 					result: state?.my_paginate?.result + 1,
@@ -152,10 +148,7 @@ const GeneralReducer = (state = initialState, action) => {
 		case ADD_DATA:
 			return {
 				...state,
-				transactions: [
-					data,
-					...state.transactions,
-				],
+				transactions: [data, ...state.transactions],
 				paginate: {
 					...state?.paginate,
 					result: state?.paginate?.result + 1,
@@ -167,10 +160,7 @@ const GeneralReducer = (state = initialState, action) => {
 					result: state?.paginate_data?.result + 1,
 					total: state?.paginate_data?.total + 1,
 				},
-				my_transactions: [
-					data,
-					...state.my_transactions,
-				],
+				my_transactions: [data, ...state.my_transactions],
 				my_paginate: {
 					...state?.my_paginate,
 					result: state?.my_paginate?.result + 1,

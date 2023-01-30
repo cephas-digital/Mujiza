@@ -41,7 +41,7 @@ const PageRender = () => {
 
 	useEffect(() => {
 		if (!auth?.isAuth) {
-			if (errors?.errorText?.includes("Unauthorized User")) {
+			if (errors?.errorText) {
 				navigate("/");
 				clearErrors();
 			}

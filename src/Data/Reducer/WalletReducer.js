@@ -87,6 +87,7 @@ const WalletReducer = (state = init, action) => {
 			return {
 				...state,
 				isFound: false,
+				searchLoading: false,
 			};
 		case GET_ALL_MANUAL:
 			return {

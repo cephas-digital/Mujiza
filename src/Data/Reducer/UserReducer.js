@@ -10,6 +10,10 @@ import {
 	GET_NOTIFICATONS,
 	GET_NOTIFICATONS_FAIL,
 	LOGOUT,
+	SEARCH_ALL_USERS,
+	SEARCH_ALL_USERS_FAIL,
+	SEARCH_ALL_USERS_LOADING,
+	SEARCH_ALL_USERS_RELOAD,
 	UPDATE_NOTIFICATONS,
 } from "../Actions/ActionTypes";
 import { EditData } from "./DataReducer";
@@ -23,6 +27,11 @@ const initialState = {
 	wallet: 0,
 	transactions: 0,
 	isUpdated: false,
+	isFound: null,
+	searchLoading: null,
+	mainSearch: [],
+	search: "",
+	search_paginate: null,
 };
 
 const UsersReducer = (state = initialState, action) => {
@@ -30,6 +39,35 @@ const UsersReducer = (state = initialState, action) => {
 	let data = payload?.data ? payload?.data : payload;
 
 	switch (type) {
+		case SEARCH_ALL_USERS:
+			return {
+				...state,
+				isFound: true,
+				searchLoading: false,
+				mainSearch: data,
+				search: action.search,
+				search_paginate: payload?.paginate,
+			};
+		case SEARCH_ALL_USERS_FAIL:
+			return {
+				...state,
+				isFound: false,
+				searchLoading: false,
+				mainSearch: null,
+				search: "",
+				search_paginate: null,
+			};
+		case SEARCH_ALL_USERS_LOADING:
+			return {
+				...state,
+				searchLoading: true,
+			};
+		case SEARCH_ALL_USERS_RELOAD:
+			return {
+				...state,
+				isFound: false,
+				searchLoading: false,
+			};
 		case GET_ALL_USERS:
 			return {
 				...state,

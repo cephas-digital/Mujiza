@@ -127,7 +127,7 @@ const TransactionsFolder = ({ active = 0 }) => {
 		<>
 			{page !== "dashboard" && (
 				<>
-					<div className="w-50">
+					<div className="w-50 w50">
 						<input
 							type="search"
 							name="search"

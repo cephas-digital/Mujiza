@@ -811,7 +811,7 @@ const TransferList = () => {
 	if (!state) return <></>;
 	return (
 		<>
-			<div className="w-50 mb-3">
+			<div className="w-50 w50 mb-3">
 				<input
 					type="search"
 					name="search"

@@ -14,26 +14,32 @@ import {
 	GET_MY_NOTIFICATONS_FAIL,
 	GET_NOTIFICATONS,
 	GET_NOTIFICATONS_FAIL,
+	SEARCH_ALL_USERS,
+	SEARCH_ALL_USERS_FAIL,
+	SEARCH_ALL_USERS_LOADING,
 	UPDATE_NOTIFICATONS,
 } from "./ActionTypes";
 
 export const loadAllUser = data => async dispatch => {
 	dispatch(clearErrors());
+	if (data?.search) dispatch({type: SEARCH_ALL_USERS_LOADING})
 	try {
 		let res = await axios.get(
-			`/api/v1/user/manage-users?type=user${
-				data?.limit ? `&limit=${data?.limit}` : ""
-			}`
+			`/api/v1/user/manage-users?type=user
+			${data?.limit ? `&limit=${data?.limit}` : ""}
+			${data?.search ? `&search=${data?.search}` : ""}
+			`
 		);
 		dispatch({
-			type: GET_ALL_USERS,
+			type: data?.search ? SEARCH_ALL_USERS :  GET_ALL_USERS,
 			payload: res.data,
+			search: data?.search ? data?.search : ""
 		});
 	} catch (err) {
 		if (err) console.log(err.response?.data?.error, { err });
 		if (err?.response?.status === 429 || err?.response?.status === 405)
 			toast.error(err?.response?.data ? err?.response?.data : err?.message);
-		dispatch({ type: GET_ALL_USERS_FAIL });
+		dispatch({ type: data?.search ? SEARCH_ALL_USERS_FAIL : GET_ALL_USERS_FAIL });
 	}
 };
 

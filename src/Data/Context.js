@@ -152,7 +152,7 @@ const DataProvider = ({
 			icon: <VscBellDot className="icon" size={24} />,
 		},
 		{
-			name: "Walllet",
+			name: "Wallet",
 			url: "/wallets",
 			icon: <GiWallet className="icon" size={24} />,
 		},
@@ -204,7 +204,7 @@ const DataProvider = ({
 			icon: <VscBellDot className="icon" size={24} />,
 		},
 		{
-			name: "Walllet",
+			name: "Wallet",
 			url: "/wallets",
 			icon: <GiWallet className="icon" size={24} />,
 		},

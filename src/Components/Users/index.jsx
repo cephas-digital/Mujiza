@@ -44,7 +44,8 @@ export const ThreeBoxBar = ({ list }) => {
 };
 
 export const UserListOne = () => {
-	const { users, numberWithCommas, loadAllUser } = useContext(GlobalState);
+	const { users, numberWithCommas, loadAllUser, getReload } =
+		useContext(GlobalState);
 	let [data, setData] = useState(null),
 		[isOpen, setIsOpen] = useState(false),
 		[loading, setLoading] = useState(false),
@@ -64,20 +65,57 @@ export const UserListOne = () => {
 		[isDisable, setIsDisable] = useState(null),
 		toggleDisable = () => {
 			setIsDisable(null);
-		};
+		},
+		[search, setSearch] = useState("");
+
+	useEffect(() => {
+		if (search) {
+			document.getElementById("Search").addEventListener("search", () => {
+				getReload();
+			});
+			let handleSubmit = async () => {
+				if (!search) return;
+
+				await loadAllUser({
+					search,
+				});
+			};
+			handleSubmit();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [search]);
+
+	useEffect(() => {
+		getReload();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	let handleLoadMore = async () => {
 		setLoading(true);
-
-		await loadAllUser({
-			limit: Number(users?.paginate?.nextPage * users?.paginate?.limit),
-		});
+		if (search)
+			await loadAllUser({
+				limit: Number(
+					users?.search_paginate?.nextPage * users?.search_paginate?.limit
+				),
+				search,
+			});
+		else
+			await loadAllUser({
+				limit: Number(users?.paginate?.nextPage * users?.paginate?.limit),
+			});
 		setLoading(false);
 	};
 
 	useEffect(() => {
-		setData(page === "dashboard" ? users?.users?.slice(0, 10) : users?.users);
-	}, [users?.users, page]);
+		if (users?.isFound)
+			setData(
+				page === "dashboard"
+					? users?.mainSearch?.slice(0, 10)
+					: users?.mainSearch
+			);
+		else
+			setData(page === "dashboard" ? users?.users?.slice(0, 10) : users?.users);
+	}, [users?.users, page, users?.isFound, users?.mainSearch]);
 
 	if (!data) return;
 
@@ -107,6 +145,21 @@ export const UserListOne = () => {
 
 	return (
 		<div className="pb-5 my-5">
+			{page !== "dashboard" && (
+				<>
+					<div className="w-50 w50 mb-3">
+						<input
+							type="search"
+							name="search"
+							id="Search"
+							className="form-control w-100 py-3 borderColor2"
+							placeholder="Type here to search"
+							value={search}
+							onChange={e => setSearch(e.target.value)}
+						/>
+					</div>
+				</>
+			)}
 			<div className="bland row mx-0 py-3 text-capitalize">
 				<div className="col textTrunc text-uppercase fontReduce fw-bold Lexend">
 					Name
@@ -219,9 +272,16 @@ export const UserListOne = () => {
 			</div>
 			{page !== "dashboard" && (
 				<>
-					<BottomTab state={data} paginate={users?.paginate} />
+					<BottomTab
+						state={data}
+						paginate={users?.isFound ? users?.search_paginate : users?.paginate}
+					/>
 					<LoadMore
-						next={users?.paginate?.next}
+						next={
+							users?.isFound
+								? users?.search_paginate?.next
+								: users?.paginate?.next
+						}
 						handleLoadMore={handleLoadMore}
 						loading={loading}
 					/>

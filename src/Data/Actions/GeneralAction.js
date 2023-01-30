@@ -74,6 +74,7 @@ import {
 	MOVE_BONUS_FAIL,
 	MOVE_COMMISSION,
 	MOVE_COMMISSION_FAIL,
+	SEARCH_ALL_USERS_RELOAD,
 	SEARCH_MY_TRANSACTION,
 	SEARCH_MY_TRANSACTION_FAIL,
 	SEARCH_MY_TRANSACTION_LOADING,
@@ -654,4 +655,5 @@ export const getReload = () => async dispatch => {
 	dispatch({ type: SEARCH_WALLET_RELOAD });
 	dispatch({ type: SEARCH_TRANSACTION_RELOAD });
 	dispatch({ type: SEARCH_MY_TRANSACTION_RELOAD });
+	dispatch({ type: SEARCH_ALL_USERS_RELOAD });
 };
